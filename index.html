@@ -291,14 +291,14 @@ button { cursor: pointer; }
   font-weight: 700;
   font-size: 12.5px;
   margin-top: 6px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
 }
-.btn-submit:disabled {
-  opacity: 0.6;
-  cursor: wait;
-}
-.btn-wa {
+.btn-pdf {
   width: 100%;
-  background: #25D366;
+  background: #c63939;
   color: #fff;
   border: 0;
   padding: 10px;
@@ -390,9 +390,30 @@ th { color: var(--muted); font-size: 10px; text-transform: uppercase; }
 .badge { display: inline-block; padding: 2px 7px; border-radius: 99px; font-size: 9.5px; font-weight: 700; }
 .badge-in { background: #e6f7ec; color: #1e7e34; }
 .badge-out { background: #fee2e2; color: #dc2626; }
+
+/* TOAST NOTIFIKASI */
+.toast-msg {
+  position: fixed;
+  top: 16px;
+  left: 50%;
+  transform: translateX(-50%);
+  background: #143e33;
+  color: #fff;
+  padding: 8px 16px;
+  border-radius: 99px;
+  font-size: 12px;
+  font-weight: 600;
+  box-shadow: 0 6px 20px rgba(0,0,0,0.18);
+  z-index: 9999;
+  display: none;
+  opacity: 0;
+  transition: opacity 0.3s ease;
+}
 </style>
 </head>
 <body>
+
+<div id="toast" class="toast-msg"></div>
 
 <header class="header">
   <div class="header-top">
@@ -405,7 +426,7 @@ th { color: var(--muted); font-size: 10px; text-transform: uppercase; }
     </div>
     <div class="header-status">
       <span class="pill" id="connPill">● Menghubungkan…</span>
-      <button class="btn-icon-sync" onclick="loadData()" title="Sinkronkan Data">
+      <button class="btn-icon-sync" onclick="loadData(true)" title="Sinkronkan Data">
         <svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
           <polyline points="23 4 23 10 17 10"></polyline>
           <polyline points="1 20 1 14 7 14"></polyline>
@@ -478,14 +499,13 @@ th { color: var(--muted); font-size: 10px; text-transform: uppercase; }
     </div>
   </div>
 
-  <!-- 3. PANEL TRANSAKSI SATUAN (PENCARIAN DENGAN KOLOM SEARCH) -->
+  <!-- 3. PANEL TRANSAKSI SATUAN -->
   <div class="panel" id="p-transaksi">
     <div class="section-head">
       <div><h2>Catat Transaksi</h2><p>Top-up setoran wali / pengeluaran satuan.</p></div>
     </div>
     <div class="card">
       <form id="trxForm" onsubmit="saveTrx(event)">
-        <!-- PENCARIAN SANTRI MENGGUNAKAN KOLOM SEARCH -->
         <div class="form-group">
           <label>Cari Santri (Ketik Nama / NIS)</label>
           <input type="text" id="trxSearchInput" placeholder="Ketik nama atau NIS santri..." autocomplete="off" oninput="handleTrxSearch(this.value)">
@@ -528,10 +548,10 @@ th { color: var(--muted); font-size: 10px; text-transform: uppercase; }
     </div>
   </div>
 
-  <!-- 4. PANEL REKAP & LAPORAN WALI SANTRI (RENTANG WAKTU + KIRIM WA) -->
+  <!-- 4. PANEL REKAP & LAPORAN WALI SANTRI (CETAK PDF MUTASI & SALDO) -->
   <div class="panel" id="p-laporan">
     <div class="section-head">
-      <div><h2>Laporan Rekap Santri</h2><p>Pilih santri & rentang waktu kirim ke wali.</p></div>
+      <div><h2>Laporan Rekap Santri</h2><p>Pilih santri & rentang waktu cetak PDF.</p></div>
     </div>
     <div class="card">
       <div class="form-group">
@@ -574,9 +594,10 @@ th { color: var(--muted); font-size: 10px; text-transform: uppercase; }
         </div>
       </div>
 
-      <button class="btn-wa" onclick="kirimLaporanWA()">
-        <svg viewBox="0 0 24 24" width="16" height="16" fill="currentColor"><path d="M12.04 2c-5.46 0-9.91 4.45-9.91 9.91 0 1.75.46 3.45 1.32 4.95L2.05 22l5.25-1.38c1.45.79 3.08 1.21 4.74 1.21 5.46 0 9.91-4.45 9.91-9.91 0-2.65-1.03-5.14-2.9-7.01A9.816 9.816 0 0 0 12.04 2m.01 1.67c4.54 0 8.24 3.7 8.24 8.24 0 2.2-.86 4.28-2.42 5.84-1.56 1.56-3.64 2.42-5.84 2.42-1.47 0-2.91-.4-4.17-1.15l-.3-.18-3.12.82.83-3.04-.2-.31a8.17 8.17 0 0 1-1.25-4.4c0-4.54 3.7-8.24 8.24-8.24m4.52 11.66c-.25-.13-1.47-.72-1.7-.81-.23-.08-.39-.13-.56.13-.17.25-.64.81-.79.97-.14.17-.29.19-.54.06-.25-.13-1.06-.39-2.01-1.24-.74-.66-1.24-1.48-1.39-1.73-.14-.25-.02-.39.11-.51.11-.11.25-.29.37-.43.13-.15.17-.25.25-.42.08-.17.04-.32-.02-.45-.06-.13-.56-1.35-.77-1.85-.2-.49-.41-.42-.56-.43h-.48c-.17 0-.44.06-.67.31-.23.25-.88.86-.88 2.1 0 1.24.9 2.44 1.03 2.61.13.17 1.77 2.7 4.29 3.79.6.26 1.07.41 1.43.53.6.19 1.15.16 1.58.1.48-.07 1.47-.6 1.68-1.18.21-.58.21-1.08.15-1.18-.06-.1-.23-.17-.48-.29z"/></svg>
-        Kirim Rekap ke WhatsApp Wali
+      <!-- TOMBOL CETAK SLIP PDF RESMI UNTUK WALI SANTRI -->
+      <button class="btn-pdf" onclick="cetakLaporanPDF()">
+        <svg viewBox="0 0 24 24" width="16" height="16" fill="currentColor"><path d="M19 8H5c-1.66 0-3 1.34-3 3v6h4v4h12v-4h4v-6c0-1.66-1.34-3-3-3zm-3 11H8v-5h8v5zm3-7c-.55 0-1-.45-1-1s.45-1 1-1 1 .45 1 1-.45 1-1 1zm-1-9H6v4h12V3z"/></svg>
+        📄 Cetak / Download PDF Laporan Wali
       </button>
 
       <div class="table-wrap">
@@ -588,7 +609,7 @@ th { color: var(--muted); font-size: 10px; text-transform: uppercase; }
     </div>
   </div>
 
-  <!-- 5. PANEL MASTER SANTRI (+ FORM TAMBAH SANTRI DI SINI) -->
+  <!-- 5. PANEL MASTER SANTRI -->
   <div class="panel" id="p-santri">
     <div class="section-head">
       <div><h2>Data Santri</h2><p>Kelola data santri & tambah santri baru.</p></div>
@@ -684,6 +705,18 @@ $("trxTgl").value = today();
 $("lapTglMulai").value = firstDayOfMonth();
 $("lapTglSelesai").value = today();
 
+function toast(msg, isError = false) {
+  const t = $("toast");
+  t.textContent = msg;
+  t.style.background = isError ? "#c63939" : "#143e33";
+  t.style.display = "block";
+  setTimeout(() => t.style.opacity = "1", 10);
+  setTimeout(() => {
+    t.style.opacity = "0";
+    setTimeout(() => t.style.display = "none", 300);
+  }, 2500);
+}
+
 if ('serviceWorker' in navigator && (location.protocol === 'https:' || location.hostname === 'localhost')) {
   window.addEventListener('load', () => {
     navigator.serviceWorker.register('./sw.js').catch(() => {});
@@ -698,7 +731,7 @@ function switchNav(id, btn) {
   window.scrollTo({ top: 0, behavior: "smooth" });
 }
 
-// FUNGSI REQUEST DENGAN DUAL COMPATIBILITY ACTION
+// REQUEST KE SPREADSHEET (APPS SCRIPT)
 async function api(action, payload = {}) {
   const url = API_URL + (API_URL.includes("?") ? "&" : "?") + "action=" + encodeURIComponent(action);
   const options = {
@@ -716,20 +749,20 @@ async function api(action, payload = {}) {
   return json;
 }
 
-// FUNGSI LOAD DATA PERBAIKAN
-async function loadData() {
+// LOAD DATA
+async function loadData(showLoading = false) {
   const pill = $("connPill");
-  pill.textContent = "● Memuat…";
-  pill.style.color = "#f3c969";
+  if (showLoading) {
+    pill.textContent = "● Memuat…";
+    pill.style.color = "#f3c969";
+  }
 
   try {
     let res;
-    // Coba metode 1: panggil langsung URL tanpa parameter
     try {
       const r1 = await fetch(API_URL);
       res = await r1.json();
     } catch (e1) {
-      // Coba metode 2: panggil dengan parameter action=init
       const r2 = await fetch(API_URL + (API_URL.includes("?") ? "&" : "?") + "action=init&t=" + Date.now());
       res = await r2.json();
     }
@@ -752,11 +785,7 @@ async function loadData() {
     console.error("Gagal terhubung:", err);
     pill.textContent = "● Gagal tersambung";
     pill.style.color = "#ff9e9e";
-    $("criticalList").innerHTML = `
-      <div class="empty" style="color:var(--red);padding:15px 5px">
-        <strong>Belum dapat terhubung ke Google Sheets.</strong><br>
-        <small style="color:var(--muted)">Pastikan izin akses Web App di Apps Script sudah disetel ke <b>"Anyone" (Siapa saja)</b>.</small>
-      </div>`;
+    if (showLoading) toast("Gagal menyinkronkan data dengan spreadsheet", true);
   }
 }
 
@@ -844,7 +873,9 @@ function clearSelectedTrxSantri() {
   $("trxSelectedBadge").style.display = "none";
 }
 
-// SIMPAN TRANSAKSI (SESUAI DENGAN AKSI 'satuan')
+// -------------------------------------------------------------
+// FITUR OPTIMISTIC UI: TRANSAKSI SATUAN SUPER CEPAT + ROLLBACK
+// -------------------------------------------------------------
 async function saveTrx(e) {
   e.preventDefault();
   const nis = $("trxNis").value;
@@ -856,27 +887,55 @@ async function saveTrx(e) {
   if (!nis) return alert("Silakan pilih santri terlebih dahulu lewat pencarian.");
   if (!nominal || nominal <= 0) return alert("Nominal transaksi harus lebih dari 0.");
 
-  const btn = $("btnSubmitTrx");
-  btn.disabled = true;
-  btn.textContent = "Menyimpan ke Spreadsheet…";
+  const targetSantri = santri.find(s => String(s.nis) === String(nis));
+  if (!targetSantri) return alert("Santri tidak ditemukan.");
 
+  // 1. Simpan kondisi awal untuk rollback jika gagal
+  const oldSaldo = targetSantri.saldo;
+  const isMasuk = (kategori === "Top-Up");
+
+  // 2. Langsung ubah UI & Memori Seketika (0 detik)
+  if (isMasuk) targetSantri.saldo = Number(targetSantri.saldo || 0) + nominal;
+  else targetSantri.saldo = Number(targetSantri.saldo || 0) - nominal;
+
+  const tempTrx = {
+    id: "TEMP-" + Date.now(),
+    nis: nis,
+    nama: targetSantri.nama,
+    tanggal: tanggal,
+    kategori: kategori,
+    nominal: nominal,
+    keterangan: keterangan,
+    tipe: isMasuk ? "MASUK" : "KELUAR"
+  };
+  mutasi.unshift(tempTrx);
+
+  renderDashboard();
+  renderMaster();
+  toast("✓ Transaksi dicatat (menyimpan ke cloud…)");
+
+  $("trxForm").reset();
+  clearSelectedTrxSantri();
+  $("trxTgl").value = today();
+  switchNav("dashboard");
+
+  // 3. Kirim ke Google Apps Script di background
   try {
     await api("satuan", { nis, kategori, nominal, tanggal, keterangan });
-    alert("Transaksi berhasil disimpan ke Spreadsheet!");
-    $("trxForm").reset();
-    clearSelectedTrxSantri();
-    $("trxTgl").value = today();
-    await loadData();
-    switchNav("dashboard");
+    toast("✓ Tersimpan aman di spreadsheet!");
   } catch (err) {
-    alert("Gagal menyimpan transaksi: " + err.message);
-  } finally {
-    btn.disabled = false;
-    btn.textContent = "Simpan ke Spreadsheet";
+    // 4. Rollback otomatis jika gagal
+    targetSantri.saldo = oldSaldo;
+    mutasi = mutasi.filter(m => m.id !== tempTrx.id);
+    renderDashboard();
+    renderMaster();
+    alert("⚠️ Gagal menyimpan ke Spreadsheet: " + err.message + "\nData telah dikembalikan ke saldo semula.");
   }
 }
 
-// REKAP KELAS (SESUAI DENGAN AKSI 'batch_uang_saku')
+// -------------------------------------------------------------
+// FITUR OPTIMISTIC UI: REKAP BATCH SUPER CEPAT + ROLLBACK
+// -------------------------------------------------------------
 function renderBatch() {
   const kls = $("batchKelas").value;
   const list = santri.filter(s => String(s.kelas) === String(kls));
@@ -906,21 +965,47 @@ async function saveBatch() {
   if (!items.length) return alert("Isi nominal minimal satu santri.");
   if (!confirm(`Simpan ${items.length} transaksi uang saku untuk Kelas ${kelas}?`)) return;
 
-  const btn = $("btnSaveBatch");
-  btn.disabled = true;
-  btn.textContent = "Menyimpan ke Spreadsheet…";
+  // 1. Simpan backup saldo
+  const backupSaldomap = {};
+  items.forEach(it => {
+    const s = santri.find(x => String(x.nis) === String(it.nis));
+    if (s) {
+      backupSaldomap[s.nis] = s.saldo;
+      // Kurangi langsung saldo di UI
+      s.saldo = Number(s.saldo || 0) - Number(it.nominal);
+      mutasi.unshift({
+        id: "TEMP-" + Math.random(),
+        nis: s.nis,
+        nama: s.nama,
+        tanggal: tanggal,
+        kategori: "Uang Saku",
+        nominal: Number(it.nominal),
+        keterangan: "Rekap Kelas " + kelas,
+        tipe: "KELUAR"
+      });
+    }
+  });
 
+  renderDashboard();
+  renderMaster();
+  toast(`✓ ${items.length} transaksi rekap dicatat (menyimpan…)`);
+  $("batchNominal").value = "";
+  switchNav("dashboard");
+
+  // 2. Kirim di background
   try {
     await api("batch_uang_saku", { tanggal, kelas, items, keterangan: "Uang saku harian" });
-    alert("Rekap berhasil disimpan ke Spreadsheet!");
-    $("batchNominal").value = "";
-    await loadData();
-    switchNav("dashboard");
+    toast("✓ Rekap sukses tersimpan di spreadsheet!");
   } catch (err) {
-    alert("Gagal menyimpan rekap: " + err.message);
-  } finally {
-    btn.disabled = false;
-    btn.textContent = "Simpan Rekap ke Spreadsheet";
+    // Rollback
+    items.forEach(it => {
+      const s = santri.find(x => String(x.nis) === String(it.nis));
+      if (s && backupSaldomap[s.nis] !== undefined) s.saldo = backupSaldomap[s.nis];
+    });
+    mutasi = mutasi.filter(m => !String(m.id).startsWith("TEMP-"));
+    renderDashboard();
+    renderMaster();
+    alert("⚠️ Gagal menyimpan rekap batch: " + err.message + "\nData dikembalikan ke semula.");
   }
 }
 
@@ -1028,54 +1113,148 @@ function filterRekapLaporan() {
   }).join("");
 }
 
-function kirimLaporanWA() {
+// -------------------------------------------------------------
+// CETAK / DOWNLOAD PDF RESMI LAPORAN REKAP SANTRI UNTUK WALI
+// -------------------------------------------------------------
+function cetakLaporanPDF() {
   const targetNis = $("lapSelectedNis").value;
-  if (!targetNis) return alert("Silakan pilih santri terlebih dahulu.");
+  if (!targetNis) return alert("Silakan pilih nama santri terlebih dahulu.");
   const s = santri.find(x => String(x.nis) === String(targetNis));
   if (!s) return alert("Data santri tidak ditemukan.");
 
   const mulai = $("lapTglMulai").value || "-";
   const selesai = $("lapTglSelesai").value || "-";
 
-  let totMasuk = 0, totKeluar = 0, rincianTeks = "";
+  let totMasuk = 0, totKeluar = 0;
+  let barisTabelHTML = "";
+
   if (lapCurrentRows.length) {
-    lapCurrentRows.forEach(m => {
+    lapCurrentRows.forEach((m, idx) => {
       const isMasuk = m.kategori === "Top-Up" || m.tipe === "MASUK";
       if (isMasuk) totMasuk += Number(m.nominal || 0);
       else totKeluar += Number(m.nominal || 0);
-      rincianTeks += `• ${m.tanggal} | ${m.kategori}: ${isMasuk ? '+' : '-'} ${rp(m.nominal)}${m.keterangan ? ' (' + m.keterangan + ')' : ''}\n`;
+      barisTabelHTML += `
+        <tr>
+          <td style="text-align:center;">${idx + 1}</td>
+          <td>${escapeHTML(m.tanggal || "-")}</td>
+          <td><strong>${escapeHTML(m.kategori)}</strong></td>
+          <td>${escapeHTML(m.keterangan || "-")}</td>
+          <td style="text-align:right; font-weight:bold; color:${isMasuk ? '#1b6652' : '#c74444'};">
+            ${isMasuk ? '+' : '-'} ${rp(m.nominal)}
+          </td>
+        </tr>
+      `;
     });
   } else {
-    rincianTeks = "(Tidak ada mutasi transaksi pada rentang tanggal ini)\n";
+    barisTabelHTML = `<tr><td colspan="5" style="text-align:center; padding:15px; color:#888;">Tidak ada riwayat mutasi transaksi pada rentang periode ini.</td></tr>`;
   }
 
-  const pesan = 
-`*LAPORAN REKAP KAS & UANG SAKU SANTRI*
-----------------------------------------
-Nama Santri : *${s.nama}*
-Kelas / Kamar : ${s.kelas} / ${s.kamar || '-'}
-NIS : ${s.nis}
-Periode : ${mulai} s.d. ${selesai}
-----------------------------------------
-*Ringkasan Keuangan:*
-Total Pemasukan (Top-Up) : ${rp(totMasuk)}
-Total Pengeluaran : ${rp(totKeluar)}
-*SISA SALDO TERKINI : ${rp(s.saldo)}*
-----------------------------------------
-*Rincian Transaksi:*
-${rincianTeks}
-_Laporan ini dibuat otomatis oleh Bendahara / Pengurus Pondok._`;
+  // Buka jendela cetak / PDF dokumen resmi santri
+  const win = window.open("", "_blank");
+  win.document.write(`<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="utf-8">
+  <title>Laporan_Kas_${escapeHTML(s.nama)}_${s.nis}</title>
+  <style>
+    @page { size: A4 portrait; margin: 15mm; }
+    body { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif; font-size: 12px; color: #1f2d27; margin: 0; padding: 20px; }
+    .header-kop { text-align: center; border-bottom: 2px solid #143e33; padding-bottom: 12px; margin-bottom: 16px; }
+    .header-kop h2 { margin: 0; font-size: 17px; color: #143e33; text-transform: uppercase; letter-spacing: 0.5px; }
+    .header-kop p { margin: 3px 0 0; font-size: 11px; color: #555; }
+    .meta-box { display: flex; justify-content: space-between; margin-bottom: 16px; background: #f8faf8; padding: 12px 14px; border-radius: 8px; border: 1px solid #e0eae3; }
+    .meta-col { line-height: 1.6; }
+    .meta-col strong { color: #143e33; }
+    .summary-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; margin-bottom: 18px; }
+    .sum-card { border: 1px solid #e0eae3; border-radius: 8px; padding: 10px; text-align: center; background: #fff; }
+    .sum-card small { display: block; font-size: 10px; color: #666; margin-bottom: 3px; }
+    .sum-card strong { font-size: 14px; }
+    table { width: 100%; border-collapse: collapse; margin-bottom: 25px; }
+    th, td { border: 1px solid #dce4df; padding: 7px 10px; font-size: 11px; text-align: left; }
+    th { background: #eaf4ef; color: #143e33; text-transform: uppercase; font-size: 10px; }
+    .ttd-box { display: flex; justify-content: flex-end; margin-top: 30px; }
+    .ttd-col { text-align: center; width: 200px; }
+    .no-print { margin-bottom: 18px; text-align: right; }
+    .btn-print { background: #143e33; color: #fff; border: 0; padding: 8px 16px; border-radius: 6px; font-weight: bold; cursor: pointer; }
+    @media print {
+      .no-print { display: none !important; }
+      body { padding: 0; }
+    }
+  </style>
+</head>
+<body>
+  <div class="no-print">
+    <button class="btn-print" onclick="window.print()">🖨️ Cetak / Simpan PDF Sekarang</button>
+  </div>
 
-  let waUrl = `https://wa.me/?text=${encodeURIComponent(pesan)}`;
-  if (s.wa) {
-    let cleanPhone = String(s.wa).replace(/\D/g, '');
-    if (cleanPhone.startsWith('0')) cleanPhone = '62' + cleanPhone.slice(1);
-    waUrl = `https://wa.me/${cleanPhone}?text=${encodeURIComponent(pesan)}`;
-  }
-  window.open(waUrl, "_blank", "noopener");
+  <div class="header-kop">
+    <h2>Pondok Pesantren - Buku Kas Santri</h2>
+    <p>Laporan Resmi Rekapitulasi Mutasi Uang Saku & Tabungan Santri</p>
+  </div>
+
+  <div class="meta-box">
+    <div class="meta-col">
+      <div>Nama Santri : <strong>${escapeHTML(s.nama)}</strong></div>
+      <div>NIS : <strong>${escapeHTML(s.nis)}</strong></div>
+      <div>Kelas / Kamar : ${escapeHTML(s.kelas)} / ${escapeHTML(s.kamar || '-')}</div>
+    </div>
+    <div class="meta-col" style="text-align: right;">
+      <div>Periode Laporan : <strong>${escapeHTML(mulai)} s.d. ${escapeHTML(selesai)}</strong></div>
+      <div>Tanggal Cetak : ${today()}</div>
+      <div>No. Kontak Wali : ${escapeHTML(s.wa || '-')}</div>
+    </div>
+  </div>
+
+  <div class="summary-grid">
+    <div class="sum-card">
+      <small>Total Setoran (Top-Up)</small>
+      <strong style="color: #1b6652;">${rp(totMasuk)}</strong>
+    </div>
+    <div class="sum-card">
+      <small>Total Pengeluaran (Uang Saku/dll)</small>
+      <strong style="color: #c74444;">${rp(totKeluar)}</strong>
+    </div>
+    <div class="sum-card" style="background: #eaf4ef; border-color: #b9dec9;">
+      <small style="color: #143e33; font-weight: bold;">Sisa Saldo Terkini</small>
+      <strong style="color: #143e33; font-size: 15px;">${rp(s.saldo)}</strong>
+    </div>
+  </div>
+
+  <h4 style="margin: 0 0 8px; color: #143e33;">Rincian Mutasi Transaksi</h4>
+  <table>
+    <thead>
+      <tr>
+        <th style="width: 30px; text-align: center;">No</th>
+        <th style="width: 85px;">Tanggal</th>
+        <th style="width: 100px;">Kategori</th>
+        <th>Keterangan Transaksi</th>
+        <th style="width: 110px; text-align: right;">Nominal</th>
+      </tr>
+    </thead>
+    <tbody>
+      ${barisTabelHTML}
+    </tbody>
+  </table>
+
+  <div class="ttd-box">
+    <div class="ttd-col">
+      <p style="margin: 0 0 50px;">Klaten, ${today()}<br><strong>Bendahara / Pengurus Kas</strong></p>
+      <p style="margin: 0; font-weight: bold; text-decoration: underline;">( Pengurus Pondok )</p>
+    </div>
+  </div>
+
+  <script>
+    // Langsung memicu print dialog / save as PDF begitu halaman siap
+    window.addEventListener('load', () => {
+      setTimeout(() => { window.print(); }, 300);
+    });
+  <\/script>
+</body>
+</html>`);
+  win.document.close();
 }
 
-// TAMBAH SANTRI BARU (SESUAI DENGAN AKSI 'tambah_santri')
+// TAMBAH SANTRI BARU (DENGAN OPTIMISTIC UI)
 async function saveNewSantri(e) {
   e.preventDefault();
   const nis = $("addNis").value.trim();
@@ -1088,20 +1267,30 @@ async function saveNewSantri(e) {
   if (!nis || !nama) return alert("NIS dan Nama Lengkap wajib diisi.");
   if (santri.some(s => String(s.nis) === nis)) return alert("NIS sudah terdaftar!");
 
-  const btn = $("btnAddSantri");
-  btn.disabled = true;
-  btn.textContent = "Menyimpan ke Spreadsheet…";
+  // Tambah langsung ke lokal
+  const newS = { nis, nama, kelas, kamar, wa, saldo: saldoAwal };
+  santri.push(newS);
+  if (saldoAwal > 0) {
+    mutasi.unshift({
+      id: "TEMP-" + Date.now(),
+      nis, nama, tanggal: today(), kategori: "Top-Up", nominal: saldoAwal,
+      keterangan: "Saldo awal", tipe: "MASUK"
+    });
+  }
+
+  renderDashboard();
+  renderMaster();
+  toast("✓ Data santri ditambahkan (menyimpan…)");
+  $("addSantriForm").reset();
 
   try {
     await api("tambah_santri", { nis, nama, kelas, kamar, wa, saldoAwal });
-    alert("Data santri berhasil disimpan ke Spreadsheet!");
-    $("addSantriForm").reset();
-    await loadData();
+    toast("✓ Data santri tersimpan di spreadsheet!");
   } catch (err) {
-    alert("Gagal menambahkan santri: " + err.message);
-  } finally {
-    btn.disabled = false;
-    btn.textContent = "Simpan Santri Baru";
+    santri = santri.filter(s => s.nis !== nis);
+    renderDashboard();
+    renderMaster();
+    alert("⚠️ Gagal menambahkan santri: " + err.message);
   }
 }
 
@@ -1127,7 +1316,6 @@ document.addEventListener("click", e => {
   }
 });
 
-// Jalankan otomatis saat web dibuka
 loadData();
 </script>
 </body>
