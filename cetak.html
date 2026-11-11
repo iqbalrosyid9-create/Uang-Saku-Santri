@@ -1,0 +1,109 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Cetak Rekap Kas Santri</title>
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+  <style>
+    body { font-family: 'Courier New', Courier, monospace; background: #fff; color: #000; padding: 25px; }
+    .header-cetak { border-bottom: 2px dashed #000; padding-bottom: 12px; margin-bottom: 20px; }
+    .table-sm th, .table-sm td { padding: 5px 8px; font-size: 13px; }
+    @media print {
+      .no-print { display: none !important; }
+      body { padding: 0; }
+    }
+  </style>
+</head>
+<body>
+
+<div class="no-print mb-4 d-flex gap-2">
+  <button class="btn btn-primary btn-sm fw-bold" onclick="window.print()"><i class="bi bi-printer"></i> Cetak / Simpan PDF</button>
+  <button class="btn btn-secondary btn-sm" onclick="window.close()">Tutup</button>
+</div>
+
+<div class="header-cetak text-center">
+  <h4 class="mb-1 fw-bold text-uppercase">Pondok Pesantren</h4>
+  <p class="mb-0 fw-bold">LAPORAN BUKU KAS & UANG SAKU SANTRI</p>
+  <p class="mb-0" id="subJudul">Periode: -</p>
+  <small id="subSantri" class="fw-bold text-muted"></small>
+</div>
+
+<table class="table table-bordered table-sm">
+  <thead>
+    <tr class="table-light">
+      <th style="width: 35px;">No</th>
+      <th>NIS</th>
+      <th>Nama Santri</th>
+      <th>Kategori</th>
+      <th>Tipe</th>
+      <th>Keterangan</th>
+      <th class="text-end">Nominal</th>
+    </tr>
+  </thead>
+  <tbody id="tbodyCetak">
+    <tr><td colspan="7" class="text-center">Memuat rincian data cetak...</td></tr>
+  </tbody>
+  <tfoot>
+    <tr>
+      <th colspan="6" class="text-end">TOTAL PEMASUKAN (TOP-UP):</th>
+      <th class="text-end text-success" id="totalMasukCetak">Rp 0</th>
+    </tr>
+    <tr>
+      <th colspan="6" class="text-end">TOTAL PENGELUARAN SANTRI:</th>
+      <th class="text-end text-danger" id="totalKeluarCetak">Rp 0</th>
+    </tr>
+  </tfoot>
+</table>
+
+<div class="row mt-5 pt-3">
+  <div class="col-6 text-center">
+    <p class="mb-5">Mengetahui,<br>Pengurus / Wali Kelas</p>
+    <p>( .................................... )</p>
+  </div>
+  <div class="col-6 text-center">
+    <p class="mb-5">Dicatat Oleh,<br>Bendahara Kas Pondok</p>
+    <p>( .................................... )</p>
+  </div>
+</div>
+
+<script>
+  window.onload = function() {
+    const dataPrint = JSON.parse(sessionStorage.getItem('data_cetak_kas') || 'null');
+    if (!dataPrint) {
+      document.getElementById('tbodyCetak').innerHTML = '<tr><td colspan="7" class="text-center text-danger">Tidak ada data untuk dicetak.</td></tr>';
+      return;
+    }
+
+    document.getElementById('subJudul').innerText = `Rentang Periode: ${dataPrint.tanggal || '-'}`;
+    document.getElementById('subSantri').innerText = dataPrint.label || '';
+    
+    const tbody = document.getElementById('tbodyCetak');
+    tbody.innerHTML = '';
+    let tMasuk = 0;
+    let tKeluar = 0;
+
+    dataPrint.items.forEach((item, idx) => {
+      const nom = Number(item.nominal || 0);
+      if (item.tipe === 'MASUK') tMasuk += nom;
+      else tKeluar += nom;
+
+      const tr = document.createElement('tr');
+      tr.innerHTML = `
+        <td>${idx + 1}</td>
+        <td>${item.nis}</td>
+        <td class="fw-bold">${item.nama}</td>
+        <td>${item.kategori}</td>
+        <td>${item.tipe || 'KELUAR'}</td>
+        <td>${item.keterangan || '-'}</td>
+        <td class="text-end fw-bold">${item.tipe === 'MASUK' ? '+' : '-'} Rp ${nom.toLocaleString('id-ID')}</td>
+      `;
+      tbody.appendChild(tr);
+    });
+
+    document.getElementById('totalMasukCetak').innerText = 'Rp ' + tMasuk.toLocaleString('id-ID');
+    document.getElementById('totalKeluarCetak').innerText = 'Rp ' + tKeluar.toLocaleString('id-ID');
+  };
+</script>
+</body>
+</html>
