@@ -485,6 +485,7 @@ th { color: var(--muted); font-size: 10px; text-transform: uppercase; }
     </div>
     <div class="card">
       <form id="trxForm" onsubmit="saveTrx(event)">
+        <!-- PENCARIAN SANTRI MENGGUNAKAN KOLOM SEARCH -->
         <div class="form-group">
           <label>Cari Santri (Ketik Nama / NIS)</label>
           <input type="text" id="trxSearchInput" placeholder="Ketik nama atau NIS santri..." autocomplete="off" oninput="handleTrxSearch(this.value)">
@@ -697,6 +698,7 @@ function switchNav(id, btn) {
   window.scrollTo({ top: 0, behavior: "smooth" });
 }
 
+// FUNGSI REQUEST DENGAN DUAL COMPATIBILITY ACTION
 async function api(action, payload = {}) {
   const url = API_URL + (API_URL.includes("?") ? "&" : "?") + "action=" + encodeURIComponent(action);
   const options = {
@@ -842,7 +844,7 @@ function clearSelectedTrxSantri() {
   $("trxSelectedBadge").style.display = "none";
 }
 
-// SIMPAN TRANSAKSI
+// SIMPAN TRANSAKSI (SESUAI DENGAN AKSI 'satuan')
 async function saveTrx(e) {
   e.preventDefault();
   const nis = $("trxNis").value;
@@ -859,22 +861,22 @@ async function saveTrx(e) {
   btn.textContent = "Menyimpan ke Spreadsheet…";
 
   try {
-    await api("transaction", { nis, kategori, nominal, tanggal, keterangan });
-    alert("Transaksi berhasil disimpan!");
+    await api("satuan", { nis, kategori, nominal, tanggal, keterangan });
+    alert("Transaksi berhasil disimpan ke Spreadsheet!");
     $("trxForm").reset();
     clearSelectedTrxSantri();
     $("trxTgl").value = today();
     await loadData();
     switchNav("dashboard");
   } catch (err) {
-    alert("Gagal menyimpan: " + err.message);
+    alert("Gagal menyimpan transaksi: " + err.message);
   } finally {
     btn.disabled = false;
     btn.textContent = "Simpan ke Spreadsheet";
   }
 }
 
-// REKAP KELAS
+// REKAP KELAS (SESUAI DENGAN AKSI 'batch_uang_saku')
 function renderBatch() {
   const kls = $("batchKelas").value;
   const list = santri.filter(s => String(s.kelas) === String(kls));
@@ -906,11 +908,11 @@ async function saveBatch() {
 
   const btn = $("btnSaveBatch");
   btn.disabled = true;
-  btn.textContent = "Menyimpan…";
+  btn.textContent = "Menyimpan ke Spreadsheet…";
 
   try {
-    await api("batch", { tanggal, kelas, items, keterangan: "Uang saku harian" });
-    alert("Rekap berhasil disimpan!");
+    await api("batch_uang_saku", { tanggal, kelas, items, keterangan: "Uang saku harian" });
+    alert("Rekap berhasil disimpan ke Spreadsheet!");
     $("batchNominal").value = "";
     await loadData();
     switchNav("dashboard");
@@ -1073,6 +1075,7 @@ _Laporan ini dibuat otomatis oleh Bendahara / Pengurus Pondok._`;
   window.open(waUrl, "_blank", "noopener");
 }
 
+// TAMBAH SANTRI BARU (SESUAI DENGAN AKSI 'tambah_santri')
 async function saveNewSantri(e) {
   e.preventDefault();
   const nis = $("addNis").value.trim();
@@ -1087,11 +1090,11 @@ async function saveNewSantri(e) {
 
   const btn = $("btnAddSantri");
   btn.disabled = true;
-  btn.textContent = "Menyimpan…";
+  btn.textContent = "Menyimpan ke Spreadsheet…";
 
   try {
-    await api("addStudent", { nis, nama, kelas, kamar, wa, saldoAwal });
-    alert("Data santri berhasil disimpan!");
+    await api("tambah_santri", { nis, nama, kelas, kamar, wa, saldoAwal });
+    alert("Data santri berhasil disimpan ke Spreadsheet!");
     $("addSantriForm").reset();
     await loadData();
   } catch (err) {
