@@ -1,1 +1,55 @@
-const CACHE="kas-santri-v1";const ASSETS=["./","./index.html","./manifest.json","./icon.svg","./cetak.html"];self.addEventListener("install",e=>e.waitUntil(caches.open(CACHE).then(c=>c.addAll(ASSETS))));self.addEventListener("activate",e=>e.waitUntil(caches.keys().then(keys=>Promise.all(keys.filter(k=>k!==CACHE).map(k=>caches.delete(k))))));self.addEventListener("fetch",e=>{const u=new URL(e.request.url);if(u.origin!==location.origin)return;e.respondWith(caches.match(e.request).then(hit=>hit||fetch(e.request).then(r=>{if(r.ok){const copy=r.clone();caches.open(CACHE).then(c=>c.put(e.request,copy))}return r}).catch(()=>caches.match("./index.html"))))});
+const CACHE_NAME = 'kas-santri-v2';
+const APP_SHELL = [
+  './',
+  './index.html',
+  './cetak.html',
+  './manifest.json',
+  './icon.svg'
+];
+
+self.addEventListener('install', event => {
+  event.waitUntil((async () => {
+    const cache = await caches.open(CACHE_NAME);
+    await cache.addAll(APP_SHELL);
+    await self.skipWaiting();
+  })());
+});
+
+self.addEventListener('activate', event => {
+  event.waitUntil((async () => {
+    const keys = await caches.keys();
+    await Promise.all(keys.filter(key => key.startsWith('kas-santri-') && key !== CACHE_NAME)
+      .map(key => caches.delete(key)));
+    await self.clients.claim();
+  })());
+});
+
+self.addEventListener('fetch', event => {
+  const request = event.request;
+  const url = new URL(request.url);
+
+  // Jangan pernah cache API Google Apps Script atau request non-GET.
+  if (request.method !== 'GET' || url.hostname.includes('google.com') ||
+      url.hostname.includes('googleusercontent.com')) return;
+
+  // Navigasi: utamakan jaringan agar aplikasi mendapat versi terbaru.
+  if (request.mode === 'navigate') {
+    event.respondWith(fetch(request).then(response => {
+      const copy = response.clone();
+      caches.open(CACHE_NAME).then(cache => cache.put('./index.html', copy));
+      return response;
+    }).catch(() => caches.match('./index.html')));
+    return;
+  }
+
+  // Aset lokal: cache-first, lalu simpan salinan jaringan.
+  if (url.origin === self.location.origin) {
+    event.respondWith(caches.match(request).then(cached => cached || fetch(request).then(response => {
+      if (response.ok) {
+        const copy = response.clone();
+        caches.open(CACHE_NAME).then(cache => cache.put(request, copy));
+      }
+      return response;
+    })));
+  }
+});
