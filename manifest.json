@@ -1,18 +1,18 @@
 {
   "name": "Buku Kas & Uang Saku Santri",
-  "short_name": "Kas Santri",
+  "short_name": "KasSantri",
+  "description": "Aplikasi pencatatan kas dan uang saku santri terintegrasi Google Sheets",
   "start_url": "./index.html",
   "scope": "./",
   "display": "standalone",
-  "background_color": "#f5f8f6",
-  "theme_color": "#123c32",
-  "description": "Aplikasi pencatatan uang saku dan kas santri",
+  "background_color": "#f8fafc",
+  "theme_color": "#0f172a",
   "icons": [
     {
-      "src": "icon.svg",
+      "src": "./icon.svg",
       "sizes": "any",
       "type": "image/svg+xml",
-      "purpose": "any maskable"
+      "purpose": "any"
     }
   ]
 }
