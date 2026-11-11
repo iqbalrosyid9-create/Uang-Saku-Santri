@@ -606,6 +606,30 @@ th { color: var(--muted); font-size: 10px; text-transform: uppercase; }
           <tbody id="lapTableBody"><tr><td colspan="4" class="empty">Silakan pilih santri dan tampilkan.</td></tr></tbody>
         </table>
       </div>
+      <!-- KARTU RIWAYAT TRANSAKSI TERBARU -->
+      <div class="card" style="margin-top: 14px;">
+        <div class="section-head" style="margin: 0 0 8px;">
+          <div>
+            <h3 style="margin:0;font-size:13px;color:var(--green)">🕒 Riwayat Transaksi Terbaru</h3>
+            <p style="margin:2px 0 0;font-size:10.5px;color:var(--muted)">10 transaksi terakhir yang baru saja diinput</p>
+          </div>
+        </div>
+        <div class="table-wrap">
+          <table>
+            <thead>
+              <tr>
+                <th>Santri</th>
+                <th>Pos</th>
+                <th>Keterangan</th>
+                <th style="text-align:right">Nominal</th>
+              </tr>
+            </thead>
+            <tbody id="recentMutasiBody">
+              <tr><td colspan="4" class="empty">Belum ada riwayat transaksi.</td></tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
     </div>
   </div>
 
@@ -743,6 +767,7 @@ async function loadData(showLoading = false) {
     pill.style.color = "#e5f1eb";
 
     renderDashboard();
+    renderRecentMutasi();
     renderBatch();
     renderMaster();
     if ($("lapSelectedNis").value) filterRekapLaporan();
@@ -752,6 +777,32 @@ async function loadData(showLoading = false) {
     pill.style.color = "#ff9e9e";
     if (showLoading) toast("Gagal menyinkronkan data dengan spreadsheet", true);
   }
+}
+
+function renderRecentMutasi() {
+  const tbody = $("recentMutasiBody");
+  if (!tbody) return;
+  const recent = mutasi.slice(0, 10);
+  if (!recent.length) {
+    tbody.innerHTML = `<tr><td colspan="4" class="empty">Belum ada riwayat transaksi.</td></tr>`;
+    return;
+  }
+  tbody.innerHTML = recent.map(m => {
+    const isMasuk = m.kategori === "Top-Up" || m.tipe === "MASUK";
+    return `
+      <tr>
+        <td>
+          <strong>${escapeHTML(m.nama || m.nis)}</strong>
+          <div style="font-size:9.5px;color:var(--muted)">${escapeHTML(m.tanggal || "-")}</div>
+        </td>
+        <td><span class="badge ${isMasuk ? 'badge-in' : 'badge-out'}">${escapeHTML(m.kategori)}</span></td>
+        <td><small>${escapeHTML(m.keterangan || "-")}</small></td>
+        <td style="text-align:right;font-weight:700;color:${isMasuk ? 'var(--green)' : 'var(--red)'}">
+          ${isMasuk ? '+' : '-'} ${rp(m.nominal)}
+        </td>
+      </tr>
+    `;
+  }).join("");
 }
 
 function renderDashboard() {
@@ -876,6 +927,7 @@ async function saveTrx(e) {
   mutasi.unshift(tempTrx);
 
   renderDashboard();
+  renderRecentMutasi();
   renderMaster();
   toast("✓ Transaksi dicatat (menyimpan ke cloud…)");
 
@@ -893,6 +945,7 @@ async function saveTrx(e) {
     targetSantri.saldo = oldSaldo;
     mutasi = mutasi.filter(m => m.id !== tempTrx.id);
     renderDashboard();
+    renderRecentMutasi();
     renderMaster();
     alert("⚠️ Gagal menyimpan ke Spreadsheet: " + err.message + "\nData telah dikembalikan ke saldo semula.");
   }
@@ -952,6 +1005,7 @@ async function saveBatch() {
   });
 
   renderDashboard();
+  renderRecentMutasi();
   renderMaster();
   toast(`✓ ${items.length} transaksi rekap dicatat (menyimpan…)`);
   $("batchNominal").value = "";
@@ -969,6 +1023,7 @@ async function saveBatch() {
     });
     mutasi = mutasi.filter(m => !String(m.id).startsWith("TEMP-"));
     renderDashboard();
+    renderRecentMutasi();
     renderMaster();
     alert("⚠️ Gagal menyimpan rekap batch: " + err.message + "\nData dikembalikan ke semula.");
   }
