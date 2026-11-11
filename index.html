@@ -612,42 +612,7 @@ th { color: var(--muted); font-size: 10px; text-transform: uppercase; }
   <!-- 5. PANEL MASTER SANTRI -->
   <div class="panel" id="p-santri">
     <div class="section-head">
-      <div><h2>Data Santri</h2><p>Kelola data santri & tambah santri baru.</p></div>
-    </div>
-
-    <div class="card" style="border: 1px solid #c8ddce; background: #fafcfb;">
-      <h3 style="margin:0 0 8px;font-size:12.5px;color:var(--green)">＋ Tambah Santri Baru</h3>
-      <form id="addSantriForm" onsubmit="saveNewSantri(event)">
-        <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px">
-          <div class="form-group">
-            <label>NIS</label>
-            <input type="text" id="addNis" placeholder="NIS" required>
-          </div>
-          <div class="form-group">
-            <label>Kelas</label>
-            <select id="addKelas"><option>7</option><option>8</option><option>9</option><option>10</option></select>
-          </div>
-        </div>
-        <div class="form-group">
-          <label>Nama Lengkap</label>
-          <input type="text" id="addNama" placeholder="Nama santri..." required>
-        </div>
-        <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px">
-          <div class="form-group">
-            <label>Kamar</label>
-            <input type="text" id="addKamar" placeholder="Kamar...">
-          </div>
-          <div class="form-group">
-            <label>No WA Wali</label>
-            <input type="text" id="addWa" placeholder="08xxxxxxxxxx">
-          </div>
-        </div>
-        <div class="form-group">
-          <label>Saldo Awal (Rp)</label>
-          <input type="number" id="addSaldo" value="0" min="0">
-        </div>
-        <button class="btn-submit" type="submit" id="btnAddSantri">Simpan Santri Baru</button>
-      </form>
+      <div><h2>Data Santri</h2><p>Daftar santri & cek saldo terkini.</p></div>
     </div>
 
     <div class="card">
@@ -1252,46 +1217,6 @@ function cetakLaporanPDF() {
 </body>
 </html>`);
   win.document.close();
-}
-
-// TAMBAH SANTRI BARU (DENGAN OPTIMISTIC UI)
-async function saveNewSantri(e) {
-  e.preventDefault();
-  const nis = $("addNis").value.trim();
-  const nama = $("addNama").value.trim();
-  const kelas = $("addKelas").value;
-  const kamar = $("addKamar").value.trim();
-  const wa = $("addWa").value.trim();
-  const saldoAwal = Number($("addSaldo").value || 0);
-
-  if (!nis || !nama) return alert("NIS dan Nama Lengkap wajib diisi.");
-  if (santri.some(s => String(s.nis) === nis)) return alert("NIS sudah terdaftar!");
-
-  // Tambah langsung ke lokal
-  const newS = { nis, nama, kelas, kamar, wa, saldo: saldoAwal };
-  santri.push(newS);
-  if (saldoAwal > 0) {
-    mutasi.unshift({
-      id: "TEMP-" + Date.now(),
-      nis, nama, tanggal: today(), kategori: "Top-Up", nominal: saldoAwal,
-      keterangan: "Saldo awal", tipe: "MASUK"
-    });
-  }
-
-  renderDashboard();
-  renderMaster();
-  toast("✓ Data santri ditambahkan (menyimpan…)");
-  $("addSantriForm").reset();
-
-  try {
-    await api("tambah_santri", { nis, nama, kelas, kamar, wa, saldoAwal });
-    toast("✓ Data santri tersimpan di spreadsheet!");
-  } catch (err) {
-    santri = santri.filter(s => s.nis !== nis);
-    renderDashboard();
-    renderMaster();
-    alert("⚠️ Gagal menambahkan santri: " + err.message);
-  }
 }
 
 function renderMaster() {
