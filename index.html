@@ -485,7 +485,6 @@ th { color: var(--muted); font-size: 10px; text-transform: uppercase; }
     </div>
     <div class="card">
       <form id="trxForm" onsubmit="saveTrx(event)">
-        <!-- PENCARIAN SANTRI MENGGUNAKAN KOLOM SEARCH -->
         <div class="form-group">
           <label>Cari Santri (Ketik Nama / NIS)</label>
           <input type="text" id="trxSearchInput" placeholder="Ketik nama atau NIS santri..." autocomplete="off" oninput="handleTrxSearch(this.value)">
@@ -594,7 +593,6 @@ th { color: var(--muted); font-size: 10px; text-transform: uppercase; }
       <div><h2>Data Santri</h2><p>Kelola data santri & tambah santri baru.</p></div>
     </div>
 
-    <!-- FORM TAMBAH SANTRI PINDAH KE SINI AGAR MENU ATAS BERSIH -->
     <div class="card" style="border: 1px solid #c8ddce; background: #fafcfb;">
       <h3 style="margin:0 0 8px;font-size:12.5px;color:var(--green)">＋ Tambah Santri Baru</h3>
       <form id="addSantriForm" onsubmit="saveNewSantri(event)">
@@ -685,13 +683,9 @@ $("trxTgl").value = today();
 $("lapTglMulai").value = firstDayOfMonth();
 $("lapTglSelesai").value = today();
 
-// SOLUSI MASALAH 1: REGISTRASI SERVICE WORKER YANG AMAN
-// PWA tidak dapat dibuka jika SW gagal registrasi atau crash karena file sw.js tidak ada.
 if ('serviceWorker' in navigator && (location.protocol === 'https:' || location.hostname === 'localhost')) {
   window.addEventListener('load', () => {
-    navigator.serviceWorker.register('./sw.js').catch(() => {
-      // Abaikan jika sw.js belum dibuat agar PWA tetap dapat diakses normal via browser
-    });
+    navigator.serviceWorker.register('./sw.js').catch(() => {});
   });
 }
 
@@ -703,8 +697,6 @@ function switchNav(id, btn) {
   window.scrollTo({ top: 0, behavior: "smooth" });
 }
 
-// SOLUSI MASALAH 4: KIRIM DATA DENGAN FORMAT UNIVERSAL AGAR MASUK KE SPREADSHEET
-// Mengirimkan action baik di query string maupun payload body dengan fallback compatibility
 async function api(action, payload = {}) {
   const url = API_URL + (API_URL.includes("?") ? "&" : "?") + "action=" + encodeURIComponent(action);
   const options = {
@@ -722,23 +714,47 @@ async function api(action, payload = {}) {
   return json;
 }
 
+// FUNGSI LOAD DATA PERBAIKAN
 async function loadData() {
-  $("connPill").textContent = "● Memuat…";
+  const pill = $("connPill");
+  pill.textContent = "● Memuat…";
+  pill.style.color = "#f3c969";
+
   try {
-    // Ambil data via GET
-    const url = API_URL + (API_URL.includes("?") ? "&" : "?") + "action=init&t=" + Date.now();
-    const res = await fetch(url).then(r => r.json());
-    santri = res.santri || [];
+    let res;
+    // Coba metode 1: panggil langsung URL tanpa parameter
+    try {
+      const r1 = await fetch(API_URL);
+      res = await r1.json();
+    } catch (e1) {
+      // Coba metode 2: panggil dengan parameter action=init
+      const r2 = await fetch(API_URL + (API_URL.includes("?") ? "&" : "?") + "action=init&t=" + Date.now());
+      res = await r2.json();
+    }
+
+    if (!res || (!res.santri && !Array.isArray(res))) {
+      throw new Error("Format respons Apps Script tidak sesuai");
+    }
+
+    santri = res.santri || (Array.isArray(res) ? res : []);
     mutasi = res.mutasi || [];
-    $("connPill").textContent = "● Terhubung";
+
+    pill.textContent = "● Terhubung";
+    pill.style.color = "#e5f1eb";
+
     renderDashboard();
     renderBatch();
     renderMaster();
     if ($("lapSelectedNis").value) filterRekapLaporan();
-  } catch (e) {
-    console.error(e);
-    $("connPill").textContent = "● Belum terhubung";
-    $("criticalList").innerHTML = `<div class="empty" style="color:var(--red)">Gagal terhubung ke Google Sheets. Periksa koneksi internet / izin Apps Script.</div>`;
+  } catch (err) {
+    console.error("Gagal terhubung:", err);
+    pill.textContent = "● Gagal tersambung";
+    pill.style.color = "#ff9e9e";
+    $("criticalList").innerHTML = `
+      <div class="empty" style="color:var(--red);padding:15px 5px">
+        <strong>Belum dapat terhubung ke Google Sheets.</strong><br>
+        <small style="color:var(--muted)">Pastikan izin akses Web App di Apps Script sudah disetel ke <b>"Anyone" (Siapa saja)</b>.</small>
+      </div>`;
   }
 }
 
@@ -774,7 +790,7 @@ function escapeHTML(str) {
   return String(str ?? '').replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
 }
 
-// SOLUSI MASALAH 5: PENCARIAN SANTRI DENGAN KOLOM SEARCH DI TRANSAKSI
+// SEARCH AUTOCOMPLETE TRANSAKSI
 function handleTrxSearch(query) {
   const box = $("trxSearchResults");
   const q = query.trim().toLowerCase();
@@ -826,7 +842,7 @@ function clearSelectedTrxSantri() {
   $("trxSelectedBadge").style.display = "none";
 }
 
-// SOLUSI MASALAH 4: SIMPAN TRANSAKSI SATUAN KE GOOGLE SHEETS
+// SIMPAN TRANSAKSI
 async function saveTrx(e) {
   e.preventDefault();
   const nis = $("trxNis").value;
@@ -835,7 +851,7 @@ async function saveTrx(e) {
   const tanggal = $("trxTgl").value;
   const keterangan = $("trxKet").value.trim();
 
-  if (!nis) return alert("Silakan pilih santri terlebih dahulu lewat kolom pencarian.");
+  if (!nis) return alert("Silakan pilih santri terlebih dahulu lewat pencarian.");
   if (!nominal || nominal <= 0) return alert("Nominal transaksi harus lebih dari 0.");
 
   const btn = $("btnSubmitTrx");
@@ -843,29 +859,22 @@ async function saveTrx(e) {
   btn.textContent = "Menyimpan ke Spreadsheet…";
 
   try {
-    // Kirim dengan dual compatibility (action: 'transaction' dan 'satuan')
-    await api("transaction", {
-      nis,
-      kategori,
-      nominal,
-      tanggal,
-      keterangan
-    });
-    alert("Transaksi berhasil disimpan ke Spreadsheet!");
+    await api("transaction", { nis, kategori, nominal, tanggal, keterangan });
+    alert("Transaksi berhasil disimpan!");
     $("trxForm").reset();
     clearSelectedTrxSantri();
     $("trxTgl").value = today();
     await loadData();
     switchNav("dashboard");
   } catch (err) {
-    alert("Gagal menyimpan transaksi: " + err.message);
+    alert("Gagal menyimpan: " + err.message);
   } finally {
     btn.disabled = false;
     btn.textContent = "Simpan ke Spreadsheet";
   }
 }
 
-// PANEL REKAP BATCH
+// REKAP KELAS
 function renderBatch() {
   const kls = $("batchKelas").value;
   const list = santri.filter(s => String(s.kelas) === String(kls));
@@ -897,16 +906,11 @@ async function saveBatch() {
 
   const btn = $("btnSaveBatch");
   btn.disabled = true;
-  btn.textContent = "Menyimpan ke Spreadsheet…";
+  btn.textContent = "Menyimpan…";
 
   try {
-    await api("batch", {
-      tanggal,
-      kelas,
-      items,
-      keterangan: "Uang saku harian"
-    });
-    alert("Rekap berhasil disimpan ke Spreadsheet!");
+    await api("batch", { tanggal, kelas, items, keterangan: "Uang saku harian" });
+    alert("Rekap berhasil disimpan!");
     $("batchNominal").value = "";
     await loadData();
     switchNav("dashboard");
@@ -918,7 +922,7 @@ async function saveBatch() {
   }
 }
 
-// SOLUSI MASALAH 6: REKAP PEMASUKAN & PENGELUARAN DENGAN RENTANG WAKTU + KIRIM WA
+// SEARCH AUTOCOMPLETE LAPORAN
 function handleLapSearch(query) {
   const box = $("lapSearchResults");
   const q = query.trim().toLowerCase();
@@ -957,7 +961,7 @@ function selectLapSantri(nis) {
   $("lapSearchInput").style.display = "none";
   $("lapSearchResults").style.display = "none";
   $("lapSelectedNama").textContent = s.nama;
-  $("lapSelectedDetail").textContent = `Kelas ${s.kelas} · Sisa Saldo: ${rp(s.saldo)} · WA: ${s.wa || 'Belum diisi'}`;
+  $("lapSelectedDetail").textContent = `Kelas ${s.kelas} · Sisa Saldo: ${rp(s.saldo)}`;
   $("lapSelectedBadge").style.display = "flex";
   filterRekapLaporan();
 }
@@ -990,9 +994,7 @@ function filterRekapLaporan() {
     return cocokSantri && cocokMulai && cocokSelesai;
   });
 
-  let totMasuk = 0;
-  let totKeluar = 0;
-
+  let totMasuk = 0, totKeluar = 0;
   lapCurrentRows.forEach(m => {
     const isMasuk = m.kategori === "Top-Up" || m.tipe === "MASUK";
     if (isMasuk) totMasuk += Number(m.nominal || 0);
@@ -1033,21 +1035,16 @@ function kirimLaporanWA() {
   const mulai = $("lapTglMulai").value || "-";
   const selesai = $("lapTglSelesai").value || "-";
 
-  let totMasuk = 0;
-  let totKeluar = 0;
-  let rincianTeks = "";
-
+  let totMasuk = 0, totKeluar = 0, rincianTeks = "";
   if (lapCurrentRows.length) {
     lapCurrentRows.forEach(m => {
       const isMasuk = m.kategori === "Top-Up" || m.tipe === "MASUK";
       if (isMasuk) totMasuk += Number(m.nominal || 0);
       else totKeluar += Number(m.nominal || 0);
-      rincianTeks += `• ${m.tanggal} | ${m.kategori}: ${isMasuk ? '+' : '-'} ${rp(m.nominal)}${m.keterangan ? ' (' + m.keterangan + ')' : ''}
-`;
+      rincianTeks += `• ${m.tanggal} | ${m.kategori}: ${isMasuk ? '+' : '-'} ${rp(m.nominal)}${m.keterangan ? ' (' + m.keterangan + ')' : ''}\n`;
     });
   } else {
-    rincianTeks = "(Tidak ada mutasi transaksi pada rentang tanggal ini)
-";
+    rincianTeks = "(Tidak ada mutasi transaksi pada rentang tanggal ini)\n";
   }
 
   const pesan = 
@@ -1076,7 +1073,6 @@ _Laporan ini dibuat otomatis oleh Bendahara / Pengurus Pondok._`;
   window.open(waUrl, "_blank", "noopener");
 }
 
-// TAMBAH SANTRI BARU (DI PANEL MASTER SANTRI)
 async function saveNewSantri(e) {
   e.preventDefault();
   const nis = $("addNis").value.trim();
@@ -1091,11 +1087,11 @@ async function saveNewSantri(e) {
 
   const btn = $("btnAddSantri");
   btn.disabled = true;
-  btn.textContent = "Menyimpan ke Spreadsheet…";
+  btn.textContent = "Menyimpan…";
 
   try {
     await api("addStudent", { nis, nama, kelas, kamar, wa, saldoAwal });
-    alert("Data santri berhasil disimpan ke Spreadsheet!");
+    alert("Data santri berhasil disimpan!");
     $("addSantriForm").reset();
     await loadData();
   } catch (err) {
@@ -1119,7 +1115,6 @@ function renderMaster() {
   `).join("") : `<tr><td colspan="4" class="empty">Santri tidak ditemukan.</td></tr>`;
 }
 
-// Tutup autocomplete jika klik di luar
 document.addEventListener("click", e => {
   if (!e.target.closest("#trxSearchInput") && !e.target.closest("#trxSearchResults")) {
     $("trxSearchResults").style.display = "none";
@@ -1129,6 +1124,7 @@ document.addEventListener("click", e => {
   }
 });
 
+// Jalankan otomatis saat web dibuka
 loadData();
 </script>
 </body>
