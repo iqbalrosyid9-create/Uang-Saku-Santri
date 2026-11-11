@@ -1,638 +1,624 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="id">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Kas & Uang Saku Santri</title>
-  <link rel="manifest" href="manifest.json">
-  <link rel="icon" type="image/svg+xml" href="icon.svg">
-  <meta name="theme-color" content="#0f172a">
-  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
-  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
-  <style>
-    body { background-color: #f8fafc; font-family: system-ui, -apple-system, sans-serif; }
-    .card { border-radius: 12px; border: none; box-shadow: 0 2px 10px rgba(0,0,0,0.04); }
-    .nav-pills .nav-link { color: #475569; font-weight: 600; border-radius: 8px; }
-    .nav-pills .nav-link.active { background-color: #0f172a; color: #fff; }
-    .stat-card { border-left: 5px solid; }
-    .badge-topup { background-color: #10b981; }
-    .badge-saku { background-color: #3b82f6; }
-    .badge-laundry { background-color: #8b5cf6; }
-    .badge-rambut { background-color: #ec4899; }
-    .badge-kesehatan { background-color: #ef4444; }
-    .badge-lainnya { background-color: #64748b; }
-    .saldo-kritis { color: #dc2626; font-weight: bold; background-color: #fee2e2; padding: 2px 8px; border-radius: 6px; }
-    .loading-overlay { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(255,255,255,0.8); z-index: 9999; justify-content: center; align-items: center; flex-direction: column; }
-  </style>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="theme-color" content="#133e33">
+<title>Buku Kas Santri</title>
+<link rel="manifest" href="manifest.json">
+<link rel="icon" href="icon.svg" type="image/svg+xml">
+<style>
+:root {
+  --green: #143e33;
+  --green-light: #1b5344;
+  --mint: #eaf4ef;
+  --gold: #f3c969;
+  --ink: #1f2d27;
+  --muted: #788780;
+  --line: #e7ede9;
+  --bg: #f6f8f7;
+  --red: #d33c3c;
+  --card: #ffffff;
+}
+* { box-sizing: border-box; }
+body {
+  margin: 0;
+  background: var(--bg);
+  color: var(--ink);
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+  font-size: 13px;
+  line-height: 1.45;
+  -webkit-font-smoothing: antialiased;
+}
+button, input, select { font: inherit; }
+button { cursor: pointer; }
+
+/* HEADER */
+.header {
+  background: var(--green);
+  color: #fff;
+  padding: 16px 16px 22px;
+  border-radius: 0 0 20px 20px;
+}
+.header-top {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+.brand {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+.brand-icon {
+  width: 36px;
+  height: 36px;
+  background: rgba(255, 255, 255, 0.15);
+  border-radius: 10px;
+  display: grid;
+  place-items: center;
+  font-size: 18px;
+}
+.brand h1 {
+  font-size: 14px;
+  margin: 0;
+  font-weight: 700;
+}
+.brand p {
+  margin: 1px 0 0;
+  font-size: 10.5px;
+  color: #c4d7ce;
+}
+.pill {
+  border: 1px solid rgba(255, 255, 255, 0.3);
+  padding: 4px 10px;
+  border-radius: 99px;
+  font-size: 10.5px;
+  color: #e5f1eb;
+}
+.hero {
+  margin-top: 18px;
+}
+.hero-tag {
+  color: #e7cb7f;
+  font-size: 9.5px;
+  font-weight: 700;
+  letter-spacing: 1.2px;
+  text-transform: uppercase;
+}
+.hero-title {
+  font-size: 20px;
+  font-weight: 700;
+  margin: 4px 0 6px;
+}
+.hero-desc {
+  font-size: 11.5px;
+  color: #cfded7;
+  margin: 0 0 14px;
+  line-height: 1.4;
+}
+.hero-actions {
+  display: flex;
+  gap: 8px;
+}
+.btn-gold {
+  background: var(--gold);
+  color: #20352b;
+  border: 0;
+  padding: 8px 14px;
+  border-radius: 9px;
+  font-size: 12px;
+  font-weight: 700;
+}
+.btn-outline {
+  background: transparent;
+  color: #fff;
+  border: 1px solid rgba(255, 255, 255, 0.45);
+  padding: 8px 12px;
+  border-radius: 9px;
+  font-size: 12px;
+  font-weight: 600;
+}
+
+/* STATS (3 KARTU KECIL) */
+.content {
+  padding: 0 14px 85px;
+  max-width: 600px;
+  margin: auto;
+}
+.stats-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 8px;
+  margin-top: -12px;
+}
+.stat-box {
+  background: var(--card);
+  border: 1px solid var(--line);
+  border-radius: 12px;
+  padding: 10px 8px;
+  box-shadow: 0 4px 12px rgba(20, 62, 51, 0.05);
+}
+.stat-label {
+  font-size: 9px;
+  color: var(--muted);
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  white-space: nowrap;
+}
+.stat-label::before {
+  content: "";
+  width: 5px;
+  height: 5px;
+  background: #deb453;
+  border-radius: 50%;
+}
+.stat-val {
+  display: block;
+  font-size: 12.5px;
+  font-weight: 750;
+  color: var(--green);
+  margin-top: 5px;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+/* SECTION & CARD */
+.section-head {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-end;
+  margin: 18px 0 9px;
+}
+.section-head h2 {
+  font-size: 14.5px;
+  font-weight: 750;
+  color: var(--green);
+  margin: 0;
+}
+.section-head p {
+  font-size: 11px;
+  color: var(--muted);
+  margin: 2px 0 0;
+}
+.badge-count {
+  background: var(--mint);
+  color: var(--green);
+  font-size: 10px;
+  font-weight: 700;
+  padding: 3px 8px;
+  border-radius: 99px;
+}
+.card {
+  background: var(--card);
+  border: 1px solid var(--line);
+  border-radius: 14px;
+  padding: 12px 14px;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.02);
+}
+
+/* LIST SALDO KRITIS */
+.critical-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 9px 0;
+  border-bottom: 1px solid #f0f4f1;
+}
+.critical-row:last-child { border-bottom: none; }
+.critical-name {
+  font-weight: 700;
+  font-size: 12.5px;
+  color: #24352e;
+}
+.critical-sub {
+  font-size: 10.5px;
+  color: var(--muted);
+  margin-top: 1px;
+}
+.critical-val {
+  color: var(--red);
+  font-weight: 750;
+  font-size: 12.5px;
+}
+
+/* BOTTOM NAVIGATION */
+.bottom-nav {
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  height: 58px;
+  background: #ffffff;
+  border-top: 1px solid var(--line);
+  display: grid;
+  grid-template-columns: repeat(5, 1fr);
+  z-index: 50;
+  max-width: 600px;
+  margin: auto;
+}
+.nav-item {
+  border: 0;
+  background: none;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 2px;
+  color: #7d8c85;
+  font-size: 9.5px;
+  font-weight: 600;
+  padding: 0;
+}
+.nav-item svg {
+  width: 19px;
+  height: 19px;
+  fill: currentColor;
+}
+.nav-item.active {
+  color: var(--green);
+  font-weight: 750;
+}
+
+/* PANEL & FORM */
+.panel { display: none; }
+.panel.active { display: block; }
+.form-group { margin-bottom: 11px; }
+.form-group label { display: block; font-size: 11px; font-weight: 700; margin-bottom: 5px; color: #43544d; }
+.form-group input, .form-group select {
+  width: 100%;
+  padding: 8px 10px;
+  border: 1px solid #dce4df;
+  border-radius: 9px;
+  background: #fdfdfd;
+  font-size: 12px;
+}
+.btn-submit {
+  width: 100%;
+  background: var(--green);
+  color: #fff;
+  border: 0;
+  padding: 10px;
+  border-radius: 10px;
+  font-weight: 700;
+  font-size: 12.5px;
+  margin-top: 6px;
+}
+.table-wrap { overflow-x: auto; margin-top: 8px; }
+table { width: 100%; border-collapse: collapse; font-size: 11.5px; }
+th, td { padding: 8px 9px; text-align: left; border-bottom: 1px solid var(--line); }
+th { color: var(--muted); font-size: 10px; text-transform: uppercase; }
+.empty { text-align: center; color: var(--muted); padding: 20px 0; font-size: 11.5px; }
+</style>
 </head>
-<body class="py-3 py-md-4">
+<body>
 
-<div id="loadingOverlay" class="loading-overlay">
-  <div class="spinner-border text-primary" style="width: 3rem; height: 3rem;" role="status"></div>
-  <h6 class="mt-3 fw-bold text-dark" id="loadingText">Menghubungkan ke Google Sheets...</h6>
-</div>
-
-<div class="container" style="max-width: 1100px;">
-
-  <!-- Header Stat: Total Semua Uang Santri & Arus Kas -->
-  <div class="row g-3 mb-4">
-    <div class="col-md-4">
-      <div class="card p-3 stat-card bg-white" style="border-left-color: #0d6efd;">
-        <small class="text-muted fw-bold text-uppercase">Total Saldo Semua Santri</small>
-        <h3 class="fw-bold mb-0 text-primary" id="statTotalSaldo">Rp 0</h3>
-        <small class="text-secondary" id="statJumlahSantri">0 Santri Terdaftar</small>
+<header class="header">
+  <div class="header-top">
+    <div class="brand">
+      <div class="brand-icon">📚</div>
+      <div>
+        <h1>Buku Kas Santri</h1>
+        <p>Uang saku · Amanah · Transparan</p>
       </div>
     </div>
-    <div class="col-md-4">
-      <div class="card p-3 stat-card bg-white" style="border-left-color: #10b981;">
-        <small class="text-muted fw-bold text-uppercase">Total Top-Up Wali</small>
-        <h3 class="fw-bold mb-0 text-success" id="statTotalTopup">Rp 0</h3>
-        <small class="text-secondary">Akumulasi uang masuk</small>
-      </div>
+    <span class="pill" id="connPill">● Menghubungkan…</span>
+  </div>
+
+  <div class="hero">
+    <div class="hero-tag">SISTEM KEUANGAN SANTRI</div>
+    <div class="hero-title">Assalamu’alaikum 👋</div>
+    <div class="hero-desc">Kelola uang saku dan transaksi santri dengan mudah, cepat, dan tertib.</div>
+    <div class="hero-actions">
+      <button class="btn-gold" onclick="switchNav('santri')">＋ Tambah Santri</button>
+      <button class="btn-outline" onclick="loadData()">↻ Sinkronkan</button>
     </div>
-    <div class="col-md-4">
-      <div class="card p-3 stat-card bg-white" style="border-left-color: #ef4444;">
-        <small class="text-muted fw-bold text-uppercase">Total Pengeluaran Santri</small>
-        <h3 class="fw-bold mb-0 text-danger" id="statTotalKeluar">Rp 0</h3>
-        <small class="text-secondary">Uang saku, laundry, pangkas, dll</small>
+  </div>
+</header>
+
+<main class="content">
+  <!-- 3 KARTU STATISTIK KAS -->
+  <section class="stats-grid">
+    <div class="stat-box">
+      <div class="stat-label">Total saldo santri</div>
+      <strong class="stat-val" id="statSaldo">Rp 0</strong>
+    </div>
+    <div class="stat-box">
+      <div class="stat-label">Total top-up wali</div>
+      <strong class="stat-val" id="statTopup">Rp 0</strong>
+    </div>
+    <div class="stat-box">
+      <div class="stat-label">Total pengeluaran</div>
+      <strong class="stat-val" id="statKeluar">Rp 0</strong>
+    </div>
+  </section>
+
+  <!-- 1. PANEL RINGKASAN (MENU AWAL: HANYA SALDO PERHATIAN) -->
+  <div class="panel active" id="p-dashboard">
+    <div class="section-head">
+      <div>
+        <h2>Saldo perlu perhatian</h2>
+        <p>Santri dengan saldo di bawah batas minimum.</p>
+      </div>
+      <span class="badge-count" id="critBadge">0 santri</span>
+    </div>
+    <div class="card" id="criticalList">
+      <div class="empty">Memuat data santri…</div>
+    </div>
+  </div>
+
+  <!-- 2. PANEL REKAP HARIAN -->
+  <div class="panel" id="p-batch">
+    <div class="section-head">
+      <div><h2>Rekap harian</h2><p>Ambil uang saku serentak per kelas.</p></div>
+    </div>
+    <div class="card">
+      <div class="form-group">
+        <label>Tanggal & Kelas</label>
+        <div style="display:flex;gap:6px">
+          <input type="date" id="batchTgl">
+          <select id="batchKelas" onchange="renderBatch()"><option value="7">Kelas 7</option><option value="8">Kelas 8</option><option value="9">Kelas 9</option><option value="10">Kelas 10</option></select>
+        </div>
+      </div>
+      <div class="form-group">
+        <label>Isi nominal serentak (Rp)</label>
+        <div style="display:flex;gap:6px">
+          <input type="number" id="batchNominal" placeholder="Contoh: 10000">
+          <button class="btn-outline" style="background:var(--green);border:0" onclick="applyBatch()">Terapkan</button>
+        </div>
+      </div>
+      <div id="batchRows" style="margin:12px 0"></div>
+      <button class="btn-submit" onclick="saveBatch()">Simpan Rekap</button>
+    </div>
+  </div>
+
+  <!-- 3. PANEL TRANSAKSI SATUAN -->
+  <div class="panel" id="p-transaksi">
+    <div class="section-head">
+      <div><h2>Transaksi satuan</h2><p>Top-up setoran wali / pengeluaran.</p></div>
+    </div>
+    <div class="card">
+      <form id="trxForm" onsubmit="saveTrx(event)">
+        <div class="form-group">
+          <label>Santri</label>
+          <select id="trxNis" required></select>
+        </div>
+        <div class="form-group">
+          <label>Kategori</label>
+          <select id="trxKat">
+            <option>Top-Up</option>
+            <option>Uang Saku</option>
+            <option>Laundry</option>
+            <option>Potong Rambut</option>
+            <option>Kesehatan</option>
+            <option>Lainnya</option>
+          </select>
+        </div>
+        <div class="form-group">
+          <label>Nominal (Rp)</label>
+          <input type="number" id="trxNom" placeholder="Contoh: 50000" min="1" required>
+        </div>
+        <div class="form-group">
+          <label>Tanggal & Keterangan</label>
+          <input type="date" id="trxTgl" style="margin-bottom:6px" required>
+          <input type="text" id="trxKet" placeholder="Catatan transaksi">
+        </div>
+        <button class="btn-submit" type="submit">Simpan Transaksi</button>
+      </form>
+    </div>
+  </div>
+
+  <!-- 4. PANEL LAPORAN -->
+  <div class="panel" id="p-laporan">
+    <div class="section-head">
+      <div><h2>Laporan mutasi</h2><p>Riwayat kas dan uang saku.</p></div>
+    </div>
+    <div class="card">
+      <div class="table-wrap">
+        <table>
+          <thead><tr><th>Tanggal</th><th>Santri</th><th>Pos</th><th style="text-align:right">Nominal</th></tr></thead>
+          <tbody id="lapBody"><tr><td colspan="4" class="empty">Memuat mutasi…</td></tr></tbody>
+        </table>
       </div>
     </div>
   </div>
 
-  <!-- Menu Navigasi Utama -->
-  <ul class="nav nav-pills mb-4 p-2 bg-white rounded-3 shadow-sm" id="pills-tab" role="tablist">
-    <li class="nav-item">
-      <button class="nav-link active" id="tab-rekap" data-bs-toggle="pill" data-bs-target="#panel-rekap"><i class="bi bi-calendar-check me-2"></i>Rekap Harian Kelas</button>
-    </li>
-    <li class="nav-item">
-      <button class="nav-link" id="tab-satuan" data-bs-toggle="pill" data-bs-target="#panel-satuan"><i class="bi bi-plus-circle me-2"></i>Transaksi Satuan / Top-Up</button>
-    </li>
-    <li class="nav-item">
-      <button class="nav-link" id="tab-laporan" data-bs-toggle="pill" data-bs-target="#panel-laporan"><i class="bi bi-printer me-2"></i>Laporan & Cetak Wali</button>
-    </li>
-    <li class="nav-item">
-      <button class="nav-link" id="tab-santri" data-bs-toggle="pill" data-bs-target="#panel-santri"><i class="bi bi-people me-2"></i>Data Santri (Per Kelas)</button>
-    </li>
-  </ul>
-
-  <div class="tab-content">
-
-    <!-- 1. PANEL REKAP KELAS (INPUT SERENTAK + EDIT MANUAL) -->
-    <div class="tab-pane fade show active" id="panel-rekap">
-      <div class="card p-3 mb-3">
-        <div class="row g-3 align-items-end">
-          <div class="col-md-3">
-            <label class="form-label fw-bold">Tanggal Ambil</label>
-            <input type="date" id="rekapTanggal" class="form-control">
-          </div>
-          <div class="col-md-3">
-            <label class="form-label fw-bold">Pilih Kelas</label>
-            <select id="rekapKelas" class="form-select" onchange="loadDaftarSantriRekap()">
-              <option value="7">Kelas 7</option>
-              <option value="8">Kelas 8</option>
-              <option value="9">Kelas 9</option>
-              <option value="10">Kelas 10</option>
-            </select>
-          </div>
-          <div class="col-md-3">
-            <label class="form-label fw-bold text-primary">Isi Serentak 1 Kelas (Rp)</label>
-            <div class="input-group">
-              <input type="number" id="inputSerentak" class="form-control" placeholder="10000">
-              <button class="btn btn-outline-primary" type="button" onclick="terapkanNominalSerentak()">Terapkan</button>
-            </div>
-          </div>
-          <div class="col-md-3 text-end">
-            <button class="btn btn-primary w-100 fw-bold" onclick="simpanRekapBatch()"><i class="bi bi-cloud-arrow-up me-1"></i>Simpan Rekap</button>
-          </div>
-        </div>
-      </div>
-
-      <div class="card p-3">
-        <div class="table-responsive">
-          <table class="table table-hover align-middle mb-0">
-            <thead class="table-light">
-              <tr>
-                <th style="width: 40px;">No</th>
-                <th>NIS</th>
-                <th>Nama Santri</th>
-                <th>Kamar</th>
-                <th>Sisa Saldo</th>
-                <th style="width: 220px;">Nominal Diambil (Rp)</th>
-              </tr>
-            </thead>
-            <tbody id="tabelRekapBody"></tbody>
-          </table>
-        </div>
-      </div>
+  <!-- 5. PANEL MASTER SANTRI -->
+  <div class="panel" id="p-santri">
+    <div class="section-head">
+      <div><h2>Data Santri</h2><p>Daftar seluruh santri terdaftar.</p></div>
     </div>
-
-    <!-- 2. PANEL TRANSAKSI SATUAN -->
-    <div class="tab-pane fade" id="panel-satuan">
-      <div class="card p-4 mx-auto" style="max-width: 650px;">
-        <h5 class="fw-bold mb-3"><i class="bi bi-receipt me-2 text-primary"></i>Catat Transaksi Insidental / Setoran</h5>
-        <div class="mb-3">
-          <label class="form-label fw-semibold">Pilih Santri</label>
-          <select id="satuanSantri" class="form-select"></select>
-        </div>
-        <div class="row g-3 mb-3">
-          <div class="col-md-6">
-            <label class="form-label fw-semibold">Tanggal Transaksi</label>
-            <input type="date" id="satuanTanggal" class="form-control">
-          </div>
-          <div class="col-md-6">
-            <label class="form-label fw-semibold">Pos Transaksi</label>
-            <select id="satuanKategori" class="form-select">
-              <option value="Top-Up">Top-Up (Setoran Wali)</option>
-              <option value="Laundry">Laundry</option>
-              <option value="Potong Rambut">Potong Rambut</option>
-              <option value="Kesehatan">Kesehatan / Periksa Sakit</option>
-              <option value="Uang Saku">Uang Saku</option>
-              <option value="Lainnya">Lain-lain</option>
-            </select>
-          </div>
-        </div>
-        <div class="mb-3">
-          <label class="form-label fw-semibold">Nominal (Rp)</label>
-          <input type="number" id="satuanNominal" class="form-control" placeholder="Contoh: 25000">
-        </div>
-        <div class="mb-4">
-          <label class="form-label fw-semibold">Keterangan / Catatan</label>
-          <input type="text" id="satuanKet" class="form-control" placeholder="Misal: Klinik + Obat Flu / Transfer BCA Bunda">
-        </div>
-        <button class="btn btn-success w-100 fw-bold py-2" onclick="simpanTransaksiSatuan()"><i class="bi bi-cloud-check me-1"></i>Simpan ke Spreadsheet</button>
-      </div>
-    </div>
-
-    <!-- 3. PANEL LAPORAN DENGAN RENTANG TANGGAL & CETAK WALI -->
-    <div class="tab-pane fade" id="panel-laporan">
-      <div class="card p-3 mb-3">
-        <div class="row g-3 align-items-end">
-          <div class="col-md-3">
-            <label class="form-label fw-bold">Dari Tanggal</label>
-            <input type="date" id="filterTglMulai" class="form-control">
-          </div>
-          <div class="col-md-3">
-            <label class="form-label fw-bold">Sampai Tanggal</label>
-            <input type="date" id="filterTglSelesai" class="form-control">
-          </div>
-          <div class="col-md-3">
-            <label class="form-label fw-bold">Filter Santri</label>
-            <select id="filterSantriLaporan" class="form-select" onchange="filterTabelLaporan()">
-              <option value="SEMUA">-- Semua Santri --</option>
-            </select>
-          </div>
-          <div class="col-md-3 d-flex gap-2">
-            <button class="btn btn-dark w-100 fw-bold" onclick="filterTabelLaporan()"><i class="bi bi-funnel me-1"></i>Terapkan</button>
-            <button class="btn btn-outline-danger fw-bold" onclick="bukaCetakLaporan()" title="Cetak Slip Laporan"><i class="bi bi-printer"></i></button>
-            <button class="btn btn-outline-success fw-bold" id="btnWaWali" onclick="kirimLaporanWA()" title="Kirim ke WhatsApp Wali"><i class="bi bi-whatsapp"></i></button>
-          </div>
-        </div>
-      </div>
-
-      <div class="card p-3">
-        <div class="table-responsive">
-          <table class="table table-striped align-middle mb-0">
-            <thead class="table-light">
-              <tr>
-                <th>Waktu</th>
-                <th>Santri</th>
-                <th>Kategori</th>
-                <th>Tipe</th>
-                <th>Nominal</th>
-                <th>Keterangan</th>
-              </tr>
-            </thead>
-            <tbody id="tabelLaporanBody"></tbody>
-          </table>
-        </div>
-      </div>
-    </div>
-
-    <!-- 4. PANEL MASTER SANTRI PER KELAS -->
-    <div class="tab-pane fade" id="panel-santri">
-      <div class="card p-3 mb-3 d-flex flex-row justify-content-between align-items-center">
-        <div class="btn-group" role="group">
-          <button type="button" class="btn btn-outline-dark active" id="btnGroupKlsAll" onclick="filterMasterKelas('SEMUA')">Semua</button>
-          <button type="button" class="btn btn-outline-dark" id="btnGroupKls7" onclick="filterMasterKelas('7')">Kelas 7</button>
-          <button type="button" class="btn btn-outline-dark" id="btnGroupKls8" onclick="filterMasterKelas('8')">Kelas 8</button>
-          <button type="button" class="btn btn-outline-dark" id="btnGroupKls9" onclick="filterMasterKelas('9')">Kelas 9</button>
-          <button type="button" class="btn btn-outline-dark" id="btnGroupKls10" onclick="filterMasterKelas('10')">Kelas 10</button>
-        </div>
-        <button class="btn btn-primary btn-sm fw-bold" data-bs-toggle="modal" data-bs-target="#modalTambahSantri"><i class="bi bi-person-plus me-1"></i>Tambah Santri</button>
-      </div>
-
-      <div class="card p-3">
-        <div class="table-responsive">
-          <table class="table table-hover align-middle mb-0">
-            <thead class="table-light">
-              <tr>
-                <th>NIS</th>
-                <th>Nama Lengkap</th>
-                <th>Kelas</th>
-                <th>Kamar</th>
-                <th>No WhatsApp Wali</th>
-                <th>Sisa Saldo</th>
-              </tr>
-            </thead>
-            <tbody id="tabelMasterSantriBody"></tbody>
-          </table>
-        </div>
-      </div>
-    </div>
-
-  </div>
-</div>
-
-<!-- Modal Tambah Santri -->
-<div class="modal fade" id="modalTambahSantri" tabindex="-1">
-  <div class="modal-dialog">
-    <div class="modal-content">
-      <div class="modal-header">
-        <h5 class="modal-title fw-bold">Tambah Santri Baru</h5>
-        <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
-      </div>
-      <div class="modal-body">
-        <div class="mb-3">
-          <label class="form-label">NIS</label>
-          <input type="text" id="mNis" class="form-control" placeholder="Contoh: 1001">
-        </div>
-        <div class="mb-3">
-          <label class="form-label">Nama Lengkap</label>
-          <input type="text" id="mNama" class="form-control">
-        </div>
-        <div class="row g-2 mb-3">
-          <div class="col-md-6">
-            <label class="form-label">Kelas</label>
-            <select id="mKelas" class="form-select">
-              <option value="7">Kelas 7</option>
-              <option value="8">Kelas 8</option>
-              <option value="9">Kelas 9</option>
-              <option value="10">Kelas 10</option>
-            </select>
-          </div>
-          <div class="col-md-6">
-            <label class="form-label">Kamar / Asrama</label>
-            <input type="text" id="mKamar" class="form-control" placeholder="Contoh: Umar 02">
-          </div>
-        </div>
-        <div class="mb-3">
-          <label class="form-label">No WhatsApp Wali</label>
-          <input type="text" id="mWa" class="form-control" placeholder="08xxxxxxxxxx">
-        </div>
-        <div class="mb-3">
-          <label class="form-label">Saldo Awal (Rp)</label>
-          <input type="number" id="mSaldoAwal" class="form-control" value="0">
-        </div>
-      </div>
-      <div class="modal-footer">
-        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Batal</button>
-        <button type="button" class="btn btn-primary" onclick="simpanSantriBaru()">Simpan ke Sheets</button>
+    <div class="card">
+      <input type="text" id="cariSantri" placeholder="Cari santri / NIS…" oninput="renderMaster()" style="width:100%;padding:8px;border:1px solid var(--line);border-radius:8px;margin-bottom:10px">
+      <div class="table-wrap">
+        <table>
+          <thead><tr><th>NIS</th><th>Nama</th><th>Kelas</th><th style="text-align:right">Saldo</th></tr></thead>
+          <tbody id="masterBody"><tr><td colspan="4" class="empty">Memuat…</td></tr></tbody>
+        </table>
       </div>
     </div>
   </div>
-</div>
+</main>
 
-<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+<!-- BOTTOM NAVIGATION -->
+<nav class="bottom-nav">
+  <button class="nav-item active" onclick="switchNav('dashboard', this)">
+    <svg viewBox="0 0 24 24"><path d="M10 20v-6h4v6h5v-8h3L12 3 2 12h3v8z"/></svg>
+    <span>Ringkasan</span>
+  </button>
+  <button class="nav-item" onclick="switchNav('batch', this)">
+    <svg viewBox="0 0 24 24"><path d="M3 3v8h8V3H3zm2 2h4v4H5V5zm8-2v8h8V3h-8zm2 2h4v4h-4V5zM3 13v8h8v-8H3zm2 2h4v4H5v-4zm8-2v8h8v-8h-8zm2 2h4v4h-4v-4z"/></svg>
+    <span>Rekap</span>
+  </button>
+  <button class="nav-item" onclick="switchNav('transaksi', this)">
+    <svg viewBox="0 0 24 24"><path d="M19 13h-6v6h-2v-6H5v-2h6V5h2v6h6v2z"/></svg>
+    <span>Transaksi</span>
+  </button>
+  <button class="nav-item" onclick="switchNav('laporan', this)">
+    <svg viewBox="0 0 24 24"><path d="M14 2H6c-1.1 0-1.99.9-1.99 2L4 20c0 1.1.89 2 1.99 2H18c1.1 0 2-.9 2-2V8l-6-6zm2 16H8v-2h8v2zm0-4H8v-2h8v2zm-3-5V3.5L18.5 9H13z"/></svg>
+    <span>Laporan</span>
+  </button>
+  <button class="nav-item" onclick="switchNav('santri', this)">
+    <svg viewBox="0 0 24 24"><path d="M12 12c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm0 2c-2.67 0-8 1.34-8 4v2h16v-2c0-2.66-5.33-4-8-4z"/></svg>
+    <span>Santri</span>
+  </button>
+</nav>
+
 <script>
-'use strict';
+// URL Google Apps Script Anda
+const API_URL = "https://script.google.com/macros/s/AKfycbwiku-hOfT9_BUWZyTOCW2VlqGp4Rim9QQ8I2BEX_pTO0EXfvh1Y27a8eNYktHRIi15/exec";
+const LIMIT_KRITIS = 20000;
 
-if ('serviceWorker' in navigator && location.protocol !== 'file:') {
-  window.addEventListener('load', () => {
-    navigator.serviceWorker.register('./sw.js').catch(err => console.warn('Service Worker:', err));
-  });
-}
-
-// Pastikan URL ini sama dengan URL Web App hasil deployment Google Apps Script.
-const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbwiku-hOfT9_BUWZyTOCW2VlqGp4Rim9QQ8I2BEX_pTO0EXfvh1Y27a8eNYktHRIi15/exec";
-
-let globalSantri = [];
-let globalMutasi = [];
-let currentFilteredMutasi = [];
-let requestBusy = false;
-
+let santri = [], mutasi = [];
 const $ = id => document.getElementById(id);
-const rupiah = value => 'Rp ' + Number(value || 0).toLocaleString('id-ID');
-const today = (() => {
-  const d = new Date();
-  return `${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,'0')}-${String(d.getDate()).padStart(2,'0')}`;
-})();
-const firstDayOfMonth = today.slice(0, 8) + '01';
+const rp = n => "Rp " + Number(n || 0).toLocaleString("id-ID");
+const today = () => new Date().toISOString().slice(0, 10);
 
-function escapeHTML(value) {
-  return String(value ?? '').replace(/[&<>"']/g, ch => ({
-    '&':'&amp;', '<':'&lt;', '>':'&gt;', '"':'&quot;', "'":'&#39;'
-  })[ch]);
-}
+$("batchTgl").value = today();
+$("trxTgl").value = today();
 
-function showLoading(message = 'Memproses...') {
-  $('loadingText').textContent = message;
-  $('loadingOverlay').style.display = 'flex';
-}
-function hideLoading() {
-  $('loadingOverlay').style.display = 'none';
-}
-function setBusy(value) {
-  requestBusy = value;
-  document.querySelectorAll('button[onclick*="simpan"]').forEach(btn => btn.disabled = value);
-}
-function setDefaultDates() {
-  $('rekapTanggal').value = today;
-  $('satuanTanggal').value = today;
-  $('filterTglMulai').value = firstDayOfMonth;
-  $('filterTglSelesai').value = today;
+function switchNav(id, btn) {
+  document.querySelectorAll(".panel").forEach(p => p.classList.remove("active"));
+  document.querySelectorAll(".nav-item").forEach(b => b.classList.remove("active"));
+  $("p-" + id).classList.add("active");
+  if (btn) btn.classList.add("active");
+  window.scrollTo({ top: 0, behavior: "smooth" });
 }
 
-async function apiRequest(payload = null) {
-  const options = payload
-    ? { method: 'POST', headers: { 'Content-Type': 'text/plain;charset=utf-8' }, body: JSON.stringify(payload), cache: 'no-store' }
-    : { method: 'GET', cache: 'no-store' };
-  const response = await fetch(SCRIPT_URL, options);
-  if (!response.ok) throw new Error(`Server merespons HTTP ${response.status}`);
-  const raw = await response.text();
-  let result;
-  try { result = JSON.parse(raw); }
-  catch (_) { throw new Error('Respons bukan JSON. Periksa URL dan deployment Google Apps Script.'); }
-  if (result && result.success === false) throw new Error(result.error || 'Operasi gagal di server.');
-  return result;
+async function api(act, data = {}) {
+  const url = API_URL + (API_URL.includes("?") ? "&" : "?") + "action=" + encodeURIComponent(act);
+  const opt = Object.keys(data).length
+    ? { method: "POST", headers: { "Content-Type": "text/plain;charset=utf-8" }, body: JSON.stringify({ action: act, ...data }) }
+    : {};
+  const r = await fetch(url, opt);
+  return r.json();
 }
 
-async function fetchDataDariSheets() {
-  showLoading('Mengambil data dari Google Sheets...');
+async function loadData() {
+  $("connPill").textContent = "● Memuat…";
   try {
-    const data = await apiRequest();
-    if (!data || !Array.isArray(data.santri) || !Array.isArray(data.mutasi)) {
-      throw new Error('Format data dari Apps Script tidak sesuai. Pastikan doGet mengembalikan santri dan mutasi.');
-    }
-    globalSantri = data.santri;
-    globalMutasi = data.mutasi;
-    updateStatistik();
-    populateDropdowns();
-    loadDaftarSantriRekap();
-    filterTabelLaporan();
-    filterMasterKelas('SEMUA');
-  } catch (err) {
-    console.error(err);
-    alert('Gagal mengambil data dari Spreadsheet: ' + err.message);
-  } finally {
-    hideLoading();
+    const res = await api("init");
+    santri = res.santri || [];
+    mutasi = res.mutasi || [];
+    $("connPill").textContent = "● Terhubung";
+    renderDashboard();
+    renderBatch();
+    renderMaster();
+    renderLaporan();
+  } catch (e) {
+    $("connPill").textContent = "● Gagal tersambung";
+    $("criticalList").innerHTML = `<div class="empty" style="color:var(--red)">Gagal menghubungkan ke data server.</div>`;
   }
 }
 
-function updateStatistik() {
-  const totalSaldo = globalSantri.reduce((sum, s) => sum + Number(s.saldo || 0), 0);
-  let totalTopup = 0, totalKeluar = 0;
-  globalMutasi.forEach(m => {
-    if (m.tipe === 'MASUK') totalTopup += Number(m.nominal || 0);
-    else totalKeluar += Number(m.nominal || 0);
-  });
-  $('statTotalSaldo').textContent = rupiah(totalSaldo);
-  $('statJumlahSantri').textContent = `${globalSantri.length} Santri Terdaftar`;
-  $('statTotalTopup').textContent = rupiah(totalTopup);
-  $('statTotalKeluar').textContent = rupiah(totalKeluar);
-}
+function renderDashboard() {
+  const top = mutasi.filter(m => m.kategori === "Top-Up").reduce((a, m) => a + Number(m.nominal || 0), 0);
+  const out = mutasi.filter(m => m.kategori !== "Top-Up").reduce((a, m) => a + Number(m.nominal || 0), 0);
+  const totalSaldo = santri.reduce((a, s) => a + Number(s.saldo || 0), 0);
 
-function populateDropdowns() {
-  const selSatuan = $('satuanSantri');
-  const selLaporan = $('filterSantriLaporan');
-  const oldSatuan = selSatuan.value;
-  const oldLaporan = selLaporan.value;
-  selSatuan.replaceChildren(new Option('-- Pilih Santri --', ''));
-  selLaporan.replaceChildren(new Option('-- Semua Santri --', 'SEMUA'));
+  $("statSaldo").textContent = rp(totalSaldo);
+  $("statTopup").textContent = rp(top);
+  $("statKeluar").textContent = rp(out);
 
-  globalSantri.forEach(s => {
-    selSatuan.add(new Option(`${s.nama} (Kelas ${s.kelas} - Saldo: ${rupiah(s.saldo)})`, s.nis));
-    selLaporan.add(new Option(`${s.nama} (Kelas ${s.kelas})`, s.nis));
-  });
-  if (globalSantri.some(s => s.nis === oldSatuan)) selSatuan.value = oldSatuan;
-  if (globalSantri.some(s => s.nis === oldLaporan)) selLaporan.value = oldLaporan;
-}
+  // Santri Saldo Kritis (< Rp 20.000)
+  const low = santri.filter(s => Number(s.saldo) < LIMIT_KRITIS);
+  $("critBadge").textContent = `${low.length} santri`;
 
-function loadDaftarSantriRekap() {
-  const kls = $('rekapKelas').value;
-  const tbody = $('tabelRekapBody');
-  const filtered = globalSantri.filter(s => String(s.kelas) === String(kls));
-  tbody.replaceChildren();
-  if (!filtered.length) {
-    tbody.innerHTML = `<tr><td colspan="6" class="text-center text-muted py-4">Belum ada santri terdaftar di Kelas ${escapeHTML(kls)}.</td></tr>`;
+  if (!low.length) {
+    $("criticalList").innerHTML = `<div class="empty">Alhamdulillah, tidak ada saldo kritis.</div>`;
     return;
   }
-  filtered.forEach((s, idx) => {
-    const isLow = Number(s.saldo) < 20000;
-    const tr = document.createElement('tr');
-    tr.innerHTML = `
-      <td>${idx + 1}</td>
-      <td><code>${escapeHTML(s.nis)}</code></td>
-      <td class="fw-bold">${escapeHTML(s.nama)}</td>
-      <td>${escapeHTML(s.kamar || '-')}</td>
-      <td><span class="${isLow ? 'saldo-kritis' : 'fw-bold text-success'}">${rupiah(s.saldo)}</span></td>
-      <td><input type="number" class="form-control form-control-sm input-batch" data-nis="${escapeHTML(s.nis)}" placeholder="0" min="0" step="1"></td>`;
-    tbody.appendChild(tr);
-  });
+
+  $("criticalList").innerHTML = low.map(s => `
+    <div class="critical-row">
+      <div>
+        <div class="critical-name">${s.nama}</div>
+        <div class="critical-sub">Kelas ${s.kelas} · NIS ${s.nis}</div>
+      </div>
+      <div class="critical-val">${rp(s.saldo)}</div>
+    </div>
+  `).join("");
+
+  // Update Dropdown Santri
+  $("trxNis").innerHTML = santri.map(s => `<option value="${s.nis}">${s.nama} (${s.kelas})</option>`).join("");
 }
 
-function terapkanNominalSerentak() {
-  const raw = $('inputSerentak').value;
-  const val = Number(raw);
-  if (raw === '' || !Number.isSafeInteger(val) || val <= 0) {
-    alert('Masukkan nominal serentak berupa angka bulat lebih dari 0.');
-    return;
-  }
-  document.querySelectorAll('.input-batch').forEach(inp => inp.value = val);
+function renderBatch() {
+  const kls = $("batchKelas").value;
+  const list = santri.filter(s => String(s.kelas) === String(kls));
+  $("batchRows").innerHTML = list.length ? list.map(s => `
+    <div style="display:flex;justify-content:space-between;align-items:center;padding:7px 0;border-bottom:1px solid #f0f4f1">
+      <div><strong style="font-size:12px">${s.nama}</strong><div style="font-size:10px;color:var(--muted)">Saldo: ${rp(s.saldo)}</div></div>
+      <input type="number" class="batch-inp" data-nis="${s.nis}" placeholder="0" style="width:90px;text-align:right;padding:6px;border:1px solid var(--line);border-radius:6px">
+    </div>
+  `).join("") : `<div class="empty">Tidak ada santri di kelas ini.</div>`;
 }
 
-async function simpanRekapBatch() {
-  if (requestBusy) return;
-  const tanggal = $('rekapTanggal').value;
-  const kelas = $('rekapKelas').value;
-  if (!tanggal) return alert('Tanggal rekap wajib dipilih.');
-  const items = [...document.querySelectorAll('.input-batch')]
-    .map(inp => ({ nis: inp.dataset.nis, nominal: Number(inp.value) }))
-    .filter(item => Number.isSafeInteger(item.nominal) && item.nominal > 0);
-  if (!items.length) return alert('Tidak ada nominal uang saku yang diisi.');
-  if (!confirm(`Simpan ${items.length} transaksi uang saku untuk Kelas ${kelas}?`)) return;
+function applyBatch() {
+  const v = $("batchNominal").value;
+  document.querySelectorAll(".batch-inp").forEach(i => i.value = v);
+}
 
-  setBusy(true); showLoading('Menyimpan rekap uang saku...');
+async function saveBatch() {
+  const items = [...document.querySelectorAll(".batch-inp")]
+    .map(i => ({ nis: i.dataset.nis, nominal: Number(i.value) }))
+    .filter(i => i.nominal > 0);
+  if (!items.length) return alert("Isi nominal uang saku minimal satu santri.");
+  if (!confirm(`Simpan rekap ${items.length} santri?`)) return;
   try {
-    const result = await apiRequest({ action: 'batch_uang_saku', tanggal, kelas, items });
-    alert(`Berhasil menyimpan ${result.count ?? items.length} transaksi uang saku.`);
-    $('inputSerentak').value = '';
-    await fetchDataDariSheets();
-  } catch (err) {
-    alert('Gagal menyimpan rekap: ' + err.message);
-  } finally {
-    hideLoading(); setBusy(false);
-  }
+    await api("batch", { tanggal: $("batchTgl").value, items, keterangan: "Uang saku harian" });
+    alert("Berhasil disimpan!");
+    loadData();
+    switchNav("dashboard");
+  } catch (e) { alert("Gagal menyimpan rekap."); }
 }
 
-async function simpanTransaksiSatuan() {
-  if (requestBusy) return;
-  const nis = $('satuanSantri').value;
-  const tanggal = $('satuanTanggal').value;
-  const kategori = $('satuanKategori').value;
-  const nominal = Number($('satuanNominal').value);
-  const keterangan = $('satuanKet').value.trim();
-  if (!nis || !tanggal || !Number.isSafeInteger(nominal) || nominal <= 0) {
-    return alert('Pilih santri, tanggal, dan nominal angka bulat lebih dari 0.');
-  }
-  if (!confirm(`Catat ${kategori} sebesar ${rupiah(nominal)}?`)) return;
-
-  setBusy(true); showLoading('Menyimpan transaksi...');
+async function saveTrx(e) {
+  e.preventDefault();
+  const p = {
+    nis: $("trxNis").value,
+    kategori: $("trxKat").value,
+    nominal: Number($("trxNom").value),
+    tanggal: $("trxTgl").value,
+    keterangan: $("trxKet").value
+  };
   try {
-    await apiRequest({ action: 'satuan', nis, tanggal, kategori, nominal, keterangan });
-    alert('Transaksi berhasil dicatat ke Spreadsheet.');
-    $('satuanNominal').value = '';
-    $('satuanKet').value = '';
-    await fetchDataDariSheets();
-  } catch (err) {
-    alert('Gagal menyimpan transaksi: ' + err.message);
-  } finally {
-    hideLoading(); setBusy(false);
-  }
+    await api("transaction", p);
+    alert("Transaksi tersimpan!");
+    $("trxForm").reset();
+    $("trxTgl").value = today();
+    loadData();
+    switchNav("dashboard");
+  } catch (e) { alert("Gagal menyimpan transaksi."); }
 }
 
-function filterTabelLaporan() {
-  const mulai = $('filterTglMulai').value;
-  const selesai = $('filterTglSelesai').value;
-  const target = $('filterSantriLaporan').value;
-  if (mulai && selesai && mulai > selesai) {
-    alert('Tanggal awal tidak boleh melewati tanggal akhir.');
-    return;
-  }
-  currentFilteredMutasi = globalMutasi.filter(m => {
-    const tanggal = String(m.tanggal || '');
-    return (!mulai || tanggal >= mulai) && (!selesai || tanggal <= selesai) &&
-      (target === 'SEMUA' || String(m.nis) === target);
-  });
-
-  const tbody = $('tabelLaporanBody');
-  tbody.replaceChildren();
-  if (!currentFilteredMutasi.length) {
-    tbody.innerHTML = '<tr><td colspan="6" class="text-center text-muted py-4">Tidak ada mutasi pada rentang tanggal ini.</td></tr>';
-    return;
-  }
-  currentFilteredMutasi.forEach(m => {
-    const s = globalSantri.find(x => String(x.nis) === String(m.nis));
-    const label = s ? `${s.nama} (${s.kelas})` : `NIS: ${m.nis}`;
-    const categoryClass = ({
-      'Top-Up':'badge-topup', 'Uang Saku':'badge-saku', 'Laundry':'badge-laundry',
-      'Potong Rambut':'badge-rambut', 'Kesehatan':'badge-kesehatan'
-    })[m.kategori] || 'badge-lainnya';
-    const tr = document.createElement('tr');
-    tr.innerHTML = `
-      <td><small class="text-muted">${escapeHTML(m.tanggal)}</small></td>
-      <td><strong>${escapeHTML(label)}</strong></td>
-      <td><span class="badge ${categoryClass}">${escapeHTML(m.kategori)}</span></td>
-      <td><span class="badge ${m.tipe === 'MASUK' ? 'bg-success' : 'bg-danger'}">${escapeHTML(m.tipe)}</span></td>
-      <td class="fw-bold ${m.tipe === 'MASUK' ? 'text-success' : 'text-danger'}">${m.tipe === 'MASUK' ? '+' : '-'} ${rupiah(m.nominal)}</td>
-      <td><small>${escapeHTML(m.keterangan || '-')}</small></td>`;
-    tbody.appendChild(tr);
-  });
+function renderLaporan() {
+  $("lapBody").innerHTML = mutasi.length ? mutasi.slice(-20).reverse().map(m => `
+    <tr>
+      <td>${m.tanggal || "-"}</td>
+      <td><strong>${m.nama || m.nis}</strong></td>
+      <td>${m.kategori}</td>
+      <td style="text-align:right;font-weight:700;color:${m.kategori==='Top-Up'?'var(--green)':'var(--red)'}">${rp(m.nominal)}</td>
+    </tr>
+  `).join("") : `<tr><td colspan="4" class="empty">Belum ada mutasi.</td></tr>`;
 }
 
-function bukaCetakLaporan() {
-  if (!currentFilteredMutasi.length) return alert('Tidak ada data mutasi yang dipilih untuk dicetak.');
-  const mulai = $('filterTglMulai').value;
-  const selesai = $('filterTglSelesai').value;
-  const target = $('filterSantriLaporan').value;
-  const s = globalSantri.find(x => String(x.nis) === target);
-  const label = s
-    ? `Santri: ${s.nama} (Kelas ${s.kelas}) | Sisa Saldo: ${rupiah(s.saldo)}`
-    : 'Semua Santri';
-  const items = currentFilteredMutasi.map(m => {
-    const santri = globalSantri.find(x => String(x.nis) === String(m.nis));
-    return { nis:m.nis, nama:santri ? santri.nama : m.nis, kategori:m.kategori,
-      keterangan:m.keterangan, tipe:m.tipe, nominal:m.nominal };
-  });
-  sessionStorage.setItem('data_cetak_kas', JSON.stringify({
-    tanggal: `${mulai || 'Awal'} s.d. ${selesai || 'Sekarang'}`, label, items
-  }));
-  window.open('./cetak.html', '_blank', 'noopener');
+function renderMaster() {
+  const q = ($("cariSantri").value || "").toLowerCase();
+  const list = santri.filter(s => (`${s.nama} ${s.nis}`).toLowerCase().includes(q));
+  $("masterBody").innerHTML = list.length ? list.map(s => `
+    <tr>
+      <td><code>${s.nis}</code></td>
+      <td><strong>${s.nama}</strong></td>
+      <td>${s.kelas}</td>
+      <td style="text-align:right;font-weight:700;color:${Number(s.saldo)<LIMIT_KRITIS?'var(--red)':'var(--green)'}">${rp(s.saldo)}</td>
+    </tr>
+  `).join("") : `<tr><td colspan="4" class="empty">Santri tidak ditemukan.</td></tr>`;
 }
 
-function kirimLaporanWA() {
-  const target = $('filterSantriLaporan').value;
-  if (target === 'SEMUA') return alert('Pilih satu nama santri terlebih dahulu pada filter.');
-  const s = globalSantri.find(x => String(x.nis) === target);
-  if (!s) return alert('Data santri tidak ditemukan.');
-  const mulai = $('filterTglMulai').value, selesai = $('filterTglSelesai').value;
-  let pesan = `*LAPORAN KAS & UANG SAKU SANTRI*\nNama: *${s.nama}*\nKelas: ${s.kelas} | Kamar: ${s.kamar || '-'}\nPeriode: ${mulai} s.d. ${selesai}\n------------------------------------\n`;
-  let masuk = 0, keluar = 0;
-  currentFilteredMutasi.forEach(m => {
-    pesan += `• ${m.tanggal} | ${m.kategori} ${m.tipe === 'MASUK' ? '(+)' : '(-)'} ${rupiah(m.nominal)} (${m.keterangan || '-'})\n`;
-    if (m.tipe === 'MASUK') masuk += Number(m.nominal || 0);
-    else keluar += Number(m.nominal || 0);
-  });
-  pesan += `------------------------------------\nTotal Masuk: ${rupiah(masuk)}\nTotal Keluar: ${rupiah(keluar)}\n*SISA SALDO TERKINI: ${rupiah(s.saldo)}*\n\n_Pondok Pesantren - Bendahara Kas_`;
-  let waUrl = `https://wa.me/?text=${encodeURIComponent(pesan)}`;
-  if (s.wa) {
-    let phone = String(s.wa).replace(/\D/g, '');
-    if (phone.startsWith('0')) phone = '62' + phone.slice(1);
-    waUrl = `https://wa.me/${phone}?text=${encodeURIComponent(pesan)}`;
-  }
-  window.open(waUrl, '_blank', 'noopener');
-}
-
-function filterMasterKelas(kls) {
-  ['All','7','8','9','10'].forEach(k => {
-    const el = $('btnGroupKls' + k);
-    if (el) el.classList.remove('active');
-  });
-  const active = kls === 'SEMUA' ? $('btnGroupKlsAll') : $('btnGroupKls' + kls);
-  if (active) active.classList.add('active');
-  const filtered = kls === 'SEMUA' ? globalSantri : globalSantri.filter(s => String(s.kelas) === String(kls));
-  const tbody = $('tabelMasterSantriBody');
-  tbody.replaceChildren();
-  if (!filtered.length) {
-    tbody.innerHTML = `<tr><td colspan="6" class="text-center text-muted py-4">Belum ada santri di ${kls === 'SEMUA' ? 'daftar' : 'Kelas ' + escapeHTML(kls)}.</td></tr>`;
-    return;
-  }
-  filtered.forEach(s => {
-    const low = Number(s.saldo) < 20000;
-    const phone = String(s.wa || '').replace(/\D/g, '').replace(/^0/, '62');
-    const tr = document.createElement('tr');
-    tr.innerHTML = `
-      <td><code>${escapeHTML(s.nis)}</code></td>
-      <td class="fw-bold">${escapeHTML(s.nama)}</td>
-      <td>Kelas ${escapeHTML(s.kelas)}</td>
-      <td>${escapeHTML(s.kamar || '-')}</td>
-      <td>${phone ? `<a href="https://wa.me/${phone}" target="_blank" rel="noopener" class="text-decoration-none"><i class="bi bi-whatsapp text-success me-1"></i>${escapeHTML(s.wa)}</a>` : '-'}</td>
-      <td><span class="${low ? 'saldo-kritis' : 'fw-bold text-success'}">${rupiah(s.saldo)}</span></td>`;
-    tbody.appendChild(tr);
-  });
-}
-
-async function simpanSantriBaru() {
-  if (requestBusy) return;
-  const nis = $('mNis').value.trim();
-  const nama = $('mNama').value.trim();
-  const kelas = $('mKelas').value;
-  const kamar = $('mKamar').value.trim();
-  const wa = $('mWa').value.trim();
-  const saldoAwal = Number($('mSaldoAwal').value || 0);
-  if (!nis || !nama) return alert('NIS dan Nama Lengkap wajib diisi.');
-  if (!Number.isSafeInteger(saldoAwal) || saldoAwal < 0) return alert('Saldo awal harus angka bulat dan tidak boleh negatif.');
-  if (globalSantri.some(s => String(s.nis) === nis)) return alert('NIS sudah terdaftar.');
-  if (!confirm(`Tambahkan santri ${nama} dengan NIS ${nis}?`)) return;
-
-  setBusy(true); showLoading('Menambahkan data santri...');
-  try {
-    await apiRequest({ action:'tambah_santri', nis, nama, kelas, kamar, wa, saldoAwal });
-    bootstrap.Modal.getOrCreateInstance($('modalTambahSantri')).hide();
-    alert('Santri berhasil ditambahkan.');
-    ['mNis','mNama','mKamar','mWa'].forEach(id => $(id).value = '');
-    $('mSaldoAwal').value = '0';
-    await fetchDataDariSheets();
-  } catch (err) {
-    alert('Gagal menambahkan santri: ' + err.message);
-  } finally {
-    hideLoading(); setBusy(false);
-  }
-}
-
-document.addEventListener('DOMContentLoaded', () => {
-  setDefaultDates();
-  fetchDataDariSheets();
-});
+loadData();
 </script>
 </body>
 </html>
