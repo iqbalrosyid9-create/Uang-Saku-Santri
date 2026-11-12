@@ -465,7 +465,7 @@ th { color: var(--muted); font-size: 10px; text-transform: uppercase; }
     <div class="section-head">
       <div>
         <h2>Saldo perlu perhatian</h2>
-        <p>Santri dengan saldo di bawah Rp 30.000.</p>
+        <p>Santri dengan saldo di bawah Rp 20.000.</p>
       </div>
       <span class="badge-count" id="critBadge">0 santri</span>
     </div>
@@ -495,6 +495,10 @@ th { color: var(--muted); font-size: 10px; text-transform: uppercase; }
         </div>
       </div>
       <div id="batchRows" style="margin:12px 0"></div>
+      <div style="display:flex;justify-content:space-between;align-items:center;background:var(--mint);border:1px solid #c2ded0;border-radius:10px;padding:10px 12px;margin-bottom:8px;font-size:12px">
+        <span style="color:var(--green);font-weight:600">Total uang diambil (<span id="batchCountSantri">0</span> santri):</span>
+        <strong id="batchTotalUang" style="color:var(--green);font-size:14px">Rp 0</strong>
+      </div>
       <button class="btn-submit" id="btnSaveBatch" onclick="saveBatch()">Simpan Rekap ke Spreadsheet</button>
     </div>
   </div>
@@ -678,7 +682,7 @@ th { color: var(--muted); font-size: 10px; text-transform: uppercase; }
 <script>
 // URL WEB APP GOOGLE APPS SCRIPT
 const API_URL = "https://script.google.com/macros/s/AKfycbwiku-hOfT9_BUWZyTOCW2VlqGp4Rim9QQ8I2BEX_pTO0EXfvh1Y27a8eNYktHRIi15/exec";
-const LIMIT_KRITIS = 30000;
+const LIMIT_KRITIS = 20000;
 
 let santri = [];
 let mutasi = [];
@@ -954,6 +958,20 @@ async function saveTrx(e) {
 // -------------------------------------------------------------
 // FITUR OPTIMISTIC UI: REKAP BATCH SUPER CEPAT + ROLLBACK
 // -------------------------------------------------------------
+function updateBatchTotal() {
+  let total = 0;
+  let count = 0;
+  document.querySelectorAll(".batch-inp").forEach(i => {
+    const val = Number(i.value || 0);
+    if (val > 0) {
+      total += val;
+      count++;
+    }
+  });
+  if ($("batchTotalUang")) $("batchTotalUang").textContent = rp(total);
+  if ($("batchCountSantri")) $("batchCountSantri").textContent = count;
+}
+
 function renderBatch() {
   const kls = $("batchKelas").value;
   const list = santri.filter(s => String(s.kelas) === String(kls));
@@ -963,14 +981,16 @@ function renderBatch() {
         <strong style="font-size:12px">${escapeHTML(s.nama)}</strong>
         <div style="font-size:10px;color:var(--muted)">NIS ${escapeHTML(s.nis)} · Saldo: ${rp(s.saldo)}</div>
       </div>
-      <input type="number" class="batch-inp" data-nis="${escapeHTML(s.nis)}" placeholder="0" style="width:90px;text-align:right;padding:6px;border:1px solid var(--line);border-radius:6px">
+      <input type="number" class="batch-inp" data-nis="${escapeHTML(s.nis)}" placeholder="0" oninput="updateBatchTotal()" style="width:90px;text-align:right;padding:6px;border:1px solid var(--line);border-radius:6px">
     </div>
   `).join("") : `<div class="empty">Tidak ada santri di kelas ini.</div>`;
+  updateBatchTotal();
 }
 
 function applyBatch() {
   const v = $("batchNominal").value;
   document.querySelectorAll(".batch-inp").forEach(i => i.value = v);
+  updateBatchTotal();
 }
 
 async function saveBatch() {
@@ -998,7 +1018,7 @@ async function saveBatch() {
         tanggal: tanggal,
         kategori: "Uang Saku",
         nominal: Number(it.nominal),
-        keterangan: "Uang saku harian" + kelas,
+        keterangan: "Uang saku harian",
         tipe: "KELUAR"
       });
     }
@@ -1009,6 +1029,8 @@ async function saveBatch() {
   renderMaster();
   toast(`✓ ${items.length} transaksi rekap dicatat (menyimpan…)`);
   $("batchNominal").value = "";
+  document.querySelectorAll(".batch-inp").forEach(i => i.value = "");
+  updateBatchTotal();
   switchNav("dashboard");
 
   // 2. Kirim di background
@@ -1259,7 +1281,7 @@ function cetakLaporanPDF() {
   <div class="ttd-box">
     <div class="ttd-col">
       <p style="margin: 0 0 50px;">Klaten, ${today()}<br><strong>Bendahara</strong></p>
-      <p style="margin: 0; font-weight: bold; text-decoration: underline;">( Usth Qoyyimah, S. Mat. )</p>
+      <p style="margin: 0; font-weight: bold; text-decoration: underline;">( Qoyyimah, S. Mat. )</p>
     </div>
   </div>
 
