@@ -320,6 +320,55 @@ button { cursor: pointer; }
   font-weight: 600;
 }
 
+/* ACTION ICON BUTTONS (EDIT / HAPUS) */
+.act-btns {
+  display: inline-flex;
+  gap: 4px;
+  margin-top: 3px;
+}
+.btn-act {
+  border: 1px solid #dce4df;
+  background: #f9fbfa;
+  border-radius: 6px;
+  padding: 2px 6px;
+  font-size: 10.5px;
+  line-height: 1.2;
+}
+.btn-act:hover { background: var(--mint); }
+.btn-act.del { border-color: #f3caca; background: #fff5f5; color: var(--red); }
+.btn-act.del:hover { background: #fee2e2; }
+
+/* MODAL POPUP EDIT */
+.modal-backdrop {
+  position: fixed;
+  inset: 0;
+  background: rgba(15, 31, 25, 0.55);
+  display: none;
+  align-items: center;
+  justify-content: center;
+  padding: 16px;
+  z-index: 999;
+}
+.modal-backdrop.open { display: flex; }
+.modal-card {
+  background: #fff;
+  border-radius: 16px;
+  width: 100%;
+  max-width: 420px;
+  padding: 16px;
+  box-shadow: 0 14px 35px rgba(0,0,0,0.22);
+}
+.modal-head {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  border-bottom: 1px solid var(--line);
+  padding-bottom: 10px;
+  margin-bottom: 12px;
+}
+.modal-head h3 { margin: 0; font-size: 14.5px; color: var(--green); }
+.modal-close { border: 0; background: none; font-size: 18px; color: var(--muted); padding: 0 4px; }
+
 /* SEARCH SUGGESTION DROPDOWN */
 .search-results-box {
   position: absolute;
@@ -384,7 +433,7 @@ button { cursor: pointer; }
 
 .table-wrap { overflow-x: auto; margin-top: 8px; }
 table { width: 100%; border-collapse: collapse; font-size: 11.5px; }
-th, td { padding: 8px 9px; text-align: left; border-bottom: 1px solid var(--line); }
+th, td { padding: 8px 7px; text-align: left; border-bottom: 1px solid var(--line); vertical-align: middle; }
 th { color: var(--muted); font-size: 10px; text-transform: uppercase; }
 .empty { text-align: center; color: var(--muted); padding: 18px 0; font-size: 11.5px; }
 .badge { display: inline-block; padding: 2px 7px; border-radius: 99px; font-size: 9.5px; font-weight: 700; }
@@ -414,6 +463,50 @@ th { color: var(--muted); font-size: 10px; text-transform: uppercase; }
 <body>
 
 <div id="toast" class="toast-msg"></div>
+
+<!-- MODAL EDIT TRANSAKSI -->
+<div id="editModal" class="modal-backdrop" onclick="if(event.target===this) closeEditModal()">
+  <div class="modal-card">
+    <div class="modal-head">
+      <h3>✏️ Edit Transaksi</h3>
+      <button type="button" class="modal-close" onclick="closeEditModal()">&times;</button>
+    </div>
+    <form id="editTrxForm" onsubmit="submitEditTrx(event)">
+      <input type="hidden" id="editTrxId">
+      <div class="form-group">
+        <label>Santri</label>
+        <select id="editTrxNis" required></select>
+      </div>
+      <div class="form-group">
+        <label>Kategori Transaksi</label>
+        <select id="editTrxKat" required>
+          <option value="Top-Up">Top-Up (Setoran Wali Masuk)</option>
+          <option value="Uang Saku">Uang Saku Santri</option>
+          <option value="Laundry">Laundry</option>
+          <option value="Potong Rambut">Potong Rambut</option>
+          <option value="Kesehatan">Kesehatan / Obat</option>
+          <option value="Lainnya">Lainnya</option>
+        </select>
+      </div>
+      <div class="form-group">
+        <label>Nominal (Rp)</label>
+        <input type="number" id="editTrxNom" min="1" required>
+      </div>
+      <div class="form-group">
+        <label>Tanggal Transaksi</label>
+        <input type="date" id="editTrxTgl" required>
+      </div>
+      <div class="form-group">
+        <label>Keterangan / Catatan</label>
+        <input type="text" id="editTrxKet" placeholder="Keterangan transaksi...">
+      </div>
+      <div style="display:flex;gap:8px;margin-top:10px">
+        <button type="button" class="btn-outline-sm" style="flex:1;padding:10px" onclick="closeEditModal()">Batal</button>
+        <button type="submit" class="btn-submit" style="flex:2;margin-top:0">Simpan Perubahan</button>
+      </div>
+    </form>
+  </div>
+</div>
 
 <header class="header">
   <div class="header-top">
@@ -606,33 +699,45 @@ th { color: var(--muted); font-size: 10px; text-transform: uppercase; }
 
       <div class="table-wrap">
         <table>
-          <thead><tr><th>Tanggal</th><th>Pos</th><th>Keterangan</th><th style="text-align:right">Nominal</th></tr></thead>
+          <thead><tr><th>Tanggal</th><th>Pos</th><th>Keterangan</th><th style="text-align:right">Nominal / Aksi</th></tr></thead>
           <tbody id="lapTableBody"><tr><td colspan="4" class="empty">Silakan pilih santri dan tampilkan.</td></tr></tbody>
         </table>
       </div>
-      <!-- KARTU RIWAYAT TRANSAKSI TERBARU -->
-      <div class="card" style="margin-top: 14px;">
-        <div class="section-head" style="margin: 0 0 8px;">
-          <div>
-            <h3 style="margin:0;font-size:13px;color:var(--green)">🕒 Riwayat Transaksi Terbaru</h3>
-            <p style="margin:2px 0 0;font-size:10.5px;color:var(--muted)">10 transaksi terakhir yang baru saja diinput</p>
-          </div>
+    </div>
+
+    <!-- KARTU RIWAYAT TRANSAKSI (DEFAULT HARI INI + FILTER RENTANG TANGGAL) -->
+    <div class="card" style="margin-top: 14px;">
+      <div class="section-head" style="margin: 0 0 10px;">
+        <div>
+          <h3 style="margin:0;font-size:13.5px;color:var(--green)">🕒 Riwayat Transaksi</h3>
+          <p style="margin:2px 0 0;font-size:10.5px;color:var(--muted)" id="recentSubtitle">Menampilkan transaksi hari ini</p>
         </div>
-        <div class="table-wrap">
-          <table>
-            <thead>
-              <tr>
-                <th>Santri</th>
-                <th>Pos</th>
-                <th>Keterangan</th>
-                <th style="text-align:right">Nominal</th>
-              </tr>
-            </thead>
-            <tbody id="recentMutasiBody">
-              <tr><td colspan="4" class="empty">Belum ada riwayat transaksi.</td></tr>
-            </tbody>
-          </table>
+        <span class="badge-count" id="recentCountBadge">0 trx</span>
+      </div>
+
+      <div class="form-group" style="margin-bottom:8px;">
+        <div style="display:flex;gap:6px;align-items:center;">
+          <input type="date" id="recentTglMulai" onchange="renderRecentMutasi()">
+          <span style="color:var(--muted);font-size:11px;">s.d.</span>
+          <input type="date" id="recentTglSelesai" onchange="renderRecentMutasi()">
+          <button type="button" class="btn-outline-sm" style="white-space:nowrap;background:var(--mint);color:var(--green);border-color:#c2ded0;" onclick="resetRecentToday()">Hari Ini</button>
         </div>
+      </div>
+
+      <div class="table-wrap">
+        <table>
+          <thead>
+            <tr>
+              <th>Santri</th>
+              <th>Pos</th>
+              <th>Keterangan</th>
+              <th style="text-align:right">Nominal / Aksi</th>
+            </tr>
+          </thead>
+          <tbody id="recentMutasiBody">
+            <tr><td colspan="4" class="empty">Memuat riwayat transaksi...</td></tr>
+          </tbody>
+        </table>
       </div>
     </div>
   </div>
@@ -690,13 +795,21 @@ let lapCurrentRows = [];
 
 const $ = id => document.getElementById(id);
 const rp = n => "Rp " + Number(n || 0).toLocaleString("id-ID");
-const today = () => new Date().toISOString().slice(0, 10);
+const today = () => {
+  const d = new Date();
+  const y = d.getFullYear();
+  const m = String(d.getMonth() + 1).padStart(2, '0');
+  const day = String(d.getDate()).padStart(2, '0');
+  return `${y}-${m}-${day}`;
+};
 const firstDayOfMonth = () => today().slice(0, 8) + "01";
 
 $("batchTgl").value = today();
 $("trxTgl").value = today();
 $("lapTglMulai").value = firstDayOfMonth();
 $("lapTglSelesai").value = today();
+$("recentTglMulai").value = today();
+$("recentTglSelesai").value = today();
 
 function toast(msg, isError = false) {
   const t = $("toast");
@@ -707,7 +820,7 @@ function toast(msg, isError = false) {
   setTimeout(() => {
     t.style.opacity = "0";
     setTimeout(() => t.style.display = "none", 300);
-  }, 2500);
+  }, 2600);
 }
 
 if ('serviceWorker' in navigator && (location.protocol === 'https:' || location.hostname === 'localhost')) {
@@ -770,11 +883,7 @@ async function loadData(showLoading = false) {
     pill.textContent = "● Terhubung";
     pill.style.color = "#e5f1eb";
 
-    renderDashboard();
-    renderRecentMutasi();
-    renderBatch();
-    renderMaster();
-    if ($("lapSelectedNis").value) filterRekapLaporan();
+    refreshAllViews();
   } catch (err) {
     console.error("Gagal terhubung:", err);
     pill.textContent = "● Gagal tersambung";
@@ -783,16 +892,57 @@ async function loadData(showLoading = false) {
   }
 }
 
+function refreshAllViews() {
+  renderDashboard();
+  renderRecentMutasi();
+  renderBatch();
+  renderMaster();
+  if ($("lapSelectedNis").value) {
+    const s = santri.find(x => String(x.nis) === String($("lapSelectedNis").value));
+    if (s) $("lapSelectedDetail").textContent = `Kelas ${s.kelas} · Sisa Saldo: ${rp(s.saldo)}`;
+    filterRekapLaporan();
+  }
+}
+
+function resetRecentToday() {
+  $("recentTglMulai").value = today();
+  $("recentTglSelesai").value = today();
+  renderRecentMutasi();
+}
+
 function renderRecentMutasi() {
   const tbody = $("recentMutasiBody");
   if (!tbody) return;
-  const recent = mutasi.slice(0, 10);
-  if (!recent.length) {
-    tbody.innerHTML = `<tr><td colspan="4" class="empty">Belum ada riwayat transaksi.</td></tr>`;
+
+  const mulai = $("recentTglMulai").value;
+  const selesai = $("recentTglSelesai").value;
+  const isTodayOnly = (mulai === today() && selesai === today());
+
+  if ($("recentSubtitle")) {
+    $("recentSubtitle").textContent = isTodayOnly
+      ? `Menampilkan transaksi hari ini (${today()})`
+      : `Periode ${mulai || '-'} s.d. ${selesai || '-'}`;
+  }
+
+  const filtered = mutasi.filter(m => {
+    const tgl = String(m.tanggal || "");
+    const okMulai = !mulai || tgl >= mulai;
+    const okSelesai = !selesai || tgl <= selesai;
+    return okMulai && okSelesai;
+  });
+
+  if ($("recentCountBadge")) {
+    $("recentCountBadge").textContent = `${filtered.length} trx`;
+  }
+
+  if (!filtered.length) {
+    tbody.innerHTML = `<tr><td colspan="4" class="empty">Tidak ada transaksi pada rentang tanggal ini.</td></tr>`;
     return;
   }
-  tbody.innerHTML = recent.map(m => {
+
+  tbody.innerHTML = filtered.map(m => {
     const isMasuk = m.kategori === "Top-Up" || m.tipe === "MASUK";
+    const safeId = escapeHTML(m.id);
     return `
       <tr>
         <td>
@@ -801,8 +951,14 @@ function renderRecentMutasi() {
         </td>
         <td><span class="badge ${isMasuk ? 'badge-in' : 'badge-out'}">${escapeHTML(m.kategori)}</span></td>
         <td><small>${escapeHTML(m.keterangan || "-")}</small></td>
-        <td style="text-align:right;font-weight:700;color:${isMasuk ? 'var(--green)' : 'var(--red)'}">
-          ${isMasuk ? '+' : '-'} ${rp(m.nominal)}
+        <td style="text-align:right">
+          <div style="font-weight:700;color:${isMasuk ? 'var(--green)' : 'var(--red)'}">
+            ${isMasuk ? '+' : '-'} ${rp(m.nominal)}
+          </div>
+          <div class="act-btns">
+            <button type="button" class="btn-act" title="Edit transaksi" onclick="openEditModal('${safeId}')">✏️</button>
+            <button type="button" class="btn-act del" title="Hapus transaksi" onclick="deleteTrx('${safeId}')">🗑️</button>
+          </div>
         </td>
       </tr>
     `;
@@ -902,7 +1058,7 @@ async function saveTrx(e) {
   const kategori = $("trxKat").value;
   const nominal = Number($("trxNom").value);
   const tanggal = $("trxTgl").value;
-  const keterangan = $("trxKet").value.trim();
+  const keterangan = $("trxKet").value.trim() || "-";
 
   if (!nis) return alert("Silakan pilih santri terlebih dahulu lewat pencarian.");
   if (!nominal || nominal <= 0) return alert("Nominal transaksi harus lebih dari 0.");
@@ -910,16 +1066,15 @@ async function saveTrx(e) {
   const targetSantri = santri.find(s => String(s.nis) === String(nis));
   if (!targetSantri) return alert("Santri tidak ditemukan.");
 
-  // 1. Simpan kondisi awal untuk rollback jika gagal
   const oldSaldo = targetSantri.saldo;
   const isMasuk = (kategori === "Top-Up");
 
-  // 2. Langsung ubah UI & Memori Seketika (0 detik)
   if (isMasuk) targetSantri.saldo = Number(targetSantri.saldo || 0) + nominal;
   else targetSantri.saldo = Number(targetSantri.saldo || 0) - nominal;
 
+  const tempId = "TEMP-" + Date.now();
   const tempTrx = {
-    id: "TEMP-" + Date.now(),
+    id: tempId,
     nis: nis,
     nama: targetSantri.nama,
     tanggal: tanggal,
@@ -930,9 +1085,7 @@ async function saveTrx(e) {
   };
   mutasi.unshift(tempTrx);
 
-  renderDashboard();
-  renderRecentMutasi();
-  renderMaster();
+  refreshAllViews();
   toast("✓ Transaksi dicatat (menyimpan ke cloud…)");
 
   $("trxForm").reset();
@@ -940,18 +1093,152 @@ async function saveTrx(e) {
   $("trxTgl").value = today();
   switchNav("dashboard");
 
-  // 3. Kirim ke Google Apps Script di background
   try {
-    await api("satuan", { nis, kategori, nominal, tanggal, keterangan });
+    const res = await api("satuan", { nis, kategori, nominal, tanggal, keterangan });
+    if (res && res.id) {
+      tempTrx.id = res.id;
+      renderRecentMutasi();
+      if ($("lapSelectedNis").value) filterRekapLaporan();
+    }
     toast("✓ Tersimpan aman di spreadsheet!");
   } catch (err) {
-    // 4. Rollback otomatis jika gagal
     targetSantri.saldo = oldSaldo;
-    mutasi = mutasi.filter(m => m.id !== tempTrx.id);
-    renderDashboard();
-    renderRecentMutasi();
-    renderMaster();
+    mutasi = mutasi.filter(m => m.id !== tempId);
+    refreshAllViews();
     alert("⚠️ Gagal menyimpan ke Spreadsheet: " + err.message + "\nData telah dikembalikan ke saldo semula.");
+  }
+}
+
+// -------------------------------------------------------------
+// FITUR OPTIMISTIC UI: EDIT TRANSAKSI + ROLLBACK
+// -------------------------------------------------------------
+function openEditModal(id) {
+  if (String(id).startsWith("TEMP-")) {
+    return toast("Tunggu sebentar hingga transaksi selesai tersimpan di spreadsheet…", true);
+  }
+  const trx = mutasi.find(m => String(m.id) === String(id));
+  if (!trx) return alert("Data transaksi tidak ditemukan.");
+
+  // Populate santri select
+  $("editTrxNis").innerHTML = santri.map(s =>
+    `<option value="${escapeHTML(s.nis)}" ${String(s.nis) === String(trx.nis) ? 'selected' : ''}>${escapeHTML(s.nama)} (Kls ${escapeHTML(s.kelas)} · NIS ${escapeHTML(s.nis)})</option>`
+  ).join("");
+
+  $("editTrxId").value = trx.id;
+  $("editTrxKat").value = trx.kategori || "Uang Saku";
+  $("editTrxNom").value = Number(trx.nominal || 0);
+  $("editTrxTgl").value = trx.tanggal || today();
+  $("editTrxKet").value = trx.keterangan === "-" ? "" : (trx.keterangan || "");
+
+  $("editModal").classList.add("open");
+}
+
+function closeEditModal() {
+  $("editModal").classList.remove("open");
+}
+
+async function submitEditTrx(e) {
+  e.preventDefault();
+  const id = $("editTrxId").value;
+  const newNis = $("editTrxNis").value;
+  const newKat = $("editTrxKat").value;
+  const newNom = Number($("editTrxNom").value);
+  const newTgl = $("editTrxTgl").value;
+  const newKet = $("editTrxKet").value.trim() || "-";
+
+  if (!newNis || !newTgl || !newKat) return alert("Semua kolom wajib diisi.");
+  if (!Number.isSafeInteger(newNom) || newNom <= 0) return alert("Nominal harus lebih dari 0.");
+
+  const trx = mutasi.find(m => String(m.id) === String(id));
+  if (!trx) return closeEditModal();
+
+  const oldSantri = santri.find(s => String(s.nis) === String(trx.nis));
+  const newSantri = santri.find(s => String(s.nis) === String(newNis));
+  if (!newSantri) return alert("Santri tidak ditemukan.");
+
+  // Backup data lama untuk rollback
+  const backupTrx = { ...trx };
+  const backupOldSaldo = oldSantri ? oldSantri.saldo : 0;
+  const backupNewSaldo = newSantri.saldo;
+
+  // 1. Batalkan efek transaksi lama pada saldo santri lama
+  if (oldSantri) {
+    const oldIsMasuk = (trx.kategori === "Top-Up" || trx.tipe === "MASUK");
+    oldSantri.saldo = Number(oldSantri.saldo || 0) + (oldIsMasuk ? -Number(trx.nominal) : Number(trx.nominal));
+  }
+
+  // 2. Terapkan efek transaksi baru pada saldo santri baru
+  const newIsMasuk = (newKat === "Top-Up");
+  newSantri.saldo = Number(newSantri.saldo || 0) + (newIsMasuk ? newNom : -newNom);
+
+  // 3. Perbarui objek mutasi lokal
+  trx.nis = newNis;
+  trx.nama = newSantri.nama;
+  trx.kategori = newKat;
+  trx.nominal = newNom;
+  trx.tanggal = newTgl;
+  trx.keterangan = newKet;
+  trx.tipe = newIsMasuk ? "MASUK" : "KELUAR";
+
+  closeEditModal();
+  refreshAllViews();
+  toast("✓ Perubahan dicatat (menyimpan ke cloud…)");
+
+  try {
+    await api("edit_transaksi", {
+      id,
+      nis: newNis,
+      kategori: newKat,
+      nominal: newNom,
+      tanggal: newTgl,
+      keterangan: newKet
+    });
+    toast("✓ Transaksi berhasil diperbarui di spreadsheet!");
+  } catch (err) {
+    // Rollback
+    Object.assign(trx, backupTrx);
+    if (oldSantri) oldSantri.saldo = backupOldSaldo;
+    newSantri.saldo = backupNewSaldo;
+    refreshAllViews();
+    alert("⚠️ Gagal memperbarui transaksi di Spreadsheet: " + err.message + "\nData dikembalikan ke semula.");
+  }
+}
+
+// -------------------------------------------------------------
+// FITUR OPTIMISTIC UI: HAPUS TRANSAKSI + ROLLBACK
+// -------------------------------------------------------------
+async function deleteTrx(id) {
+  if (String(id).startsWith("TEMP-")) {
+    return toast("Tunggu sebentar hingga transaksi selesai tersimpan…", true);
+  }
+  const idx = mutasi.findIndex(m => String(m.id) === String(id));
+  if (idx === -1) return alert("Data transaksi tidak ditemukan.");
+
+  const trx = mutasi[idx];
+  const isMasuk = (trx.kategori === "Top-Up" || trx.tipe === "MASUK");
+  if (!confirm(`Hapus transaksi ${trx.kategori} (${rp(trx.nominal)}) milik ${trx.nama || trx.nis} tanggal ${trx.tanggal}?`)) return;
+
+  const targetSantri = santri.find(s => String(s.nis) === String(trx.nis));
+  const backupOldSaldo = targetSantri ? targetSantri.saldo : 0;
+
+  // Kembalikan saldo santri seketika
+  if (targetSantri) {
+    targetSantri.saldo = Number(targetSantri.saldo || 0) + (isMasuk ? -Number(trx.nominal) : Number(trx.nominal));
+  }
+  mutasi.splice(idx, 1);
+
+  refreshAllViews();
+  toast("✓ Transaksi dihapus (menyinkronkan cloud…)");
+
+  try {
+    await api("hapus_transaksi", { id });
+    toast("✓ Transaksi berhasil dihapus dari spreadsheet!");
+  } catch (err) {
+    // Rollback
+    mutasi.splice(idx, 0, trx);
+    if (targetSantri) targetSantri.saldo = backupOldSaldo;
+    refreshAllViews();
+    alert("⚠️ Gagal menghapus transaksi di Spreadsheet: " + err.message + "\nData dikembalikan ke semula.");
   }
 }
 
@@ -1003,15 +1290,14 @@ async function saveBatch() {
   if (!items.length) return alert("Isi nominal minimal satu santri.");
   if (!confirm(`Simpan ${items.length} transaksi uang saku untuk Kelas ${kelas}?`)) return;
 
-  // 1. Simpan backup saldo
   const backupSaldomap = {};
+  const tempEntries = {};
   items.forEach(it => {
     const s = santri.find(x => String(x.nis) === String(it.nis));
     if (s) {
       backupSaldomap[s.nis] = s.saldo;
-      // Kurangi langsung saldo di UI
       s.saldo = Number(s.saldo || 0) - Number(it.nominal);
-      mutasi.unshift({
+      const entry = {
         id: "TEMP-" + Math.random(),
         nis: s.nis,
         nama: s.nama,
@@ -1020,33 +1306,36 @@ async function saveBatch() {
         nominal: Number(it.nominal),
         keterangan: "Uang saku harian",
         tipe: "KELUAR"
-      });
+      };
+      tempEntries[s.nis] = entry;
+      mutasi.unshift(entry);
     }
   });
 
-  renderDashboard();
-  renderRecentMutasi();
-  renderMaster();
+  refreshAllViews();
   toast(`✓ ${items.length} transaksi rekap dicatat (menyimpan…)`);
   $("batchNominal").value = "";
   document.querySelectorAll(".batch-inp").forEach(i => i.value = "");
   updateBatchTotal();
   switchNav("dashboard");
 
-  // 2. Kirim di background
   try {
-    await api("batch_uang_saku", { tanggal, kelas, items, keterangan: "Uang saku harian" });
+    const res = await api("batch_uang_saku", { tanggal, kelas, items, keterangan: "Uang saku harian" });
+    if (res && Array.isArray(res.items)) {
+      res.items.forEach(saved => {
+        if (tempEntries[saved.nis]) tempEntries[saved.nis].id = saved.id;
+      });
+      renderRecentMutasi();
+      if ($("lapSelectedNis").value) filterRekapLaporan();
+    }
     toast("✓ Rekap sukses tersimpan di spreadsheet!");
   } catch (err) {
-    // Rollback
     items.forEach(it => {
       const s = santri.find(x => String(x.nis) === String(it.nis));
       if (s && backupSaldomap[s.nis] !== undefined) s.saldo = backupSaldomap[s.nis];
     });
     mutasi = mutasi.filter(m => !String(m.id).startsWith("TEMP-"));
-    renderDashboard();
-    renderRecentMutasi();
-    renderMaster();
+    refreshAllViews();
     alert("⚠️ Gagal menyimpan rekap batch: " + err.message + "\nData dikembalikan ke semula.");
   }
 }
@@ -1142,13 +1431,20 @@ function filterRekapLaporan() {
 
   tbody.innerHTML = lapCurrentRows.map(m => {
     const isMasuk = m.kategori === "Top-Up" || m.tipe === "MASUK";
+    const safeId = escapeHTML(m.id);
     return `
       <tr>
         <td><small>${escapeHTML(m.tanggal || "-")}</small></td>
         <td><span class="badge ${isMasuk ? 'badge-in' : 'badge-out'}">${escapeHTML(m.kategori)}</span></td>
         <td><small>${escapeHTML(m.keterangan || "-")}</small></td>
-        <td style="text-align:right;font-weight:700;color:${isMasuk ? 'var(--green)' : 'var(--red)'}">
-          ${isMasuk ? '+' : '-'} ${rp(m.nominal)}
+        <td style="text-align:right">
+          <div style="font-weight:700;color:${isMasuk ? 'var(--green)' : 'var(--red)'}">
+            ${isMasuk ? '+' : '-'} ${rp(m.nominal)}
+          </div>
+          <div class="act-btns">
+            <button type="button" class="btn-act" title="Edit transaksi" onclick="openEditModal('${safeId}')">✏️</button>
+            <button type="button" class="btn-act del" title="Hapus transaksi" onclick="deleteTrx('${safeId}')">🗑️</button>
+          </div>
         </td>
       </tr>
     `;
@@ -1191,7 +1487,6 @@ function cetakLaporanPDF() {
     barisTabelHTML = `<tr><td colspan="5" style="text-align:center; padding:15px; color:#888;">Tidak ada riwayat mutasi transaksi pada rentang periode ini.</td></tr>`;
   }
 
-  // Buka jendela cetak / PDF dokumen resmi santri
   const win = window.open("", "_blank");
   win.document.write(`<!DOCTYPE html>
 <html lang="id">
@@ -1286,7 +1581,6 @@ function cetakLaporanPDF() {
   </div>
 
   <script>
-    // Langsung memicu print dialog / save as PDF begitu halaman siap
     window.addEventListener('load', () => {
       setTimeout(() => { window.print(); }, 300);
     });
