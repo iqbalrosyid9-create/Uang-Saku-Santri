@@ -120,6 +120,33 @@ button { cursor: pointer; }
   line-height: 1.4;
 }
 
+/* ASRAMA SWITCHER BAR */
+.asrama-bar {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 6px;
+  background: #ffffff;
+  border: 1px solid var(--line);
+  border-radius: 12px;
+  padding: 5px;
+  margin-top: 10px;
+  box-shadow: 0 2px 6px rgba(0,0,0,0.02);
+}
+.asrama-tab {
+  border: 0;
+  background: transparent;
+  padding: 7px 6px;
+  border-radius: 8px;
+  font-size: 11.5px;
+  font-weight: 700;
+  color: var(--muted);
+  transition: all 0.2s ease;
+}
+.asrama-tab.active {
+  background: var(--green);
+  color: #ffffff;
+}
+
 /* STATS */
 .content {
   padding: 0 14px 85px;
@@ -320,7 +347,7 @@ button { cursor: pointer; }
   font-weight: 600;
 }
 
-/* ACTION ICON BUTTONS (EDIT / HAPUS) */
+/* ACTION ICON BUTTONS */
 .act-btns {
   display: inline-flex;
   gap: 4px;
@@ -392,17 +419,9 @@ button { cursor: pointer; }
   justify-content: space-between;
   align-items: center;
 }
-.search-item:hover {
-  background: var(--mint);
-}
-.search-item strong {
-  font-size: 12px;
-  color: var(--ink);
-}
-.search-item small {
-  font-size: 10px;
-  color: var(--muted);
-}
+.search-item:hover { background: var(--mint); }
+.search-item strong { font-size: 12px; color: var(--ink); }
+.search-item small { font-size: 10px; color: var(--muted); }
 .selected-santri-badge {
   background: var(--mint);
   border: 1px solid #b7dbca;
@@ -439,6 +458,7 @@ th { color: var(--muted); font-size: 10px; text-transform: uppercase; }
 .badge { display: inline-block; padding: 2px 7px; border-radius: 99px; font-size: 9.5px; font-weight: 700; }
 .badge-in { background: #e6f7ec; color: #1e7e34; }
 .badge-out { background: #fee2e2; color: #dc2626; }
+.badge-asrama { background: #eef2ff; color: #3730a3; font-size: 9px; padding: 1px 6px; border-radius: 4px; font-weight: 700; }
 
 /* TOAST NOTIFIKASI */
 .toast-msg {
@@ -482,6 +502,7 @@ th { color: var(--muted); font-size: 10px; text-transform: uppercase; }
         <select id="editTrxKat" required>
           <option value="Top-Up">Top-Up (Setoran Wali Masuk)</option>
           <option value="Uang Saku">Uang Saku Santri</option>
+          <option value="Jajan Kantin">Jajan Kantin</option>
           <option value="Laundry">Laundry</option>
           <option value="Potong Rambut">Potong Rambut</option>
           <option value="Kesehatan">Kesehatan / Obat</option>
@@ -553,6 +574,13 @@ th { color: var(--muted); font-size: 10px; text-transform: uppercase; }
     </div>
   </section>
 
+  <!-- FILTER ASRAMA PUTRA / PUTRI / SEMUA -->
+  <div class="asrama-bar">
+    <button type="button" class="asrama-tab active" onclick="setAsramaFilter('ALL', this)">Semua Asrama</button>
+    <button type="button" class="asrama-tab" onclick="setAsramaFilter('Putra', this)">🏢 Putra</button>
+    <button type="button" class="asrama-tab" onclick="setAsramaFilter('Putri', this)">🕌 Putri</button>
+  </div>
+
   <!-- 1. PANEL RINGKASAN: HANYA SALDO PERHATIAN -->
   <div class="panel active" id="p-dashboard">
     <div class="section-head">
@@ -577,7 +605,7 @@ th { color: var(--muted); font-size: 10px; text-transform: uppercase; }
         <label>Tanggal & Kelas</label>
         <div style="display:flex;gap:6px">
           <input type="date" id="batchTgl">
-          <select id="batchKelas" onchange="renderBatch()"><option value="7">Kelas 7</option><option value="8">Kelas 8</option><option value="9">Kelas 9</option><option value="10">Kelas 10</option></select>
+          <select id="batchKelas" onchange="renderBatch()"><option value="7">Kelas 7</option><option value="8">Kelas 8</option><option value="9">Kelas 9</option><option value="10">Kelas 10</option><option value="11">Kelas 11</option><option value="12">Kelas 12</option></select>
         </div>
       </div>
       <div class="form-group">
@@ -645,8 +673,41 @@ th { color: var(--muted); font-size: 10px; text-transform: uppercase; }
     </div>
   </div>
 
-  <!-- 4. PANEL REKAP & LAPORAN WALI SANTRI (CETAK PDF MUTASI & SALDO) -->
+  <!-- 4. PANEL REKAP & LAPORAN -->
   <div class="panel" id="p-laporan">
+    <!-- KARTU BARU: REKAP SETORAN PER UNIT KANTIN -->
+    <div class="section-head">
+      <div><h2>Rekap Setoran Kantin</h2><p>Pencairan tunai ke masing-masing unit kantin.</p></div>
+    </div>
+    <div class="card">
+      <div class="form-group">
+        <label>Periode Pencairan Kantin</label>
+        <div style="display:flex;gap:6px;align-items:center;">
+          <input type="date" id="kantinTglMulai" onchange="renderRekapKantin()">
+          <span style="color:var(--muted);font-size:11px;">s.d.</span>
+          <input type="date" id="kantinTglSelesai" onchange="renderRekapKantin()">
+          <button type="button" class="btn-outline-sm" style="white-space:nowrap;background:var(--mint);color:var(--green);border-color:#c2ded0;" onclick="resetKantinToday()">Hari Ini</button>
+        </div>
+      </div>
+
+      <div class="table-wrap">
+        <table>
+          <thead>
+            <tr>
+              <th>Unit Kantin</th>
+              <th style="text-align:center">Trx</th>
+              <th style="text-align:right">Total Setoran</th>
+              <th style="text-align:right">Slip</th>
+            </tr>
+          </thead>
+          <tbody id="rekapKantinBody">
+            <tr><td colspan="4" class="empty">Memuat data kantin...</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+    <!-- KARTU LAPORAN PER SANTRI -->
     <div class="section-head">
       <div><h2>Laporan Rekap Santri</h2><p>Pilih santri & rentang waktu cetak PDF.</p></div>
     </div>
@@ -675,7 +736,6 @@ th { color: var(--muted); font-size: 10px; text-transform: uppercase; }
 
       <button class="btn-outline-sm" style="width:100%;margin-top:2px;background:var(--mint);border:1px solid #c2ded0;color:var(--green);font-weight:700" onclick="filterRekapLaporan()">Tampilkan Rekap</button>
 
-      <!-- RINGKASAN REKAP PEMASUKAN DAN PENGELUARAN -->
       <div class="rekap-summary-box" id="rekapBox">
         <div class="rekap-summary-row">
           <span>Total Pemasukan (Top-up):</span>
@@ -691,9 +751,7 @@ th { color: var(--muted); font-size: 10px; text-transform: uppercase; }
         </div>
       </div>
 
-      <!-- TOMBOL CETAK SLIP PDF RESMI UNTUK WALI SANTRI -->
       <button class="btn-pdf" onclick="cetakLaporanPDF()">
-        <svg viewBox="0 0 24 24" width="16" height="16" fill="currentColor"><path d="M19 8H5c-1.66 0-3 1.34-3 3v6h4v4h12v-4h4v-6c0-1.66-1.34-3-3-3zm-3 11H8v-5h8v5zm3-7c-.55 0-1-.45-1-1s.45-1 1-1 1 .45 1 1-.45 1-1 1zm-1-9H6v4h12V3z"/></svg>
         📄 Cetak / Download PDF Laporan Wali
       </button>
 
@@ -705,7 +763,7 @@ th { color: var(--muted); font-size: 10px; text-transform: uppercase; }
       </div>
     </div>
 
-    <!-- KARTU RIWAYAT TRANSAKSI (DEFAULT HARI INI + FILTER RENTANG TANGGAL) -->
+    <!-- KARTU RIWAYAT TRANSAKSI -->
     <div class="card" style="margin-top: 14px;">
       <div class="section-head" style="margin: 0 0 10px;">
         <div>
@@ -785,22 +843,19 @@ th { color: var(--muted); font-size: 10px; text-transform: uppercase; }
 </nav>
 
 <script>
-// URL WEB APP GOOGLE APPS SCRIPT
 const API_URL = "https://script.google.com/macros/s/AKfycbwiku-hOfT9_BUWZyTOCW2VlqGp4Rim9QQ8I2BEX_pTO0EXfvh1Y27a8eNYktHRIi15/exec";
 const LIMIT_KRITIS = 20000;
 
 let santri = [];
 let mutasi = [];
 let lapCurrentRows = [];
+let currentAsrama = 'ALL'; // 'ALL' | 'Putra' | 'Putri'
 
 const $ = id => document.getElementById(id);
 const rp = n => "Rp " + Number(n || 0).toLocaleString("id-ID");
 const today = () => {
   const d = new Date();
-  const y = d.getFullYear();
-  const m = String(d.getMonth() + 1).padStart(2, '0');
-  const day = String(d.getDate()).padStart(2, '0');
-  return `${y}-${m}-${day}`;
+  return `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')}-${String(d.getDate()).padStart(2, '0')}`;
 };
 const firstDayOfMonth = () => today().slice(0, 8) + "01";
 
@@ -810,6 +865,26 @@ $("lapTglMulai").value = firstDayOfMonth();
 $("lapTglSelesai").value = today();
 $("recentTglMulai").value = today();
 $("recentTglSelesai").value = today();
+$("kantinTglMulai").value = today();
+$("kantinTglSelesai").value = today();
+
+// Helper filter asrama aktif
+const getFilteredSantri = () => currentAsrama === 'ALL'
+  ? santri
+  : santri.filter(s => String(s.asrama || 'Putra').toLowerCase() === currentAsrama.toLowerCase());
+
+const getFilteredMutasi = () => currentAsrama === 'ALL'
+  ? mutasi
+  : mutasi.filter(m => String(m.asrama || 'Putra').toLowerCase() === currentAsrama.toLowerCase());
+
+function setAsramaFilter(asrama, btn) {
+  currentAsrama = asrama;
+  document.querySelectorAll(".asrama-tab").forEach(b => b.classList.remove("active"));
+  if (btn) btn.classList.add("active");
+  clearSelectedTrxSantri();
+  clearSelectedLapSantri();
+  refreshAllViews();
+}
 
 function toast(msg, isError = false) {
   const t = $("toast");
@@ -825,7 +900,9 @@ function toast(msg, isError = false) {
 
 if ('serviceWorker' in navigator && (location.protocol === 'https:' || location.hostname === 'localhost')) {
   window.addEventListener('load', () => {
-    navigator.serviceWorker.register('./sw.js').catch(() => {});
+    navigator.serviceWorker.register('./sw.js', { updateViaCache: 'none' }).then(reg => {
+      reg.update();
+    }).catch(() => {});
   });
 }
 
@@ -837,25 +914,19 @@ function switchNav(id, btn) {
   window.scrollTo({ top: 0, behavior: "smooth" });
 }
 
-// REQUEST KE SPREADSHEET (APPS SCRIPT)
 async function api(action, payload = {}) {
   const url = API_URL + (API_URL.includes("?") ? "&" : "?") + "action=" + encodeURIComponent(action);
-  const options = {
+  const res = await fetch(url, {
     method: "POST",
     headers: { "Content-Type": "text/plain;charset=utf-8" },
-    body: JSON.stringify({
-      action: action,
-      ...payload
-    })
-  };
-  const res = await fetch(url, options);
+    body: JSON.stringify({ action, ...payload })
+  });
   if (!res.ok) throw new Error("HTTP " + res.status);
   const json = await res.json();
   if (json.success === false) throw new Error(json.message || json.error || "Gagal di server.");
   return json;
 }
 
-// LOAD DATA
 async function loadData(showLoading = false) {
   const pill = $("connPill");
   if (showLoading) {
@@ -864,18 +935,9 @@ async function loadData(showLoading = false) {
   }
 
   try {
-    let res;
-    try {
-      const r1 = await fetch(API_URL);
-      res = await r1.json();
-    } catch (e1) {
-      const r2 = await fetch(API_URL + (API_URL.includes("?") ? "&" : "?") + "action=init&t=" + Date.now());
-      res = await r2.json();
-    }
-
-    if (!res || (!res.santri && !Array.isArray(res))) {
-      throw new Error("Format respons Apps Script tidak sesuai");
-    }
+    const r1 = await fetch(API_URL);
+    const res = await r1.json();
+    if (!res || (!res.santri && !Array.isArray(res))) throw new Error("Format respons tidak sesuai");
 
     santri = res.santri || (Array.isArray(res) ? res : []);
     mutasi = res.mutasi || [];
@@ -894,6 +956,7 @@ async function loadData(showLoading = false) {
 
 function refreshAllViews() {
   renderDashboard();
+  renderRekapKantin();
   renderRecentMutasi();
   renderBatch();
   renderMaster();
@@ -902,6 +965,156 @@ function refreshAllViews() {
     if (s) $("lapSelectedDetail").textContent = `Kelas ${s.kelas} · Sisa Saldo: ${rp(s.saldo)}`;
     filterRekapLaporan();
   }
+}
+
+// =========================================================================
+// REKAP SETORAN PER UNIT KANTIN & CETAK SLIP SETORAN PDF
+// =========================================================================
+function resetKantinToday() {
+  $("kantinTglMulai").value = today();
+  $("kantinTglSelesai").value = today();
+  renderRekapKantin();
+}
+
+function getRekapKantinData() {
+  const mulai = $("kantinTglMulai").value;
+  const selesai = $("kantinTglSelesai").value;
+  const mutasiAktif = getFilteredMutasi();
+
+  const kantinTrx = mutasiAktif.filter(m => {
+    const isKantin = String(m.kategori || '').toLowerCase().includes('kantin');
+    if (!isKantin) return false;
+    const tgl = String(m.tanggal || '');
+    return (!mulai || tgl >= mulai) && (!selesai || tgl <= selesai);
+  });
+
+  const grouped = {};
+  kantinTrx.forEach(m => {
+    const ket = String(m.keterangan || '');
+    const match = ket.match(/^\[([^\]]+)\]/);
+    const unitName = match ? match[1].trim() : 'Kantin Umum';
+    if (!grouped[unitName]) {
+      grouped[unitName] = { nama: unitName, count: 0, total: 0, items: [] };
+    }
+    grouped[unitName].count += 1;
+    grouped[unitName].total += Number(m.nominal || 0);
+    grouped[unitName].items.push(m);
+  });
+
+  return Object.values(grouped);
+}
+
+function renderRekapKantin() {
+  const tbody = $("rekapKantinBody");
+  if (!tbody) return;
+  const list = getRekapKantinData();
+
+  if (!list.length) {
+    tbody.innerHTML = `<tr><td colspan="4" class="empty">Belum ada transaksi kantin pada periode ini.</td></tr>`;
+    return;
+  }
+
+  tbody.innerHTML = list.map(u => `
+    <tr>
+      <td><strong>${escapeHTML(u.nama)}</strong></td>
+      <td style="text-align:center"><span class="badge badge-in">${u.count}</span></td>
+      <td style="text-align:right;font-weight:750;color:var(--green)">${rp(u.total)}</td>
+      <td style="text-align:right">
+        <button type="button" class="btn-act" onclick="cetakSlipKantinPDF('${escapeHTML(u.nama)}')">📄 PDF</button>
+      </td>
+    </tr>
+  `).join("");
+}
+
+function cetakSlipKantinPDF(unitName) {
+  const list = getRekapKantinData();
+  const unit = list.find(u => u.nama === unitName);
+  if (!unit) return alert("Data unit kantin tidak ditemukan.");
+
+  const mulai = $("kantinTglMulai").value || "-";
+  const selesai = $("kantinTglSelesai").value || "-";
+
+  const rowsHTML = unit.items.map((m, idx) => `
+    <tr>
+      <td style="text-align:center;">${idx + 1}</td>
+      <td>${escapeHTML(m.tanggal || "-")}</td>
+      <td>${escapeHTML(m.nama || m.nis)} (${escapeHTML(m.nis)})</td>
+      <td>${escapeHTML(m.keterangan || "-")}</td>
+      <td style="text-align:right;font-weight:bold;">${rp(m.nominal)}</td>
+    </tr>
+  `).join("");
+
+  const win = window.open("", "_blank");
+  win.document.write(`<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="utf-8">
+  <title>Slip_Setoran_${escapeHTML(unit.nama)}</title>
+  <style>
+    @page { size: A4 portrait; margin: 15mm; }
+    body { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Arial, sans-serif; font-size: 12px; color: #1f2d27; padding: 20px; }
+    .kop { text-align: center; border-bottom: 2px solid #143e33; padding-bottom: 10px; margin-bottom: 16px; }
+    .kop h2 { margin: 0; font-size: 16px; color: #143e33; text-transform: uppercase; }
+    .kop p { margin: 3px 0 0; font-size: 11px; color: #555; }
+    .meta { display: flex; justify-content: space-between; background: #f8faf8; padding: 12px; border: 1px solid #dce4df; border-radius: 8px; margin-bottom: 16px; }
+    table { width: 100%; border-collapse: collapse; margin-bottom: 24px; }
+    th, td { border: 1px solid #dce4df; padding: 7px 9px; font-size: 11px; text-align: left; }
+    th { background: #eaf4ef; color: #143e33; }
+    .ttd-wrap { display: flex; justify-content: space-between; margin-top: 35px; padding: 0 20px; }
+    .ttd-col { text-align: center; width: 200px; }
+    @media print { .no-print { display: none; } body { padding: 0; } }
+  </style>
+</head>
+<body>
+  <div class="no-print" style="text-align:right;margin-bottom:14px;">
+    <button onclick="window.print()" style="background:#143e33;color:#fff;border:0;padding:8px 14px;border-radius:6px;font-weight:bold;cursor:pointer;">🖨️ Cetak Bukti Setoran</button>
+  </div>
+  <div class="kop">
+    <h2>Pondok Pesantren Tahfidzul Qur'an Al Husna Lestari</h2>
+    <p>Bukti Pencairan & Rekap Setoran Cashless Unit Kantin</p>
+  </div>
+  <div class="meta">
+    <div>
+      <div>Unit Kantin : <strong>${escapeHTML(unit.nama)}</strong></div>
+      <div>Jumlah Transaksi : <strong>${unit.count} transaksi</strong></div>
+    </div>
+    <div style="text-align:right;">
+      <div>Periode : <strong>${escapeHTML(mulai)} s.d. ${escapeHTML(selesai)}</strong></div>
+      <div>Total Dicairkan : <strong style="color:#143e33;font-size:14px;">${rp(unit.total)}</strong></div>
+    </div>
+  </div>
+  <table>
+    <thead>
+      <tr>
+        <th style="width:30px;text-align:center;">No</th>
+        <th style="width:85px;">Tanggal</th>
+        <th>Nama Santri</th>
+        <th>Keterangan</th>
+        <th style="width:100px;text-align:right;">Nominal</th>
+      </tr>
+    </thead>
+    <tbody>${rowsHTML}</tbody>
+    <tfoot>
+      <tr>
+        <th colspan="4" style="text-align:right;">TOTAL PENCAIRAN TUNAI</th>
+        <th style="text-align:right;font-size:12px;">${rp(unit.total)}</th>
+      </tr>
+    </tfoot>
+  </table>
+  <div class="ttd-wrap">
+    <div class="ttd-col">
+      <p style="margin:0 0 55px;">Penerima (Petugas Kantin),</p>
+      <p style="margin:0;font-weight:bold;">( ______________________ )</p>
+    </div>
+    <div class="ttd-col">
+      <p style="margin:0 0 55px;">Klaten, ${today()}<br><strong>Bendahara Pondok</strong></p>
+      <p style="margin:0;font-weight:bold;text-decoration:underline;">( Qoyyimah, S. Mat. )</p>
+    </div>
+  </div>
+  <script>window.addEventListener('load', () => setTimeout(() => window.print(), 300));<\/script>
+</body>
+</html>`);
+  win.document.close();
 }
 
 function resetRecentToday() {
@@ -924,16 +1137,12 @@ function renderRecentMutasi() {
       : `Periode ${mulai || '-'} s.d. ${selesai || '-'}`;
   }
 
-  const filtered = mutasi.filter(m => {
+  const filtered = getFilteredMutasi().filter(m => {
     const tgl = String(m.tanggal || "");
-    const okMulai = !mulai || tgl >= mulai;
-    const okSelesai = !selesai || tgl <= selesai;
-    return okMulai && okSelesai;
+    return (!mulai || tgl >= mulai) && (!selesai || tgl <= selesai);
   });
 
-  if ($("recentCountBadge")) {
-    $("recentCountBadge").textContent = `${filtered.length} trx`;
-  }
+  if ($("recentCountBadge")) $("recentCountBadge").textContent = `${filtered.length} trx`;
 
   if (!filtered.length) {
     tbody.innerHTML = `<tr><td colspan="4" class="empty">Tidak ada transaksi pada rentang tanggal ini.</td></tr>`;
@@ -966,15 +1175,18 @@ function renderRecentMutasi() {
 }
 
 function renderDashboard() {
-  const top = mutasi.filter(m => m.kategori === "Top-Up" || m.tipe === "MASUK").reduce((a, m) => a + Number(m.nominal || 0), 0);
-  const out = mutasi.filter(m => m.kategori !== "Top-Up" && m.tipe !== "MASUK").reduce((a, m) => a + Number(m.nominal || 0), 0);
-  const totalSaldo = santri.reduce((a, s) => a + Number(s.saldo || 0), 0);
+  const sList = getFilteredSantri();
+  const mList = getFilteredMutasi();
+
+  const top = mList.filter(m => m.kategori === "Top-Up" || m.tipe === "MASUK").reduce((a, m) => a + Number(m.nominal || 0), 0);
+  const out = mList.filter(m => m.kategori !== "Top-Up" && m.tipe !== "MASUK").reduce((a, m) => a + Number(m.nominal || 0), 0);
+  const totalSaldo = sList.reduce((a, s) => a + Number(s.saldo || 0), 0);
 
   $("statSaldo").textContent = rp(totalSaldo);
   $("statTopup").textContent = rp(top);
   $("statKeluar").textContent = rp(out);
 
-  const low = santri.filter(s => Number(s.saldo) < LIMIT_KRITIS);
+  const low = sList.filter(s => Number(s.saldo) < LIMIT_KRITIS);
   $("critBadge").textContent = `${low.length} santri`;
 
   if (!low.length) {
@@ -985,7 +1197,7 @@ function renderDashboard() {
   $("criticalList").innerHTML = low.map(s => `
     <div class="critical-row">
       <div>
-        <div class="critical-name">${escapeHTML(s.nama)}</div>
+        <div class="critical-name">${escapeHTML(s.nama)} <span class="badge-asrama">${escapeHTML(s.asrama || 'Putra')}</span></div>
         <div class="critical-sub">Kelas ${escapeHTML(s.kelas)} · NIS ${escapeHTML(s.nis)}</div>
       </div>
       <div class="critical-val">${rp(s.saldo)}</div>
@@ -997,7 +1209,6 @@ function escapeHTML(str) {
   return String(str ?? '').replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
 }
 
-// SEARCH AUTOCOMPLETE TRANSAKSI
 function handleTrxSearch(query) {
   const box = $("trxSearchResults");
   const q = query.trim().toLowerCase();
@@ -1006,7 +1217,7 @@ function handleTrxSearch(query) {
     box.innerHTML = "";
     return;
   }
-  const filtered = santri.filter(s => 
+  const filtered = getFilteredSantri().filter(s => 
     String(s.nama).toLowerCase().includes(q) || 
     String(s.nis).toLowerCase().includes(q) ||
     String(s.kamar || "").toLowerCase().includes(q)
@@ -1021,7 +1232,7 @@ function handleTrxSearch(query) {
   box.innerHTML = filtered.map(s => `
     <div class="search-item" onclick="selectTrxSantri('${escapeHTML(s.nis)}')">
       <div>
-        <strong>${escapeHTML(s.nama)}</strong>
+        <strong>${escapeHTML(s.nama)}</strong> <span class="badge-asrama">${escapeHTML(s.asrama || 'Putra')}</span>
         <div><small>Kls ${escapeHTML(s.kelas)} · NIS ${escapeHTML(s.nis)}</small></div>
       </div>
       <small style="font-weight:700;color:${Number(s.saldo)<LIMIT_KRITIS?'var(--red)':'var(--green)'}">${rp(s.saldo)}</small>
@@ -1036,7 +1247,7 @@ function selectTrxSantri(nis) {
   $("trxNis").value = s.nis;
   $("trxSearchInput").style.display = "none";
   $("trxSearchResults").style.display = "none";
-  $("trxSelectedNama").textContent = s.nama;
+  $("trxSelectedNama").textContent = `${s.nama} (${s.asrama || 'Putra'})`;
   $("trxSelectedDetail").textContent = `Kelas ${s.kelas} · NIS: ${s.nis} · Saldo: ${rp(s.saldo)}`;
   $("trxSelectedBadge").style.display = "flex";
 }
@@ -1045,13 +1256,9 @@ function clearSelectedTrxSantri() {
   $("trxNis").value = "";
   $("trxSearchInput").value = "";
   $("trxSearchInput").style.display = "block";
-  $("trxSearchInput").focus();
   $("trxSelectedBadge").style.display = "none";
 }
 
-// -------------------------------------------------------------
-// FITUR OPTIMISTIC UI: TRANSAKSI SATUAN SUPER CEPAT + ROLLBACK
-// -------------------------------------------------------------
 async function saveTrx(e) {
   e.preventDefault();
   const nis = $("trxNis").value;
@@ -1077,6 +1284,7 @@ async function saveTrx(e) {
     id: tempId,
     nis: nis,
     nama: targetSantri.nama,
+    asrama: targetSantri.asrama || 'Putra',
     tanggal: tanggal,
     kategori: kategori,
     nominal: nominal,
@@ -1105,23 +1313,17 @@ async function saveTrx(e) {
     targetSantri.saldo = oldSaldo;
     mutasi = mutasi.filter(m => m.id !== tempId);
     refreshAllViews();
-    alert("⚠️ Gagal menyimpan ke Spreadsheet: " + err.message + "\nData telah dikembalikan ke saldo semula.");
+    alert("⚠️ Gagal menyimpan ke Spreadsheet: " + err.message);
   }
 }
 
-// -------------------------------------------------------------
-// FITUR OPTIMISTIC UI: EDIT TRANSAKSI + ROLLBACK
-// -------------------------------------------------------------
 function openEditModal(id) {
-  if (String(id).startsWith("TEMP-")) {
-    return toast("Tunggu sebentar hingga transaksi selesai tersimpan di spreadsheet…", true);
-  }
+  if (String(id).startsWith("TEMP-")) return toast("Tunggu sebentar hingga transaksi selesai tersimpan…", true);
   const trx = mutasi.find(m => String(m.id) === String(id));
   if (!trx) return alert("Data transaksi tidak ditemukan.");
 
-  // Populate santri select
   $("editTrxNis").innerHTML = santri.map(s =>
-    `<option value="${escapeHTML(s.nis)}" ${String(s.nis) === String(trx.nis) ? 'selected' : ''}>${escapeHTML(s.nama)} (Kls ${escapeHTML(s.kelas)} · NIS ${escapeHTML(s.nis)})</option>`
+    `<option value="${escapeHTML(s.nis)}" ${String(s.nis) === String(trx.nis) ? 'selected' : ''}>${escapeHTML(s.nama)} (${escapeHTML(s.asrama || 'Putra')} · Kls ${escapeHTML(s.kelas)})</option>`
   ).join("");
 
   $("editTrxId").value = trx.id;
@@ -1133,9 +1335,7 @@ function openEditModal(id) {
   $("editModal").classList.add("open");
 }
 
-function closeEditModal() {
-  $("editModal").classList.remove("open");
-}
+function closeEditModal() { $("editModal").classList.remove("open"); }
 
 async function submitEditTrx(e) {
   e.preventDefault();
@@ -1146,9 +1346,6 @@ async function submitEditTrx(e) {
   const newTgl = $("editTrxTgl").value;
   const newKet = $("editTrxKet").value.trim() || "-";
 
-  if (!newNis || !newTgl || !newKat) return alert("Semua kolom wajib diisi.");
-  if (!Number.isSafeInteger(newNom) || newNom <= 0) return alert("Nominal harus lebih dari 0.");
-
   const trx = mutasi.find(m => String(m.id) === String(id));
   if (!trx) return closeEditModal();
 
@@ -1156,24 +1353,20 @@ async function submitEditTrx(e) {
   const newSantri = santri.find(s => String(s.nis) === String(newNis));
   if (!newSantri) return alert("Santri tidak ditemukan.");
 
-  // Backup data lama untuk rollback
   const backupTrx = { ...trx };
   const backupOldSaldo = oldSantri ? oldSantri.saldo : 0;
   const backupNewSaldo = newSantri.saldo;
 
-  // 1. Batalkan efek transaksi lama pada saldo santri lama
   if (oldSantri) {
     const oldIsMasuk = (trx.kategori === "Top-Up" || trx.tipe === "MASUK");
     oldSantri.saldo = Number(oldSantri.saldo || 0) + (oldIsMasuk ? -Number(trx.nominal) : Number(trx.nominal));
   }
-
-  // 2. Terapkan efek transaksi baru pada saldo santri baru
   const newIsMasuk = (newKat === "Top-Up");
   newSantri.saldo = Number(newSantri.saldo || 0) + (newIsMasuk ? newNom : -newNom);
 
-  // 3. Perbarui objek mutasi lokal
   trx.nis = newNis;
   trx.nama = newSantri.nama;
+  trx.asrama = newSantri.asrama || 'Putra';
   trx.kategori = newKat;
   trx.nominal = newNom;
   trx.tanggal = newTgl;
@@ -1182,35 +1375,22 @@ async function submitEditTrx(e) {
 
   closeEditModal();
   refreshAllViews();
-  toast("✓ Perubahan dicatat (menyimpan ke cloud…)");
+  toast("✓ Perubahan dicatat…");
 
   try {
-    await api("edit_transaksi", {
-      id,
-      nis: newNis,
-      kategori: newKat,
-      nominal: newNom,
-      tanggal: newTgl,
-      keterangan: newKet
-    });
-    toast("✓ Transaksi berhasil diperbarui di spreadsheet!");
+    await api("edit_transaksi", { id, nis: newNis, kategori: newKat, nominal: newNom, tanggal: newTgl, keterangan: newKet });
+    toast("✓ Transaksi berhasil diperbarui!");
   } catch (err) {
-    // Rollback
     Object.assign(trx, backupTrx);
     if (oldSantri) oldSantri.saldo = backupOldSaldo;
     newSantri.saldo = backupNewSaldo;
     refreshAllViews();
-    alert("⚠️ Gagal memperbarui transaksi di Spreadsheet: " + err.message + "\nData dikembalikan ke semula.");
+    alert("⚠️ Gagal memperbarui transaksi: " + err.message);
   }
 }
 
-// -------------------------------------------------------------
-// FITUR OPTIMISTIC UI: HAPUS TRANSAKSI + ROLLBACK
-// -------------------------------------------------------------
 async function deleteTrx(id) {
-  if (String(id).startsWith("TEMP-")) {
-    return toast("Tunggu sebentar hingga transaksi selesai tersimpan…", true);
-  }
+  if (String(id).startsWith("TEMP-")) return toast("Tunggu sebentar…", true);
   const idx = mutasi.findIndex(m => String(m.id) === String(id));
   if (idx === -1) return alert("Data transaksi tidak ditemukan.");
 
@@ -1221,39 +1401,30 @@ async function deleteTrx(id) {
   const targetSantri = santri.find(s => String(s.nis) === String(trx.nis));
   const backupOldSaldo = targetSantri ? targetSantri.saldo : 0;
 
-  // Kembalikan saldo santri seketika
   if (targetSantri) {
     targetSantri.saldo = Number(targetSantri.saldo || 0) + (isMasuk ? -Number(trx.nominal) : Number(trx.nominal));
   }
   mutasi.splice(idx, 1);
 
   refreshAllViews();
-  toast("✓ Transaksi dihapus (menyinkronkan cloud…)");
+  toast("✓ Transaksi dihapus…");
 
   try {
     await api("hapus_transaksi", { id });
-    toast("✓ Transaksi berhasil dihapus dari spreadsheet!");
+    toast("✓ Berhasil dihapus dari spreadsheet!");
   } catch (err) {
-    // Rollback
     mutasi.splice(idx, 0, trx);
     if (targetSantri) targetSantri.saldo = backupOldSaldo;
     refreshAllViews();
-    alert("⚠️ Gagal menghapus transaksi di Spreadsheet: " + err.message + "\nData dikembalikan ke semula.");
+    alert("⚠️ Gagal menghapus transaksi: " + err.message);
   }
 }
 
-// -------------------------------------------------------------
-// FITUR OPTIMISTIC UI: REKAP BATCH SUPER CEPAT + ROLLBACK
-// -------------------------------------------------------------
 function updateBatchTotal() {
-  let total = 0;
-  let count = 0;
+  let total = 0, count = 0;
   document.querySelectorAll(".batch-inp").forEach(i => {
     const val = Number(i.value || 0);
-    if (val > 0) {
-      total += val;
-      count++;
-    }
+    if (val > 0) { total += val; count++; }
   });
   if ($("batchTotalUang")) $("batchTotalUang").textContent = rp(total);
   if ($("batchCountSantri")) $("batchCountSantri").textContent = count;
@@ -1261,16 +1432,16 @@ function updateBatchTotal() {
 
 function renderBatch() {
   const kls = $("batchKelas").value;
-  const list = santri.filter(s => String(s.kelas) === String(kls));
+  const list = getFilteredSantri().filter(s => String(s.kelas) === String(kls));
   $("batchRows").innerHTML = list.length ? list.map(s => `
     <div style="display:flex;justify-content:space-between;align-items:center;padding:7px 0;border-bottom:1px solid #f0f4f1">
       <div>
-        <strong style="font-size:12px">${escapeHTML(s.nama)}</strong>
+        <strong style="font-size:12px">${escapeHTML(s.nama)}</strong> <span class="badge-asrama">${escapeHTML(s.asrama || 'Putra')}</span>
         <div style="font-size:10px;color:var(--muted)">NIS ${escapeHTML(s.nis)} · Saldo: ${rp(s.saldo)}</div>
       </div>
       <input type="number" class="batch-inp" data-nis="${escapeHTML(s.nis)}" placeholder="0" oninput="updateBatchTotal()" style="width:90px;text-align:right;padding:6px;border:1px solid var(--line);border-radius:6px">
     </div>
-  `).join("") : `<div class="empty">Tidak ada santri di kelas ini.</div>`;
+  `).join("") : `<div class="empty">Tidak ada santri di kelas/asrama ini.</div>`;
   updateBatchTotal();
 }
 
@@ -1301,6 +1472,7 @@ async function saveBatch() {
         id: "TEMP-" + Math.random(),
         nis: s.nis,
         nama: s.nama,
+        asrama: s.asrama || 'Putra',
         tanggal: tanggal,
         kategori: "Uang Saku",
         nominal: Number(it.nominal),
@@ -1313,7 +1485,7 @@ async function saveBatch() {
   });
 
   refreshAllViews();
-  toast(`✓ ${items.length} transaksi rekap dicatat (menyimpan…)`);
+  toast(`✓ ${items.length} transaksi rekap dicatat…`);
   $("batchNominal").value = "";
   document.querySelectorAll(".batch-inp").forEach(i => i.value = "");
   updateBatchTotal();
@@ -1322,11 +1494,8 @@ async function saveBatch() {
   try {
     const res = await api("batch_uang_saku", { tanggal, kelas, items, keterangan: "Uang saku harian" });
     if (res && Array.isArray(res.items)) {
-      res.items.forEach(saved => {
-        if (tempEntries[saved.nis]) tempEntries[saved.nis].id = saved.id;
-      });
+      res.items.forEach(saved => { if (tempEntries[saved.nis]) tempEntries[saved.nis].id = saved.id; });
       renderRecentMutasi();
-      if ($("lapSelectedNis").value) filterRekapLaporan();
     }
     toast("✓ Rekap sukses tersimpan di spreadsheet!");
   } catch (err) {
@@ -1336,11 +1505,10 @@ async function saveBatch() {
     });
     mutasi = mutasi.filter(m => !String(m.id).startsWith("TEMP-"));
     refreshAllViews();
-    alert("⚠️ Gagal menyimpan rekap batch: " + err.message + "\nData dikembalikan ke semula.");
+    alert("⚠️ Gagal menyimpan rekap batch: " + err.message);
   }
 }
 
-// SEARCH AUTOCOMPLETE LAPORAN
 function handleLapSearch(query) {
   const box = $("lapSearchResults");
   const q = query.trim().toLowerCase();
@@ -1349,7 +1517,7 @@ function handleLapSearch(query) {
     box.innerHTML = "";
     return;
   }
-  const filtered = santri.filter(s => 
+  const filtered = getFilteredSantri().filter(s => 
     String(s.nama).toLowerCase().includes(q) || 
     String(s.nis).toLowerCase().includes(q)
   ).slice(0, 10);
@@ -1363,7 +1531,7 @@ function handleLapSearch(query) {
   box.innerHTML = filtered.map(s => `
     <div class="search-item" onclick="selectLapSantri('${escapeHTML(s.nis)}')">
       <div>
-        <strong>${escapeHTML(s.nama)}</strong>
+        <strong>${escapeHTML(s.nama)}</strong> <span class="badge-asrama">${escapeHTML(s.asrama || 'Putra')}</span>
         <div><small>Kelas ${escapeHTML(s.kelas)} · NIS ${escapeHTML(s.nis)}</small></div>
       </div>
       <small style="color:var(--green)">${rp(s.saldo)}</small>
@@ -1378,7 +1546,7 @@ function selectLapSantri(nis) {
   $("lapSelectedNis").value = s.nis;
   $("lapSearchInput").style.display = "none";
   $("lapSearchResults").style.display = "none";
-  $("lapSelectedNama").textContent = s.nama;
+  $("lapSelectedNama").textContent = `${s.nama} (${s.asrama || 'Putra'})`;
   $("lapSelectedDetail").textContent = `Kelas ${s.kelas} · Sisa Saldo: ${rp(s.saldo)}`;
   $("lapSelectedBadge").style.display = "flex";
   filterRekapLaporan();
@@ -1388,7 +1556,6 @@ function clearSelectedLapSantri() {
   $("lapSelectedNis").value = "";
   $("lapSearchInput").value = "";
   $("lapSearchInput").style.display = "block";
-  $("lapSearchInput").focus();
   $("lapSelectedBadge").style.display = "none";
   $("lapTableBody").innerHTML = `<tr><td colspan="4" class="empty">Silakan pilih santri dan tampilkan.</td></tr>`;
   $("sumMasuk").textContent = "Rp 0";
@@ -1407,9 +1574,7 @@ function filterRekapLaporan() {
   lapCurrentRows = mutasi.filter(m => {
     const cocokSantri = String(m.nis) === String(targetNis);
     const tgl = String(m.tanggal || "");
-    const cocokMulai = !mulai || tgl >= mulai;
-    const cocokSelesai = !selesai || tgl <= selesai;
-    return cocokSantri && cocokMulai && cocokSelesai;
+    return cocokSantri && (!mulai || tgl >= mulai) && (!selesai || tgl <= selesai);
   });
 
   let totMasuk = 0, totKeluar = 0;
@@ -1451,9 +1616,6 @@ function filterRekapLaporan() {
   }).join("");
 }
 
-// -------------------------------------------------------------
-// CETAK / DOWNLOAD PDF RESMI LAPORAN REKAP SANTRI UNTUK WALI
-// -------------------------------------------------------------
 function cetakLaporanPDF() {
   const targetNis = $("lapSelectedNis").value;
   if (!targetNis) return alert("Silakan pilih nama santri terlebih dahulu.");
@@ -1513,22 +1675,17 @@ function cetakLaporanPDF() {
     .ttd-col { text-align: center; width: 200px; }
     .no-print { margin-bottom: 18px; text-align: right; }
     .btn-print { background: #143e33; color: #fff; border: 0; padding: 8px 16px; border-radius: 6px; font-weight: bold; cursor: pointer; }
-    @media print {
-      .no-print { display: none !important; }
-      body { padding: 0; }
-    }
+    @media print { .no-print { display: none !important; } body { padding: 0; } }
   </style>
 </head>
 <body>
   <div class="no-print">
     <button class="btn-print" onclick="window.print()">🖨️ Cetak / Simpan PDF Sekarang</button>
   </div>
-
   <div class="header-kop">
-    <h2>Pondok Pesantren Tahfidzul Qur'an Al Husna</h2>
-    <p>Laporan Resmi Rekapitulasi Mutasi Uang Saku Santri</p>
+    <h2>Pondok Pesantren Tahfidzul Qur'an Al Husna Lestari</h2>
+    <p>Laporan Resmi Rekapitulasi Mutasi Uang Saku Santri (${escapeHTML(s.asrama || 'Putra')})</p>
   </div>
-
   <div class="meta-box">
     <div class="meta-col">
       <div>Nama Santri : <strong>${escapeHTML(s.nama)}</strong></div>
@@ -1541,22 +1698,11 @@ function cetakLaporanPDF() {
       <div>No. Kontak Wali : ${escapeHTML(s.wa || '-')}</div>
     </div>
   </div>
-
   <div class="summary-grid">
-    <div class="sum-card">
-      <small>Total Setoran (Top-Up)</small>
-      <strong style="color: #1b6652;">${rp(totMasuk)}</strong>
-    </div>
-    <div class="sum-card">
-      <small>Total Pengeluaran (Uang Saku/dll)</small>
-      <strong style="color: #c74444;">${rp(totKeluar)}</strong>
-    </div>
-    <div class="sum-card" style="background: #eaf4ef; border-color: #b9dec9;">
-      <small style="color: #143e33; font-weight: bold;">Sisa Saldo Terkini</small>
-      <strong style="color: #143e33; font-size: 15px;">${rp(s.saldo)}</strong>
-    </div>
+    <div class="sum-card"><small>Total Setoran (Top-Up)</small><strong style="color: #1b6652;">${rp(totMasuk)}</strong></div>
+    <div class="sum-card"><small>Total Pengeluaran</small><strong style="color: #c74444;">${rp(totKeluar)}</strong></div>
+    <div class="sum-card" style="background: #eaf4ef; border-color: #b9dec9;"><small style="color: #143e33; font-weight: bold;">Sisa Saldo Terkini</small><strong style="color: #143e33; font-size: 15px;">${rp(s.saldo)}</strong></div>
   </div>
-
   <h4 style="margin: 0 0 8px; color: #143e33;">Rincian Mutasi Transaksi</h4>
   <table>
     <thead>
@@ -1568,23 +1714,15 @@ function cetakLaporanPDF() {
         <th style="width: 110px; text-align: right;">Nominal</th>
       </tr>
     </thead>
-    <tbody>
-      ${barisTabelHTML}
-    </tbody>
+    <tbody>${barisTabelHTML}</tbody>
   </table>
-
   <div class="ttd-box">
     <div class="ttd-col">
       <p style="margin: 0 0 50px;">Klaten, ${today()}<br><strong>Bendahara</strong></p>
       <p style="margin: 0; font-weight: bold; text-decoration: underline;">( Qoyyimah, S. Mat. )</p>
     </div>
   </div>
-
-  <script>
-    window.addEventListener('load', () => {
-      setTimeout(() => { window.print(); }, 300);
-    });
-  <\/script>
+  <script>window.addEventListener('load', () => setTimeout(() => window.print(), 300));<\/script>
 </body>
 </html>`);
   win.document.close();
@@ -1592,11 +1730,11 @@ function cetakLaporanPDF() {
 
 function renderMaster() {
   const q = ($("cariSantri").value || "").toLowerCase();
-  const list = santri.filter(s => (`${s.nama} ${s.nis} ${s.kamar || ''}`).toLowerCase().includes(q));
+  const list = getFilteredSantri().filter(s => (`${s.nama} ${s.nis} ${s.kamar || ''}`).toLowerCase().includes(q));
   $("masterBody").innerHTML = list.length ? list.map(s => `
     <tr>
       <td><code>${escapeHTML(s.nis)}</code></td>
-      <td><strong>${escapeHTML(s.nama)}</strong></td>
+      <td><strong>${escapeHTML(s.nama)}</strong> <span class="badge-asrama">${escapeHTML(s.asrama || 'Putra')}</span></td>
       <td>${escapeHTML(s.kelas)}</td>
       <td style="text-align:right;font-weight:700;color:${Number(s.saldo)<LIMIT_KRITIS?'var(--red)':'var(--green)'}">${rp(s.saldo)}</td>
     </tr>
@@ -1604,12 +1742,8 @@ function renderMaster() {
 }
 
 document.addEventListener("click", e => {
-  if (!e.target.closest("#trxSearchInput") && !e.target.closest("#trxSearchResults")) {
-    $("trxSearchResults").style.display = "none";
-  }
-  if (!e.target.closest("#lapSearchInput") && !e.target.closest("#lapSearchResults")) {
-    $("lapSearchResults").style.display = "none";
-  }
+  if (!e.target.closest("#trxSearchInput") && !e.target.closest("#trxSearchResults")) $("trxSearchResults").style.display = "none";
+  if (!e.target.closest("#lapSearchInput") && !e.target.closest("#lapSearchResults")) $("lapSearchResults").style.display = "none";
 });
 
 loadData();
