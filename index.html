@@ -33,6 +33,59 @@ body {
 button, input, select, textarea { font: inherit; }
 button { cursor: pointer; }
 
+/* LOGIN SCREEN */
+.login-wrapper {
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  padding: 20px 16px;
+  max-width: 420px;
+  margin: auto;
+}
+.login-card {
+  background: #fff;
+  border: 1px solid var(--line);
+  border-radius: 18px;
+  padding: 24px 20px;
+  box-shadow: 0 10px 28px rgba(20, 62, 51, 0.08);
+}
+.login-logo {
+  width: 52px;
+  height: 52px;
+  background: var(--green);
+  color: #f3c969;
+  border-radius: 14px;
+  display: grid;
+  place-items: center;
+  font-size: 24px;
+  margin: 0 auto 12px;
+}
+.login-title {
+  text-align: center;
+  margin: 0 0 4px;
+  font-size: 17px;
+  font-weight: 800;
+  color: var(--green);
+}
+.login-sub {
+  text-align: center;
+  margin: 0 0 20px;
+  font-size: 11.5px;
+  color: var(--muted);
+}
+.login-err {
+  background: #fff5f5;
+  border: 1px solid #f5c2c2;
+  color: var(--red);
+  padding: 8px 12px;
+  border-radius: 9px;
+  font-size: 11.5px;
+  font-weight: 600;
+  margin-bottom: 12px;
+  display: none;
+}
+
 /* HEADER */
 .header {
   background: var(--green);
@@ -59,21 +112,9 @@ button { cursor: pointer; }
   place-items: center;
   font-size: 18px;
 }
-.brand h1 {
-  font-size: 14px;
-  margin: 0;
-  font-weight: 700;
-}
-.brand p {
-  margin: 1px 0 0;
-  font-size: 10.5px;
-  color: #c4d7ce;
-}
-.header-status {
-  display: flex;
-  align-items: center;
-  gap: 6px;
-}
+.brand h1 { font-size: 14px; margin: 0; font-weight: 700; }
+.brand p { margin: 1px 0 0; font-size: 10.5px; color: #c4d7ce; }
+.header-status { display: flex; align-items: center; gap: 6px; }
 .pill {
   border: 1px solid rgba(255, 255, 255, 0.3);
   padding: 4px 10px;
@@ -92,35 +133,34 @@ button { cursor: pointer; }
   display: grid;
   place-items: center;
   padding: 0;
-  transition: transform 0.3s ease;
 }
-.btn-icon-sync:active {
-  transform: rotate(180deg);
+.btn-logout {
+  background: rgba(211, 60, 60, 0.25);
+  border: 1px solid rgba(255, 180, 180, 0.35);
+  color: #ffdede;
+  padding: 4px 9px;
+  border-radius: 99px;
+  font-size: 10.5px;
+  font-weight: 700;
 }
 
-.hero {
-  margin-top: 14px;
-}
-.hero-tag {
-  color: #e7cb7f;
-  font-size: 9.5px;
-  font-weight: 700;
-  letter-spacing: 1.2px;
-  text-transform: uppercase;
-}
-.hero-title {
-  font-size: 19px;
-  font-weight: 700;
-  margin: 3px 0 4px;
-}
-.hero-desc {
+.hero { margin-top: 14px; }
+.hero-tag { color: #e7cb7f; font-size: 9.5px; font-weight: 700; letter-spacing: 1.2px; text-transform: uppercase; }
+.hero-title { font-size: 18px; font-weight: 700; margin: 3px 0 4px; }
+.hero-desc { font-size: 11.5px; color: #cfded7; margin: 0; }
+
+/* ROLE BADGE & YAYASAN SWITCHER */
+.role-banner {
+  background: #ffffff;
+  border: 1px solid var(--line);
+  border-radius: 12px;
+  padding: 8px 12px;
+  margin-top: 10px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
   font-size: 11.5px;
-  color: #cfded7;
-  margin: 0;
-  line-height: 1.4;
 }
-
-/* ASRAMA SWITCHER BAR */
 .asrama-bar {
   display: grid;
   grid-template-columns: repeat(3, 1fr);
@@ -129,8 +169,7 @@ button { cursor: pointer; }
   border: 1px solid var(--line);
   border-radius: 12px;
   padding: 5px;
-  margin-top: 10px;
-  box-shadow: 0 2px 6px rgba(0,0,0,0.02);
+  margin-top: 8px;
 }
 .asrama-tab {
   border: 0;
@@ -140,25 +179,12 @@ button { cursor: pointer; }
   font-size: 11.5px;
   font-weight: 700;
   color: var(--muted);
-  transition: all 0.2s ease;
 }
-.asrama-tab.active {
-  background: var(--green);
-  color: #ffffff;
-}
+.asrama-tab.active { background: var(--green); color: #ffffff; }
 
 /* STATS */
-.content {
-  padding: 0 14px 85px;
-  max-width: 600px;
-  margin: auto;
-}
-.stats-grid {
-  display: grid;
-  grid-template-columns: repeat(3, 1fr);
-  gap: 8px;
-  margin-top: -12px;
-}
+.content { padding: 0 14px 85px; max-width: 600px; margin: auto; }
+.stats-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px; margin-top: -12px; }
 .stat-box {
   background: var(--card);
   border: 1px solid var(--line);
@@ -166,58 +192,15 @@ button { cursor: pointer; }
   padding: 10px 8px;
   box-shadow: 0 4px 12px rgba(20, 62, 51, 0.05);
 }
-.stat-label {
-  font-size: 9px;
-  color: var(--muted);
-  display: flex;
-  align-items: center;
-  gap: 4px;
-  white-space: nowrap;
-}
-.stat-label::before {
-  content: "";
-  width: 5px;
-  height: 5px;
-  background: #deb453;
-  border-radius: 50%;
-}
-.stat-val {
-  display: block;
-  font-size: 12.5px;
-  font-weight: 750;
-  color: var(--green);
-  margin-top: 5px;
-  white-space: nowrap;
-  overflow: hidden;
-  text-overflow: ellipsis;
-}
+.stat-label { font-size: 9px; color: var(--muted); display: flex; align-items: center; gap: 4px; white-space: nowrap; }
+.stat-label::before { content: ""; width: 5px; height: 5px; background: #deb453; border-radius: 50%; }
+.stat-val { display: block; font-size: 12.5px; font-weight: 750; color: var(--green); margin-top: 5px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
 
 /* SECTION & CARD */
-.section-head {
-  display: flex;
-  justify-content: space-between;
-  align-items: flex-end;
-  margin: 18px 0 9px;
-}
-.section-head h2 {
-  font-size: 14.5px;
-  font-weight: 750;
-  color: var(--green);
-  margin: 0;
-}
-.section-head p {
-  font-size: 11px;
-  color: var(--muted);
-  margin: 2px 0 0;
-}
-.badge-count {
-  background: var(--mint);
-  color: var(--green);
-  font-size: 10px;
-  font-weight: 700;
-  padding: 3px 8px;
-  border-radius: 99px;
-}
+.section-head { display: flex; justify-content: space-between; align-items: flex-end; margin: 18px 0 9px; }
+.section-head h2 { font-size: 14.5px; font-weight: 750; color: var(--green); margin: 0; }
+.section-head p { font-size: 11px; color: var(--muted); margin: 2px 0 0; }
+.badge-count { background: var(--mint); color: var(--green); font-size: 10px; font-weight: 700; padding: 3px 8px; border-radius: 99px; }
 .card {
   background: var(--card);
   border: 1px solid var(--line);
@@ -227,68 +210,21 @@ button { cursor: pointer; }
   margin-bottom: 12px;
 }
 
-/* LIST SALDO KRITIS */
-.critical-row {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  padding: 9px 0;
-  border-bottom: 1px solid #f0f4f1;
-}
+.critical-row { display: flex; justify-content: space-between; align-items: center; padding: 9px 0; border-bottom: 1px solid #f0f4f1; }
 .critical-row:last-child { border-bottom: none; }
-.critical-name {
-  font-weight: 700;
-  font-size: 12.5px;
-  color: #24352e;
-}
-.critical-sub {
-  font-size: 10.5px;
-  color: var(--muted);
-  margin-top: 1px;
-}
-.critical-val {
-  color: var(--red);
-  font-weight: 750;
-  font-size: 12.5px;
-}
+.critical-name { font-weight: 700; font-size: 12.5px; color: #24352e; }
+.critical-sub { font-size: 10.5px; color: var(--muted); margin-top: 1px; }
+.critical-val { color: var(--red); font-weight: 750; font-size: 12.5px; }
 
 /* BOTTOM NAVIGATION */
 .bottom-nav {
-  position: fixed;
-  bottom: 0;
-  left: 0;
-  right: 0;
-  height: 58px;
-  background: #ffffff;
-  border-top: 1px solid var(--line);
-  display: grid;
-  grid-template-columns: repeat(5, 1fr);
-  z-index: 50;
-  max-width: 600px;
-  margin: auto;
+  position: fixed; bottom: 0; left: 0; right: 0; height: 58px; background: #ffffff;
+  border-top: 1px solid var(--line); display: grid; grid-template-columns: repeat(5, 1fr);
+  z-index: 50; max-width: 600px; margin: auto;
 }
-.nav-item {
-  border: 0;
-  background: none;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  gap: 2px;
-  color: #7d8c85;
-  font-size: 9.5px;
-  font-weight: 600;
-  padding: 0;
-}
-.nav-item svg {
-  width: 19px;
-  height: 19px;
-  fill: currentColor;
-}
-.nav-item.active {
-  color: var(--green);
-  font-weight: 750;
-}
+.nav-item { border: 0; background: none; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 2px; color: #7d8c85; font-size: 9.5px; font-weight: 600; padding: 0; }
+.nav-item svg { width: 19px; height: 19px; fill: currentColor; }
+.nav-item.active { color: var(--green); font-weight: 750; }
 
 /* FORM STYLES */
 .panel { display: none; }
@@ -296,159 +232,40 @@ button { cursor: pointer; }
 .form-group { margin-bottom: 11px; position: relative; }
 .form-group label { display: block; font-size: 11px; font-weight: 700; margin-bottom: 5px; color: #43544d; }
 .form-group input, .form-group select, .form-group textarea {
-  width: 100%;
-  padding: 9px 11px;
-  border: 1px solid #dce4df;
-  border-radius: 9px;
-  background: #fdfdfd;
-  font-size: 12px;
-  outline: none;
+  width: 100%; padding: 9px 11px; border: 1px solid #dce4df; border-radius: 9px; background: #fdfdfd; font-size: 12px; outline: none;
 }
-.form-group input:focus, .form-group select:focus, .form-group textarea:focus {
-  border-color: #2c7a65;
-  background: #fff;
-}
+.form-group input:focus, .form-group select:focus { border-color: #2c7a65; background: #fff; }
 .btn-submit {
-  width: 100%;
-  background: var(--green);
-  color: #fff;
-  border: 0;
-  padding: 10px;
-  border-radius: 10px;
-  font-weight: 700;
-  font-size: 12.5px;
-  margin-top: 6px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  gap: 6px;
+  width: 100%; background: var(--green); color: #fff; border: 0; padding: 10px; border-radius: 10px;
+  font-weight: 700; font-size: 12.5px; margin-top: 6px; display: flex; align-items: center; justify-content: center; gap: 6px;
 }
 .btn-pdf {
-  width: 100%;
-  background: #c63939;
-  color: #fff;
-  border: 0;
-  padding: 10px;
-  border-radius: 10px;
-  font-weight: 700;
-  font-size: 12.5px;
-  margin-top: 8px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  gap: 6px;
+  width: 100%; background: #c63939; color: #fff; border: 0; padding: 10px; border-radius: 10px;
+  font-weight: 700; font-size: 12.5px; margin-top: 8px; display: flex; align-items: center; justify-content: center; gap: 6px;
 }
-.btn-outline-sm {
-  background: transparent;
-  border: 1px solid var(--line);
-  padding: 7px 11px;
-  border-radius: 8px;
-  font-size: 11px;
-  font-weight: 600;
-}
+.btn-outline-sm { background: transparent; border: 1px solid var(--line); padding: 7px 11px; border-radius: 8px; font-size: 11px; font-weight: 600; }
 
-/* ACTION ICON BUTTONS */
-.act-btns {
-  display: inline-flex;
-  gap: 4px;
-  margin-top: 3px;
-}
-.btn-act {
-  border: 1px solid #dce4df;
-  background: #f9fbfa;
-  border-radius: 6px;
-  padding: 2px 6px;
-  font-size: 10.5px;
-  line-height: 1.2;
-}
-.btn-act:hover { background: var(--mint); }
+.act-btns { display: inline-flex; gap: 4px; margin-top: 3px; }
+.btn-act { border: 1px solid #dce4df; background: #f9fbfa; border-radius: 6px; padding: 2px 6px; font-size: 10.5px; line-height: 1.2; }
 .btn-act.del { border-color: #f3caca; background: #fff5f5; color: var(--red); }
-.btn-act.del:hover { background: #fee2e2; }
 
-/* MODAL POPUP EDIT */
-.modal-backdrop {
-  position: fixed;
-  inset: 0;
-  background: rgba(15, 31, 25, 0.55);
-  display: none;
-  align-items: center;
-  justify-content: center;
-  padding: 16px;
-  z-index: 999;
-}
+.modal-backdrop { position: fixed; inset: 0; background: rgba(15, 31, 25, 0.55); display: none; align-items: center; justify-content: center; padding: 16px; z-index: 999; }
 .modal-backdrop.open { display: flex; }
-.modal-card {
-  background: #fff;
-  border-radius: 16px;
-  width: 100%;
-  max-width: 420px;
-  padding: 16px;
-  box-shadow: 0 14px 35px rgba(0,0,0,0.22);
-}
-.modal-head {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  border-bottom: 1px solid var(--line);
-  padding-bottom: 10px;
-  margin-bottom: 12px;
-}
+.modal-card { background: #fff; border-radius: 16px; width: 100%; max-width: 420px; padding: 16px; box-shadow: 0 14px 35px rgba(0,0,0,0.22); }
+.modal-head { display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid var(--line); padding-bottom: 10px; margin-bottom: 12px; }
 .modal-head h3 { margin: 0; font-size: 14.5px; color: var(--green); }
 .modal-close { border: 0; background: none; font-size: 18px; color: var(--muted); padding: 0 4px; }
 
-/* SEARCH SUGGESTION DROPDOWN */
 .search-results-box {
-  position: absolute;
-  top: 100%;
-  left: 0;
-  right: 0;
-  background: #fff;
-  border: 1px solid #cfdad3;
-  border-radius: 9px;
-  box-shadow: 0 8px 18px rgba(0,0,0,0.08);
-  max-height: 180px;
-  overflow-y: auto;
-  z-index: 99;
-  display: none;
+  position: absolute; top: 100%; left: 0; right: 0; background: #fff; border: 1px solid #cfdad3;
+  border-radius: 9px; box-shadow: 0 8px 18px rgba(0,0,0,0.08); max-height: 180px; overflow-y: auto; z-index: 99; display: none;
 }
-.search-item {
-  padding: 8px 10px;
-  border-bottom: 1px solid #f1f4f2;
-  cursor: pointer;
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-}
+.search-item { padding: 8px 10px; border-bottom: 1px solid #f1f4f2; cursor: pointer; display: flex; justify-content: space-between; align-items: center; }
 .search-item:hover { background: var(--mint); }
-.search-item strong { font-size: 12px; color: var(--ink); }
-.search-item small { font-size: 10px; color: var(--muted); }
-.selected-santri-badge {
-  background: var(--mint);
-  border: 1px solid #b7dbca;
-  border-radius: 8px;
-  padding: 7px 10px;
-  margin-top: 6px;
-  display: none;
-  justify-content: space-between;
-  align-items: center;
-  font-size: 11.5px;
-}
-.selected-santri-badge strong { color: var(--green); }
+.selected-santri-badge { background: var(--mint); border: 1px solid #b7dbca; border-radius: 8px; padding: 7px 10px; margin-top: 6px; display: none; justify-content: space-between; align-items: center; font-size: 11.5px; }
 
-/* REKAP CARD */
-.rekap-summary-box {
-  background: #fcfdfc;
-  border: 1px dashed #cedbd2;
-  border-radius: 10px;
-  padding: 10px;
-  margin-top: 12px;
-  font-size: 11.5px;
-}
-.rekap-summary-row {
-  display: flex;
-  justify-content: space-between;
-  padding: 3px 0;
-}
+.rekap-summary-box { background: #fcfdfc; border: 1px dashed #cedbd2; border-radius: 10px; padding: 10px; margin-top: 12px; font-size: 11.5px; }
+.rekap-summary-row { display: flex; justify-content: space-between; padding: 3px 0; }
 
 .table-wrap { overflow-x: auto; margin-top: 8px; }
 table { width: 100%; border-collapse: collapse; font-size: 11.5px; }
@@ -460,23 +277,10 @@ th { color: var(--muted); font-size: 10px; text-transform: uppercase; }
 .badge-out { background: #fee2e2; color: #dc2626; }
 .badge-asrama { background: #eef2ff; color: #3730a3; font-size: 9px; padding: 1px 6px; border-radius: 4px; font-weight: 700; }
 
-/* TOAST NOTIFIKASI */
 .toast-msg {
-  position: fixed;
-  top: 16px;
-  left: 50%;
-  transform: translateX(-50%);
-  background: #143e33;
-  color: #fff;
-  padding: 8px 16px;
-  border-radius: 99px;
-  font-size: 12px;
-  font-weight: 600;
-  box-shadow: 0 6px 20px rgba(0,0,0,0.18);
-  z-index: 9999;
-  display: none;
-  opacity: 0;
-  transition: opacity 0.3s ease;
+  position: fixed; top: 16px; left: 50%; transform: translateX(-50%); background: #143e33; color: #fff;
+  padding: 8px 16px; border-radius: 99px; font-size: 12px; font-weight: 600; box-shadow: 0 6px 20px rgba(0,0,0,0.18);
+  z-index: 9999; display: none; opacity: 0; transition: opacity 0.3s ease;
 }
 </style>
 </head>
@@ -484,172 +288,53 @@ th { color: var(--muted); font-size: 10px; text-transform: uppercase; }
 
 <div id="toast" class="toast-msg"></div>
 
-<!-- MODAL EDIT TRANSAKSI -->
-<div id="editModal" class="modal-backdrop" onclick="if(event.target===this) closeEditModal()">
-  <div class="modal-card">
-    <div class="modal-head">
-      <h3>✏️ Edit Transaksi</h3>
-      <button type="button" class="modal-close" onclick="closeEditModal()">&times;</button>
-    </div>
-    <form id="editTrxForm" onsubmit="submitEditTrx(event)">
-      <input type="hidden" id="editTrxId">
+<!-- ==================== VIEW 0: HALAMAN LOGIN ADMIN ==================== -->
+<div id="loginScreen" class="login-wrapper">
+  <div class="login-card">
+    <div class="login-logo">🔐</div>
+    <h1 class="login-title">Buku Kas Santri</h1>
+    <p class="login-sub">PPTQ Tahfidzul Qur'an Al Husna Lestari</p>
+
+    <div id="loginError" class="login-err">Username atau Password salah.</div>
+
+    <form onsubmit="handleAdminLogin(event)">
       <div class="form-group">
-        <label>Santri</label>
-        <select id="editTrxNis" required></select>
-      </div>
-      <div class="form-group">
-        <label>Kategori Transaksi</label>
-        <select id="editTrxKat" required>
-          <option value="Top-Up">Top-Up (Setoran Wali Masuk)</option>
-          <option value="Uang Saku">Uang Saku Santri</option>
-          <option value="Jajan Kantin">Jajan Kantin</option>
-          <option value="Laundry">Laundry</option>
-          <option value="Potong Rambut">Potong Rambut</option>
-          <option value="Kesehatan">Kesehatan / Obat</option>
-          <option value="Lainnya">Lainnya</option>
-        </select>
+        <label for="loginUser">Username Akun</label>
+        <input type="text" id="loginUser" required placeholder="Contoh: putra / putri / yayasan" autocomplete="username">
       </div>
       <div class="form-group">
-        <label>Nominal (Rp)</label>
-        <input type="number" id="editTrxNom" min="1" required>
+        <label for="loginPass">Password</label>
+        <input type="password" id="loginPass" required placeholder="Masukkan password..." autocomplete="current-password">
       </div>
-      <div class="form-group">
-        <label>Tanggal Transaksi</label>
-        <input type="date" id="editTrxTgl" required>
-      </div>
-      <div class="form-group">
-        <label>Keterangan / Catatan</label>
-        <input type="text" id="editTrxKet" placeholder="Keterangan transaksi...">
-      </div>
-      <div style="display:flex;gap:8px;margin-top:10px">
-        <button type="button" class="btn-outline-sm" style="flex:1;padding:10px" onclick="closeEditModal()">Batal</button>
-        <button type="submit" class="btn-submit" style="flex:2;margin-top:0">Simpan Perubahan</button>
-      </div>
+      <button type="submit" id="btnLoginAdmin" class="btn-submit" style="padding:11px;margin-top:10px;">
+        Masuk ke Buku Kas
+      </button>
     </form>
   </div>
 </div>
 
-<header class="header">
-  <div class="header-top">
-    <div class="brand">
-      <div class="brand-icon">📚</div>
-      <div>
-        <h1>Buku Kas Santri</h1>
-        <p>Uang saku · Amanah · Transparan</p>
+<!-- ==================== VIEW UTAMA APLIKASI (SETELAH LOGIN) ==================== -->
+<div id="appWrapper" style="display:none;">
+
+  <!-- MODAL EDIT TRANSAKSI -->
+  <div id="editModal" class="modal-backdrop" onclick="if(event.target===this) closeEditModal()">
+    <div class="modal-card">
+      <div class="modal-head">
+        <h3>✏️ Edit Transaksi</h3>
+        <button type="button" class="modal-close" onclick="closeEditModal()">&times;</button>
       </div>
-    </div>
-    <div class="header-status">
-      <span class="pill" id="connPill">● Menghubungkan…</span>
-      <button class="btn-icon-sync" onclick="loadData(true)" title="Sinkronkan Data">
-        <svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
-          <polyline points="23 4 23 10 17 10"></polyline>
-          <polyline points="1 20 1 14 7 14"></polyline>
-          <path d="M3.51 9a9 9 0 0 1 14.85-3.36L23 10M1 14l4.64 4.36A9 9 0 0 0 20.49 15"></path>
-        </svg>
-      </button>
-    </div>
-  </div>
-
-  <div class="hero">
-    <div class="hero-tag">SISTEM KEUANGAN SANTRI</div>
-    <div class="hero-title">PONDOK PESANTREN TAHFIDZUL QUR'AN AL HUSNA LESTARI</div>
-    <div class="hero-desc">Kelola uang saku dan transaksi santri dengan mudah, cepat, dan tertib.</div>
-  </div>
-</header>
-
-<main class="content">
-  <!-- 3 KARTU KAS ATAS -->
-  <section class="stats-grid">
-    <div class="stat-box">
-      <div class="stat-label">Total saldo santri</div>
-      <strong class="stat-val" id="statSaldo">Rp 0</strong>
-    </div>
-    <div class="stat-box">
-      <div class="stat-label">Total top-up wali</div>
-      <strong class="stat-val" id="statTopup">Rp 0</strong>
-    </div>
-    <div class="stat-box">
-      <div class="stat-label">Total pengeluaran</div>
-      <strong class="stat-val" id="statKeluar">Rp 0</strong>
-    </div>
-  </section>
-
-  <!-- FILTER ASRAMA PUTRA / PUTRI / SEMUA -->
-  <div class="asrama-bar">
-    <button type="button" class="asrama-tab active" onclick="setAsramaFilter('ALL', this)">Semua Asrama</button>
-    <button type="button" class="asrama-tab" onclick="setAsramaFilter('Putra', this)">🏢 Putra</button>
-    <button type="button" class="asrama-tab" onclick="setAsramaFilter('Putri', this)">🕌 Putri</button>
-  </div>
-
-  <!-- 1. PANEL RINGKASAN: HANYA SALDO PERHATIAN -->
-  <div class="panel active" id="p-dashboard">
-    <div class="section-head">
-      <div>
-        <h2>Saldo perlu perhatian</h2>
-        <p>Santri dengan saldo di bawah Rp 20.000.</p>
-      </div>
-      <span class="badge-count" id="critBadge">0 santri</span>
-    </div>
-    <div class="card" id="criticalList">
-      <div class="empty">Memuat data santri…</div>
-    </div>
-  </div>
-
-  <!-- 2. PANEL REKAP HARIAN KELAS -->
-  <div class="panel" id="p-batch">
-    <div class="section-head">
-      <div><h2>Rekap Harian Kelas</h2><p>Input penarikan uang saku serentak.</p></div>
-    </div>
-    <div class="card">
-      <div class="form-group">
-        <label>Tanggal & Kelas</label>
-        <div style="display:flex;gap:6px">
-          <input type="date" id="batchTgl">
-          <select id="batchKelas" onchange="renderBatch()"><option value="7">Kelas 7</option><option value="8">Kelas 8</option><option value="9">Kelas 9</option><option value="10">Kelas 10</option><option value="11">Kelas 11</option><option value="12">Kelas 12</option></select>
-        </div>
-      </div>
-      <div class="form-group">
-        <label>Isi nominal serentak (Rp)</label>
-        <div style="display:flex;gap:6px">
-          <input type="number" id="batchNominal" placeholder="Contoh: 10000">
-          <button class="btn-outline-sm" style="background:var(--green);color:#fff;border:0" onclick="applyBatch()">Terapkan</button>
-        </div>
-      </div>
-      <div id="batchRows" style="margin:12px 0"></div>
-      <div style="display:flex;justify-content:space-between;align-items:center;background:var(--mint);border:1px solid #c2ded0;border-radius:10px;padding:10px 12px;margin-bottom:8px;font-size:12px">
-        <span style="color:var(--green);font-weight:600">Total uang diambil (<span id="batchCountSantri">0</span> santri):</span>
-        <strong id="batchTotalUang" style="color:var(--green);font-size:14px">Rp 0</strong>
-      </div>
-      <button class="btn-submit" id="btnSaveBatch" onclick="saveBatch()">Simpan Rekap ke Spreadsheet</button>
-    </div>
-  </div>
-
-  <!-- 3. PANEL TRANSAKSI SATUAN -->
-  <div class="panel" id="p-transaksi">
-    <div class="section-head">
-      <div><h2>Catat Transaksi</h2><p>Top-up setoran wali / pengeluaran satuan.</p></div>
-    </div>
-    <div class="card">
-      <form id="trxForm" onsubmit="saveTrx(event)">
+      <form id="editTrxForm" onsubmit="submitEditTrx(event)">
+        <input type="hidden" id="editTrxId">
         <div class="form-group">
-          <label>Cari Santri (Ketik Nama / NIS)</label>
-          <input type="text" id="trxSearchInput" placeholder="Ketik nama atau NIS santri..." autocomplete="off" oninput="handleTrxSearch(this.value)">
-          <input type="hidden" id="trxNis" required>
-          <div class="search-results-box" id="trxSearchResults"></div>
-          <div class="selected-santri-badge" id="trxSelectedBadge">
-            <div>
-              <strong id="trxSelectedNama">-</strong>
-              <div style="font-size:10px;color:var(--muted)" id="trxSelectedDetail">NIS: -</div>
-            </div>
-            <button type="button" style="border:0;background:none;color:var(--red);font-weight:bold" onclick="clearSelectedTrxSantri()">Ganti</button>
-          </div>
+          <label>Santri</label>
+          <select id="editTrxNis" required></select>
         </div>
-
         <div class="form-group">
           <label>Kategori Transaksi</label>
-          <select id="trxKat">
+          <select id="editTrxKat" required>
             <option value="Top-Up">Top-Up (Setoran Wali Masuk)</option>
             <option value="Uang Saku">Uang Saku Santri</option>
+            <option value="Jajan Kantin">Jajan Kantin</option>
             <option value="Laundry">Laundry</option>
             <option value="Potong Rambut">Potong Rambut</option>
             <option value="Kesehatan">Kesehatan / Obat</option>
@@ -658,198 +343,353 @@ th { color: var(--muted); font-size: 10px; text-transform: uppercase; }
         </div>
         <div class="form-group">
           <label>Nominal (Rp)</label>
-          <input type="number" id="trxNom" placeholder="Contoh: 50000" min="1" required>
+          <input type="number" id="editTrxNom" min="1" required>
         </div>
         <div class="form-group">
           <label>Tanggal Transaksi</label>
-          <input type="date" id="trxTgl" required>
+          <input type="date" id="editTrxTgl" required>
         </div>
         <div class="form-group">
           <label>Keterangan / Catatan</label>
-          <input type="text" id="trxKet" placeholder="Misal: Transfer BCA bunda / pangkas rapi">
+          <input type="text" id="editTrxKet" placeholder="Keterangan transaksi...">
         </div>
-        <button class="btn-submit" id="btnSubmitTrx" type="submit">Simpan ke Spreadsheet</button>
+        <div style="display:flex;gap:8px;margin-top:10px">
+          <button type="button" class="btn-outline-sm" style="flex:1;padding:10px" onclick="closeEditModal()">Batal</button>
+          <button type="submit" class="btn-submit" style="flex:2;margin-top:0">Simpan Perubahan</button>
+        </div>
       </form>
     </div>
   </div>
 
-  <!-- 4. PANEL REKAP & LAPORAN -->
-  <div class="panel" id="p-laporan">
-    <!-- KARTU BARU: REKAP SETORAN PER UNIT KANTIN -->
-    <div class="section-head">
-      <div><h2>Rekap Setoran Kantin</h2><p>Pencairan tunai ke masing-masing unit kantin.</p></div>
-    </div>
-    <div class="card">
-      <div class="form-group">
-        <label>Periode Pencairan Kantin</label>
-        <div style="display:flex;gap:6px;align-items:center;">
-          <input type="date" id="kantinTglMulai" onchange="renderRekapKantin()">
-          <span style="color:var(--muted);font-size:11px;">s.d.</span>
-          <input type="date" id="kantinTglSelesai" onchange="renderRekapKantin()">
-          <button type="button" class="btn-outline-sm" style="white-space:nowrap;background:var(--mint);color:var(--green);border-color:#c2ded0;" onclick="resetKantinToday()">Hari Ini</button>
-        </div>
-      </div>
-
-      <div class="table-wrap">
-        <table>
-          <thead>
-            <tr>
-              <th>Unit Kantin</th>
-              <th style="text-align:center">Trx</th>
-              <th style="text-align:right">Total Setoran</th>
-              <th style="text-align:right">Slip</th>
-            </tr>
-          </thead>
-          <tbody id="rekapKantinBody">
-            <tr><td colspan="4" class="empty">Memuat data kantin...</td></tr>
-          </tbody>
-        </table>
-      </div>
-    </div>
-
-    <!-- KARTU LAPORAN PER SANTRI -->
-    <div class="section-head">
-      <div><h2>Laporan Rekap Santri</h2><p>Pilih santri & rentang waktu cetak PDF.</p></div>
-    </div>
-    <div class="card">
-      <div class="form-group">
-        <label>Cari Santri Untuk Laporan</label>
-        <input type="text" id="lapSearchInput" placeholder="Ketik nama santri untuk buat laporan..." autocomplete="off" oninput="handleLapSearch(this.value)">
-        <input type="hidden" id="lapSelectedNis">
-        <div class="search-results-box" id="lapSearchResults"></div>
-        <div class="selected-santri-badge" id="lapSelectedBadge">
-          <div>
-            <strong id="lapSelectedNama">-</strong>
-            <div style="font-size:10px;color:var(--muted)" id="lapSelectedDetail">Sisa Saldo: Rp 0</div>
-          </div>
-          <button type="button" style="border:0;background:none;color:var(--red);font-weight:bold" onclick="clearSelectedLapSantri()">Ganti</button>
-        </div>
-      </div>
-
-      <div class="form-group">
-        <label>Rentang Waktu</label>
-        <div style="display:flex;gap:6px">
-          <input type="date" id="lapTglMulai">
-          <input type="date" id="lapTglSelesai">
-        </div>
-      </div>
-
-      <button class="btn-outline-sm" style="width:100%;margin-top:2px;background:var(--mint);border:1px solid #c2ded0;color:var(--green);font-weight:700" onclick="filterRekapLaporan()">Tampilkan Rekap</button>
-
-      <div class="rekap-summary-box" id="rekapBox">
-        <div class="rekap-summary-row">
-          <span>Total Pemasukan (Top-up):</span>
-          <strong style="color:var(--green)" id="sumMasuk">Rp 0</strong>
-        </div>
-        <div class="rekap-summary-row">
-          <span>Total Pengeluaran:</span>
-          <strong style="color:var(--red)" id="sumKeluar">Rp 0</strong>
-        </div>
-        <div class="rekap-summary-row" style="border-top:1px dashed #d5e2d8;margin-top:4px;padding-top:4px">
-          <span>Sisa Saldo Terkini:</span>
-          <strong id="sumSaldoAkhir" style="color:var(--green)">Rp 0</strong>
-        </div>
-      </div>
-
-      <button class="btn-pdf" onclick="cetakLaporanPDF()">
-        📄 Cetak / Download PDF Laporan Wali
-      </button>
-
-      <div class="table-wrap">
-        <table>
-          <thead><tr><th>Tanggal</th><th>Pos</th><th>Keterangan</th><th style="text-align:right">Nominal / Aksi</th></tr></thead>
-          <tbody id="lapTableBody"><tr><td colspan="4" class="empty">Silakan pilih santri dan tampilkan.</td></tr></tbody>
-        </table>
-      </div>
-    </div>
-
-    <!-- KARTU RIWAYAT TRANSAKSI -->
-    <div class="card" style="margin-top: 14px;">
-      <div class="section-head" style="margin: 0 0 10px;">
+  <header class="header">
+    <div class="header-top">
+      <div class="brand">
+        <div class="brand-icon">📚</div>
         <div>
-          <h3 style="margin:0;font-size:13.5px;color:var(--green)">🕒 Riwayat Transaksi</h3>
-          <p style="margin:2px 0 0;font-size:10.5px;color:var(--muted)" id="recentSubtitle">Menampilkan transaksi hari ini</p>
-        </div>
-        <span class="badge-count" id="recentCountBadge">0 trx</span>
-      </div>
-
-      <div class="form-group" style="margin-bottom:8px;">
-        <div style="display:flex;gap:6px;align-items:center;">
-          <input type="date" id="recentTglMulai" onchange="renderRecentMutasi()">
-          <span style="color:var(--muted);font-size:11px;">s.d.</span>
-          <input type="date" id="recentTglSelesai" onchange="renderRecentMutasi()">
-          <button type="button" class="btn-outline-sm" style="white-space:nowrap;background:var(--mint);color:var(--green);border-color:#c2ded0;" onclick="resetRecentToday()">Hari Ini</button>
+          <h1>Buku Kas Santri</h1>
+          <p id="headerPetugas">Petugas Aktif</p>
         </div>
       </div>
-
-      <div class="table-wrap">
-        <table>
-          <thead>
-            <tr>
-              <th>Santri</th>
-              <th>Pos</th>
-              <th>Keterangan</th>
-              <th style="text-align:right">Nominal / Aksi</th>
-            </tr>
-          </thead>
-          <tbody id="recentMutasiBody">
-            <tr><td colspan="4" class="empty">Memuat riwayat transaksi...</td></tr>
-          </tbody>
-        </table>
+      <div class="header-status">
+        <span class="pill" id="connPill">● Terhubung</span>
+        <button class="btn-icon-sync" onclick="loadData(true)" title="Sinkronkan Data">
+          <svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+            <polyline points="23 4 23 10 17 10"></polyline>
+            <polyline points="1 20 1 14 7 14"></polyline>
+            <path d="M3.51 9a9 9 0 0 1 14.85-3.36L23 10M1 14l4.64 4.36A9 9 0 0 0 20.49 15"></path>
+          </svg>
+        </button>
+        <button class="btn-logout" onclick="logoutAdmin()">Keluar</button>
       </div>
     </div>
-  </div>
 
-  <!-- 5. PANEL MASTER SANTRI -->
-  <div class="panel" id="p-santri">
-    <div class="section-head">
-      <div><h2>Data Santri</h2><p>Daftar santri & cek saldo terkini.</p></div>
+    <div class="hero">
+      <div class="hero-tag" id="heroRoleTag">SISTEM KEUANGAN SANTRI</div>
+      <div class="hero-title">PPTQ AL HUSNA LESTARI</div>
+      <div class="hero-desc">Kelola uang saku dan transaksi santri dengan mudah, cepat, dan tertib.</div>
+    </div>
+  </header>
+
+  <main class="content">
+    <!-- 3 KARTU KAS ATAS -->
+    <section class="stats-grid">
+      <div class="stat-box">
+        <div class="stat-label">Total saldo santri</div>
+        <strong class="stat-val" id="statSaldo">Rp 0</strong>
+      </div>
+      <div class="stat-box">
+        <div class="stat-label">Total top-up wali</div>
+        <strong class="stat-val" id="statTopup">Rp 0</strong>
+      </div>
+      <div class="stat-box">
+        <div class="stat-label">Total pengeluaran</div>
+        <strong class="stat-val" id="statKeluar">Rp 0</strong>
+      </div>
+    </section>
+
+    <!-- INFO HAK AKSES (TERKUNCI UNTUK PUTRA/PUTRI, FILTER UNTUK YAYASAN) -->
+    <div class="role-banner" id="roleLockBanner">
+      <span style="color:var(--muted);font-weight:600;">Wilayah Akses Data:</span>
+      <strong id="roleLockLabel" style="color:var(--green);">🔒 Pondok Putra</strong>
     </div>
 
-    <div class="card">
-      <input type="text" id="cariSantri" placeholder="Cari santri / NIS / Kamar..." oninput="renderMaster()" style="width:100%;padding:8px 10px;border:1px solid var(--line);border-radius:8px;margin-bottom:8px">
-      <div class="table-wrap">
-        <table>
-          <thead><tr><th>NIS</th><th>Nama</th><th>Kls</th><th style="text-align:right">Saldo</th></tr></thead>
-          <tbody id="masterBody"><tr><td colspan="4" class="empty">Memuat data...</td></tr></tbody>
-        </table>
+    <div class="asrama-bar" id="yayasanFilterBar" style="display:none;">
+      <button type="button" class="asrama-tab active" onclick="setAsramaFilter('ALL', this)">Semua Yayasan</button>
+      <button type="button" class="asrama-tab" onclick="setAsramaFilter('Putra', this)">🏢 Putra</button>
+      <button type="button" class="asrama-tab" onclick="setAsramaFilter('Putri', this)">🕌 Putri</button>
+    </div>
+
+    <!-- 1. PANEL RINGKASAN -->
+    <div class="panel active" id="p-dashboard">
+      <div class="section-head">
+        <div>
+          <h2>Saldo perlu perhatian</h2>
+          <p>Santri dengan saldo di bawah Rp 20.000.</p>
+        </div>
+        <span class="badge-count" id="critBadge">0 santri</span>
+      </div>
+      <div class="card" id="criticalList">
+        <div class="empty">Memuat data santri…</div>
       </div>
     </div>
-  </div>
-</main>
 
-<!-- BOTTOM NAVIGATION -->
-<nav class="bottom-nav">
-  <button class="nav-item active" onclick="switchNav('dashboard', this)">
-    <svg viewBox="0 0 24 24"><path d="M10 20v-6h4v6h5v-8h3L12 3 2 12h3v8z"/></svg>
-    <span>Ringkasan</span>
-  </button>
-  <button class="nav-item" onclick="switchNav('batch', this)">
-    <svg viewBox="0 0 24 24"><path d="M3 3v8h8V3H3zm2 2h4v4H5V5zm8-2v8h8V3h-8zm2 2h4v4h-4V5zM3 13v8h8v-8H3zm2 2h4v4H5v-4zm8-2v8h8v-8h-8zm2 2h4v4h-4v-4z"/></svg>
-    <span>Rekap</span>
-  </button>
-  <button class="nav-item" onclick="switchNav('transaksi', this)">
-    <svg viewBox="0 0 24 24"><path d="M19 13h-6v6h-2v-6H5v-2h6V5h2v6h6v2z"/></svg>
-    <span>Transaksi</span>
-  </button>
-  <button class="nav-item" onclick="switchNav('laporan', this)">
-    <svg viewBox="0 0 24 24"><path d="M14 2H6c-1.1 0-1.99.9-1.99 2L4 20c0 1.1.89 2 1.99 2H18c1.1 0 2-.9 2-2V8l-6-6zm2 16H8v-2h8v2zm0-4H8v-2h8v2zm-3-5V3.5L18.5 9H13z"/></svg>
-    <span>Laporan</span>
-  </button>
-  <button class="nav-item" onclick="switchNav('santri', this)">
-    <svg viewBox="0 0 24 24"><path d="M12 12c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm0 2c-2.67 0-8 1.34-8 4v2h16v-2c0-2.66-5.33-4-8-4z"/></svg>
-    <span>Santri</span>
-  </button>
-</nav>
+    <!-- 2. PANEL REKAP HARIAN KELAS -->
+    <div class="panel" id="p-batch">
+      <div class="section-head">
+        <div><h2>Rekap Harian Kelas</h2><p>Input penarikan uang saku serentak.</p></div>
+      </div>
+      <div class="card">
+        <div class="form-group">
+          <label>Tanggal & Kelas</label>
+          <div style="display:flex;gap:6px">
+            <input type="date" id="batchTgl">
+            <select id="batchKelas" onchange="renderBatch()"><option value="7">Kelas 7</option><option value="8">Kelas 8</option><option value="9">Kelas 9</option><option value="10">Kelas 10</option><option value="11">Kelas 11</option><option value="12">Kelas 12</option></select>
+          </div>
+        </div>
+        <div class="form-group">
+          <label>Isi nominal serentak (Rp)</label>
+          <div style="display:flex;gap:6px">
+            <input type="number" id="batchNominal" placeholder="Contoh: 10000">
+            <button class="btn-outline-sm" style="background:var(--green);color:#fff;border:0" onclick="applyBatch()">Terapkan</button>
+          </div>
+        </div>
+        <div id="batchRows" style="margin:12px 0"></div>
+        <div style="display:flex;justify-content:space-between;align-items:center;background:var(--mint);border:1px solid #c2ded0;border-radius:10px;padding:10px 12px;margin-bottom:8px;font-size:12px">
+          <span style="color:var(--green);font-weight:600">Total uang diambil (<span id="batchCountSantri">0</span> santri):</span>
+          <strong id="batchTotalUang" style="color:var(--green);font-size:14px">Rp 0</strong>
+        </div>
+        <button class="btn-submit" id="btnSaveBatch" onclick="saveBatch()">Simpan Rekap ke Spreadsheet</button>
+      </div>
+    </div>
+
+    <!-- 3. PANEL TRANSAKSI SATUAN -->
+    <div class="panel" id="p-transaksi">
+      <div class="section-head">
+        <div><h2>Catat Transaksi</h2><p>Top-up setoran wali / pengeluaran satuan.</p></div>
+      </div>
+      <div class="card">
+        <form id="trxForm" onsubmit="saveTrx(event)">
+          <div class="form-group">
+            <label>Cari Santri (Ketik Nama / NIS)</label>
+            <input type="text" id="trxSearchInput" placeholder="Ketik nama atau NIS santri..." autocomplete="off" oninput="handleTrxSearch(this.value)">
+            <input type="hidden" id="trxNis" required>
+            <div class="search-results-box" id="trxSearchResults"></div>
+            <div class="selected-santri-badge" id="trxSelectedBadge">
+              <div>
+                <strong id="trxSelectedNama">-</strong>
+                <div style="font-size:10px;color:var(--muted)" id="trxSelectedDetail">NIS: -</div>
+              </div>
+              <button type="button" style="border:0;background:none;color:var(--red);font-weight:bold" onclick="clearSelectedTrxSantri()">Ganti</button>
+            </div>
+          </div>
+
+          <div class="form-group">
+            <label>Kategori Transaksi</label>
+            <select id="trxKat">
+              <option value="Top-Up">Top-Up (Setoran Wali Masuk)</option>
+              <option value="Uang Saku">Uang Saku Santri</option>
+              <option value="Laundry">Laundry</option>
+              <option value="Potong Rambut">Potong Rambut</option>
+              <option value="Kesehatan">Kesehatan / Obat</option>
+              <option value="Lainnya">Lainnya</option>
+            </select>
+          </div>
+          <div class="form-group">
+            <label>Nominal (Rp)</label>
+            <input type="number" id="trxNom" placeholder="Contoh: 50000" min="1" required>
+          </div>
+          <div class="form-group">
+            <label>Tanggal Transaksi</label>
+            <input type="date" id="trxTgl" required>
+          </div>
+          <div class="form-group">
+            <label>Keterangan / Catatan</label>
+            <input type="text" id="trxKet" placeholder="Misal: Transfer BCA bunda / pangkas rapi">
+          </div>
+          <button class="btn-submit" id="btnSubmitTrx" type="submit">Simpan ke Spreadsheet</button>
+        </form>
+      </div>
+    </div>
+
+    <!-- 4. PANEL REKAP & LAPORAN -->
+    <div class="panel" id="p-laporan">
+      <!-- REKAP SETORAN PER UNIT KANTIN -->
+      <div class="section-head">
+        <div><h2>Rekap Setoran Kantin</h2><p>Pencairan tunai ke masing-masing unit kantin.</p></div>
+      </div>
+      <div class="card">
+        <div class="form-group">
+          <label>Periode Pencairan Kantin</label>
+          <div style="display:flex;gap:6px;align-items:center;">
+            <input type="date" id="kantinTglMulai" onchange="renderRekapKantin()">
+            <span style="color:var(--muted);font-size:11px;">s.d.</span>
+            <input type="date" id="kantinTglSelesai" onchange="renderRekapKantin()">
+            <button type="button" class="btn-outline-sm" style="white-space:nowrap;background:var(--mint);color:var(--green);border-color:#c2ded0;" onclick="resetKantinToday()">Hari Ini</button>
+          </div>
+        </div>
+
+        <div class="table-wrap">
+          <table>
+            <thead>
+              <tr>
+                <th>Unit Kantin</th>
+                <th style="text-align:center">Trx</th>
+                <th style="text-align:right">Total Setoran</th>
+                <th style="text-align:right">Slip</th>
+              </tr>
+            </thead>
+            <tbody id="rekapKantinBody">
+              <tr><td colspan="4" class="empty">Memuat data kantin...</td></tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+      <!-- LAPORAN PER SANTRI -->
+      <div class="section-head">
+        <div><h2>Laporan Rekap Santri</h2><p>Pilih santri & rentang waktu cetak PDF.</p></div>
+      </div>
+      <div class="card">
+        <div class="form-group">
+          <label>Cari Santri Untuk Laporan</label>
+          <input type="text" id="lapSearchInput" placeholder="Ketik nama santri untuk buat laporan..." autocomplete="off" oninput="handleLapSearch(this.value)">
+          <input type="hidden" id="lapSelectedNis">
+          <div class="search-results-box" id="lapSearchResults"></div>
+          <div class="selected-santri-badge" id="lapSelectedBadge">
+            <div>
+              <strong id="lapSelectedNama">-</strong>
+              <div style="font-size:10px;color:var(--muted)" id="lapSelectedDetail">Sisa Saldo: Rp 0</div>
+            </div>
+            <button type="button" style="border:0;background:none;color:var(--red);font-weight:bold" onclick="clearSelectedLapSantri()">Ganti</button>
+          </div>
+        </div>
+
+        <div class="form-group">
+          <label>Rentang Waktu</label>
+          <div style="display:flex;gap:6px">
+            <input type="date" id="lapTglMulai">
+            <input type="date" id="lapTglSelesai">
+          </div>
+        </div>
+
+        <button class="btn-outline-sm" style="width:100%;margin-top:2px;background:var(--mint);border:1px solid #c2ded0;color:var(--green);font-weight:700" onclick="filterRekapLaporan()">Tampilkan Rekap</button>
+
+        <div class="rekap-summary-box" id="rekapBox">
+          <div class="rekap-summary-row">
+            <span>Total Pemasukan (Top-up):</span>
+            <strong style="color:var(--green)" id="sumMasuk">Rp 0</strong>
+          </div>
+          <div class="rekap-summary-row">
+            <span>Total Pengeluaran:</span>
+            <strong style="color:var(--red)" id="sumKeluar">Rp 0</strong>
+          </div>
+          <div class="rekap-summary-row" style="border-top:1px dashed #d5e2d8;margin-top:4px;padding-top:4px">
+            <span>Sisa Saldo Terkini:</span>
+            <strong id="sumSaldoAkhir" style="color:var(--green)">Rp 0</strong>
+          </div>
+        </div>
+
+        <button class="btn-pdf" onclick="cetakLaporanPDF()">
+          📄 Cetak / Download PDF Laporan Wali
+        </button>
+
+        <div class="table-wrap">
+          <table>
+            <thead><tr><th>Tanggal</th><th>Pos</th><th>Keterangan</th><th style="text-align:right">Nominal / Aksi</th></tr></thead>
+            <tbody id="lapTableBody"><tr><td colspan="4" class="empty">Silakan pilih santri dan tampilkan.</td></tr></tbody>
+          </table>
+        </div>
+      </div>
+
+      <!-- RIWAYAT TRANSAKSI -->
+      <div class="card" style="margin-top: 14px;">
+        <div class="section-head" style="margin: 0 0 10px;">
+          <div>
+            <h3 style="margin:0;font-size:13.5px;color:var(--green)">🕒 Riwayat Transaksi</h3>
+            <p style="margin:2px 0 0;font-size:10.5px;color:var(--muted)" id="recentSubtitle">Menampilkan transaksi hari ini</p>
+          </div>
+          <span class="badge-count" id="recentCountBadge">0 trx</span>
+        </div>
+
+        <div class="form-group" style="margin-bottom:8px;">
+          <div style="display:flex;gap:6px;align-items:center;">
+            <input type="date" id="recentTglMulai" onchange="renderRecentMutasi()">
+            <span style="color:var(--muted);font-size:11px;">s.d.</span>
+            <input type="date" id="recentTglSelesai" onchange="renderRecentMutasi()">
+            <button type="button" class="btn-outline-sm" style="white-space:nowrap;background:var(--mint);color:var(--green);border-color:#c2ded0;" onclick="resetRecentToday()">Hari Ini</button>
+          </div>
+        </div>
+
+        <div class="table-wrap">
+          <table>
+            <thead>
+              <tr>
+                <th>Santri</th>
+                <th>Pos</th>
+                <th>Keterangan</th>
+                <th style="text-align:right">Nominal / Aksi</th>
+              </tr>
+            </thead>
+            <tbody id="recentMutasiBody">
+              <tr><td colspan="4" class="empty">Memuat riwayat transaksi...</td></tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+
+    <!-- 5. PANEL MASTER SANTRI -->
+    <div class="panel" id="p-santri">
+      <div class="section-head">
+        <div><h2>Data Santri</h2><p>Daftar santri & cek saldo terkini.</p></div>
+      </div>
+
+      <div class="card">
+        <input type="text" id="cariSantri" placeholder="Cari santri / NIS / Kamar..." oninput="renderMaster()" style="width:100%;padding:8px 10px;border:1px solid var(--line);border-radius:8px;margin-bottom:8px">
+        <div class="table-wrap">
+          <table>
+            <thead><tr><th>NIS</th><th>Nama</th><th>Kls</th><th style="text-align:right">Saldo</th></tr></thead>
+            <tbody id="masterBody"><tr><td colspan="4" class="empty">Memuat data...</td></tr></tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+  </main>
+
+  <!-- BOTTOM NAVIGATION -->
+  <nav class="bottom-nav">
+    <button class="nav-item active" onclick="switchNav('dashboard', this)">
+      <svg viewBox="0 0 24 24"><path d="M10 20v-6h4v6h5v-8h3L12 3 2 12h3v8z"/></svg>
+      <span>Ringkasan</span>
+    </button>
+    <button class="nav-item" onclick="switchNav('batch', this)">
+      <svg viewBox="0 0 24 24"><path d="M3 3v8h8V3H3zm2 2h4v4H5V5zm8-2v8h8V3h-8zm2 2h4v4h-4V5zM3 13v8h8v-8H3zm2 2h4v4H5v-4zm8-2v8h8v-8h-8zm2 2h4v4h-4v-4z"/></svg>
+      <span>Rekap</span>
+    </button>
+    <button class="nav-item" onclick="switchNav('transaksi', this)">
+      <svg viewBox="0 0 24 24"><path d="M19 13h-6v6h-2v-6H5v-2h6V5h2v6h6v2z"/></svg>
+      <span>Transaksi</span>
+    </button>
+    <button class="nav-item" onclick="switchNav('laporan', this)">
+      <svg viewBox="0 0 24 24"><path d="M14 2H6c-1.1 0-1.99.9-1.99 2L4 20c0 1.1.89 2 1.99 2H18c1.1 0 2-.9 2-2V8l-6-6zm2 16H8v-2h8v2zm0-4H8v-2h8v2zm-3-5V3.5L18.5 9H13z"/></svg>
+      <span>Laporan</span>
+    </button>
+    <button class="nav-item" onclick="switchNav('santri', this)">
+      <svg viewBox="0 0 24 24"><path d="M12 12c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm0 2c-2.67 0-8 1.34-8 4v2h16v-2c0-2.66-5.33-4-8-4z"/></svg>
+      <span>Santri</span>
+    </button>
+  </nav>
+</div>
 
 <script>
 const API_URL = "https://script.google.com/macros/s/AKfycbwiku-hOfT9_BUWZyTOCW2VlqGp4Rim9QQ8I2BEX_pTO0EXfvh1Y27a8eNYktHRIi15/exec";
 const LIMIT_KRITIS = 20000;
 
+let adminSession = null; // { username, password, nama, role }
 let santri = [];
 let mutasi = [];
 let lapCurrentRows = [];
-let currentAsrama = 'ALL'; // 'ALL' | 'Putra' | 'Putri'
+let yayasanSubFilter = 'ALL'; // Khusus akun Yayasan: 'ALL' | 'Putra' | 'Putri'
 
 const $ = id => document.getElementById(id);
 const rp = n => "Rp " + Number(n || 0).toLocaleString("id-ID");
@@ -868,17 +708,92 @@ $("recentTglSelesai").value = today();
 $("kantinTglMulai").value = today();
 $("kantinTglSelesai").value = today();
 
-// Helper filter asrama aktif
-const getFilteredSantri = () => currentAsrama === 'ALL'
-  ? santri
-  : santri.filter(s => String(s.asrama || 'Putra').toLowerCase() === currentAsrama.toLowerCase());
+// =========================================================================
+// AUTENTIKASI LOGIN ADMIN (PUTRA / PUTRI / YAYASAN)
+// =========================================================================
+window.addEventListener("DOMContentLoaded", () => {
+  const saved = localStorage.getItem("kas_admin_auth");
+  if (saved) {
+    try {
+      adminSession = JSON.parse(saved);
+      if (adminSession && adminSession.username && adminSession.password) {
+        loadData(false, true);
+      }
+    } catch (_) {
+      localStorage.removeItem("kas_admin_auth");
+    }
+  }
+});
 
-const getFilteredMutasi = () => currentAsrama === 'ALL'
-  ? mutasi
-  : mutasi.filter(m => String(m.asrama || 'Putra').toLowerCase() === currentAsrama.toLowerCase());
+async function handleAdminLogin(e) {
+  e.preventDefault();
+  const username = $("loginUser").value.trim();
+  const password = $("loginPass").value.trim();
+  const errBox = $("loginError");
+  const btn = $("btnLoginAdmin");
+
+  errBox.style.display = "none";
+  btn.disabled = true;
+  btn.textContent = "Memeriksa Akun…";
+
+  adminSession = { username, password, nama: username, role: "Yayasan" };
+  const ok = await loadData(false, true);
+
+  btn.disabled = false;
+  btn.textContent = "Masuk ke Buku Kas";
+
+  if (!ok) {
+    adminSession = null;
+    localStorage.removeItem("kas_admin_auth");
+    errBox.style.display = "block";
+  }
+}
+
+function logoutAdmin() {
+  localStorage.removeItem("kas_admin_auth");
+  adminSession = null;
+  santri = [];
+  mutasi = [];
+  $("loginPass").value = "";
+  $("appWrapper").style.display = "none";
+  $("loginScreen").style.display = "flex";
+}
+
+function applyRoleUI(account) {
+  $("loginScreen").style.display = "none";
+  $("appWrapper").style.display = "block";
+  $("headerPetugas").textContent = `${account.nama} (${account.role})`;
+
+  const roleLower = String(account.role || "").toLowerCase();
+  if (roleLower === "yayasan") {
+    $("heroRoleTag").textContent = "AKSES PUSAT • BENDAHARA YAYASAN";
+    $("roleLockBanner").style.display = "none";
+    $("yayasanFilterBar").style.display = "grid";
+  } else {
+    $("heroRoleTag").textContent = `AKSES TERKUNCI • PONDOK ${account.role.toUpperCase()}`;
+    $("roleLockBanner").style.display = "flex";
+    $("roleLockLabel").textContent = `🔒 Pondok ${account.role}`;
+    $("yayasanFilterBar").style.display = "none";
+    yayasanSubFilter = "ALL";
+  }
+}
+
+const getFilteredSantri = () => {
+  if (!adminSession || String(adminSession.role).toLowerCase() !== "yayasan" || yayasanSubFilter === "ALL") {
+    return santri;
+  }
+  return santri.filter(s => String(s.asrama || "Putra").toLowerCase() === yayasanSubFilter.toLowerCase());
+};
+
+const getFilteredMutasi = () => {
+  if (!adminSession || String(adminSession.role).toLowerCase() !== "yayasan" || yayasanSubFilter === "ALL") {
+    return mutasi;
+  }
+  return mutasi.filter(m => String(m.asrama || "Putra").toLowerCase() === yayasanSubFilter.toLowerCase());
+};
 
 function setAsramaFilter(asrama, btn) {
-  currentAsrama = asrama;
+  yayasanSubFilter = asrama;
   document.querySelectorAll(".asrama-tab").forEach(b => b.classList.remove("active"));
   if (btn) btn.classList.add("active");
   clearSelectedTrxSantri();
@@ -927,7 +842,8 @@ async function api(action, payload = {}) {
   return json;
 }
 
-async function loadData(showLoading = false) {
+async function loadData(showLoading = false, isLoginAttempt = false) {
+  if (!adminSession) return false;
   const pill = $("connPill");
   if (showLoading) {
     pill.textContent = "● Memuat…";
@@ -935,22 +851,42 @@ async function loadData(showLoading = false) {
   }
 
   try {
-    const r1 = await fetch(API_URL);
+    const authUrl = `${API_URL}?username=${encodeURIComponent(adminSession.username)}&password=${encodeURIComponent(adminSession.password)}`;
+    const r1 = await fetch(authUrl);
     const res = await r1.json();
-    if (!res || (!res.santri && !Array.isArray(res))) throw new Error("Format respons tidak sesuai");
 
-    santri = res.santri || (Array.isArray(res) ? res : []);
+    if (!res || res.success === false) {
+      if (res && res.authError) {
+        $("loginError").textContent = res.error || "Username atau Password salah.";
+        return false;
+      }
+      throw new Error(res?.error || "Format respons tidak sesuai");
+    }
+
+    adminSession = {
+      username: adminSession.username,
+      password: adminSession.password,
+      nama: res.account.nama,
+      role: res.account.role
+    };
+    localStorage.setItem("kas_admin_auth", JSON.stringify(adminSession));
+
+    santri = res.santri || [];
     mutasi = res.mutasi || [];
+
+    if (isLoginAttempt) applyRoleUI(adminSession);
 
     pill.textContent = "● Terhubung";
     pill.style.color = "#e5f1eb";
 
     refreshAllViews();
+    return true;
   } catch (err) {
     console.error("Gagal terhubung:", err);
     pill.textContent = "● Gagal tersambung";
     pill.style.color = "#ff9e9e";
     if (showLoading) toast("Gagal menyinkronkan data dengan spreadsheet", true);
+    return false;
   }
 }
 
@@ -1322,7 +1258,7 @@ function openEditModal(id) {
   const trx = mutasi.find(m => String(m.id) === String(id));
   if (!trx) return alert("Data transaksi tidak ditemukan.");
 
-  $("editTrxNis").innerHTML = santri.map(s =>
+  $("editTrxNis").innerHTML = getFilteredSantri().map(s =>
     `<option value="${escapeHTML(s.nis)}" ${String(s.nis) === String(trx.nis) ? 'selected' : ''}>${escapeHTML(s.nama)} (${escapeHTML(s.asrama || 'Putra')} · Kls ${escapeHTML(s.kelas)})</option>`
   ).join("");
 
@@ -1745,8 +1681,6 @@ document.addEventListener("click", e => {
   if (!e.target.closest("#trxSearchInput") && !e.target.closest("#trxSearchResults")) $("trxSearchResults").style.display = "none";
   if (!e.target.closest("#lapSearchInput") && !e.target.closest("#lapSearchResults")) $("lapSearchResults").style.display = "none";
 });
-
-loadData();
 </script>
 </body>
 </html>
