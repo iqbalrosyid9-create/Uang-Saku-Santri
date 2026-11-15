@@ -1,4 +1,4 @@
-const CACHE_NAME = 'kas-santri-v2';
+const CACHE_NAME = 'kas-santri-v3';
 const APP_SHELL = [
   './',
   './index.html',
