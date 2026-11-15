@@ -1,1686 +1,1018 @@
-<!doctype html>
+<!DOCTYPE html>
 <html lang="id">
 <head>
-<meta charset="utf-8">
-<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
-<meta name="theme-color" content="#143e33">
-<title>Bank Al Husna</title>
-<link rel="manifest" href="manifest.json">
-<link rel="icon" href="icon.svg" type="image/svg+xml">
-<style>
-:root {
-  --green: #143e33;
-  --green-light: #1b5344;
-  --mint: #eaf4ef;
-  --gold: #f3c969;
-  --ink: #1f2d27;
-  --muted: #788780;
-  --line: #e7ede9;
-  --bg: #f6f8f7;
-  --red: #d33c3c;
-  --card: #ffffff;
-}
-* { box-sizing: border-box; }
-body {
-  margin: 0;
-  background: var(--bg);
-  color: var(--ink);
-  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
-  font-size: 13px;
-  line-height: 1.45;
-  -webkit-font-smoothing: antialiased;
-}
-button, input, select, textarea { font: inherit; }
-button { cursor: pointer; }
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+  <title>Portal Wali Santri - PPTQ Al Husna Lestari</title>
+  <meta name="theme-color" content="#047857" />
+  <meta name="description" content="Portal Cek Saldo Uang Saku & Presensi Sholat Jamaah Santri PPTQ Al Husna Lestari" />
+  <link rel="manifest" href="./manifest.json" />
+  <link rel="icon" type="image/png" href="./icon-192.png" />
+  <link rel="apple-touch-icon" href="./icon-192.png" />
 
-/* LOGIN SCREEN */
-.login-wrapper {
-  min-height: 100vh;
-  display: flex;
-  flex-direction: column;
-  justify-content: center;
-  padding: 20px 16px;
-  max-width: 420px;
-  margin: auto;
-}
-.login-card {
-  background: #fff;
-  border: 1px solid var(--line);
-  border-radius: 18px;
-  padding: 24px 20px;
-  box-shadow: 0 10px 28px rgba(20, 62, 51, 0.08);
-}
-.login-logo {
-  width: 52px;
-  height: 52px;
-  background: var(--green);
-  color: #f3c969;
-  border-radius: 14px;
-  display: grid;
-  place-items: center;
-  font-size: 24px;
-  margin: 0 auto 12px;
-}
-.login-title {
-  text-align: center;
-  margin: 0 0 4px;
-  font-size: 17px;
-  font-weight: 800;
-  color: var(--green);
-}
-.login-sub {
-  text-align: center;
-  margin: 0 0 20px;
-  font-size: 11.5px;
-  color: var(--muted);
-}
-.login-err {
-  background: #fff5f5;
-  border: 1px solid #f5c2c2;
-  color: var(--red);
-  padding: 8px 12px;
-  border-radius: 9px;
-  font-size: 11.5px;
-  font-weight: 600;
-  margin-bottom: 12px;
-  display: none;
-}
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" />
+  <script src="https://unpkg.com/html5-qrcode@2.3.8/html5-qrcode.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
 
-/* HEADER */
-.header {
-  background: var(--green);
-  color: #fff;
-  padding: 16px 16px 20px;
-  border-radius: 0 0 20px 20px;
-}
-.header-top {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-}
-.brand {
-  display: flex;
-  align-items: center;
-  gap: 10px;
-}
-.brand-icon {
-  width: 36px;
-  height: 36px;
-  background: rgba(255, 255, 255, 0.15);
-  border-radius: 10px;
-  display: grid;
-  place-items: center;
-  font-size: 18px;
-}
-.brand h1 { font-size: 14px; margin: 0; font-weight: 700; }
-.brand p { margin: 1px 0 0; font-size: 10.5px; color: #c4d7ce; }
-.header-status { display: flex; align-items: center; gap: 6px; }
-.pill {
-  border: 1px solid rgba(255, 255, 255, 0.3);
-  padding: 4px 10px;
-  border-radius: 99px;
-  font-size: 10.5px;
-  color: #e5f1eb;
-  background: rgba(255, 255, 255, 0.08);
-}
-.btn-icon-sync {
-  background: rgba(255, 255, 255, 0.15);
-  border: 1px solid rgba(255, 255, 255, 0.3);
-  color: #fff;
-  width: 28px;
-  height: 28px;
-  border-radius: 50%;
-  display: grid;
-  place-items: center;
-  padding: 0;
-}
-.btn-logout {
-  background: rgba(211, 60, 60, 0.25);
-  border: 1px solid rgba(255, 180, 180, 0.35);
-  color: #ffdede;
-  padding: 4px 9px;
-  border-radius: 99px;
-  font-size: 10.5px;
-  font-weight: 700;
-}
-
-.hero { margin-top: 14px; }
-.hero-tag { color: #e7cb7f; font-size: 9.5px; font-weight: 700; letter-spacing: 1.2px; text-transform: uppercase; }
-.hero-title { font-size: 18px; font-weight: 700; margin: 3px 0 4px; }
-.hero-desc { font-size: 11.5px; color: #cfded7; margin: 0; }
-
-/* ROLE BADGE & YAYASAN SWITCHER */
-.role-banner {
-  background: #ffffff;
-  border: 1px solid var(--line);
-  border-radius: 12px;
-  padding: 8px 12px;
-  margin-top: 10px;
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  font-size: 11.5px;
-}
-.asrama-bar {
-  display: grid;
-  grid-template-columns: repeat(3, 1fr);
-  gap: 6px;
-  background: #ffffff;
-  border: 1px solid var(--line);
-  border-radius: 12px;
-  padding: 5px;
-  margin-top: 8px;
-}
-.asrama-tab {
-  border: 0;
-  background: transparent;
-  padding: 7px 6px;
-  border-radius: 8px;
-  font-size: 11.5px;
-  font-weight: 700;
-  color: var(--muted);
-}
-.asrama-tab.active { background: var(--green); color: #ffffff; }
-
-/* STATS */
-.content { padding: 0 14px 85px; max-width: 600px; margin: auto; }
-.stats-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px; margin-top: -12px; }
-.stat-box {
-  background: var(--card);
-  border: 1px solid var(--line);
-  border-radius: 12px;
-  padding: 10px 8px;
-  box-shadow: 0 4px 12px rgba(20, 62, 51, 0.05);
-}
-.stat-label { font-size: 9px; color: var(--muted); display: flex; align-items: center; gap: 4px; white-space: nowrap; }
-.stat-label::before { content: ""; width: 5px; height: 5px; background: #deb453; border-radius: 50%; }
-.stat-val { display: block; font-size: 12.5px; font-weight: 750; color: var(--green); margin-top: 5px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
-
-/* SECTION & CARD */
-.section-head { display: flex; justify-content: space-between; align-items: flex-end; margin: 18px 0 9px; }
-.section-head h2 { font-size: 14.5px; font-weight: 750; color: var(--green); margin: 0; }
-.section-head p { font-size: 11px; color: var(--muted); margin: 2px 0 0; }
-.badge-count { background: var(--mint); color: var(--green); font-size: 10px; font-weight: 700; padding: 3px 8px; border-radius: 99px; }
-.card {
-  background: var(--card);
-  border: 1px solid var(--line);
-  border-radius: 14px;
-  padding: 12px 14px;
-  box-shadow: 0 2px 8px rgba(0,0,0,0.02);
-  margin-bottom: 12px;
-}
-
-.critical-row { display: flex; justify-content: space-between; align-items: center; padding: 9px 0; border-bottom: 1px solid #f0f4f1; }
-.critical-row:last-child { border-bottom: none; }
-.critical-name { font-weight: 700; font-size: 12.5px; color: #24352e; }
-.critical-sub { font-size: 10.5px; color: var(--muted); margin-top: 1px; }
-.critical-val { color: var(--red); font-weight: 750; font-size: 12.5px; }
-
-/* BOTTOM NAVIGATION */
-.bottom-nav {
-  position: fixed; bottom: 0; left: 0; right: 0; height: 58px; background: #ffffff;
-  border-top: 1px solid var(--line); display: grid; grid-template-columns: repeat(5, 1fr);
-  z-index: 50; max-width: 600px; margin: auto;
-}
-.nav-item { border: 0; background: none; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 2px; color: #7d8c85; font-size: 9.5px; font-weight: 600; padding: 0; }
-.nav-item svg { width: 19px; height: 19px; fill: currentColor; }
-.nav-item.active { color: var(--green); font-weight: 750; }
-
-/* FORM STYLES */
-.panel { display: none; }
-.panel.active { display: block; }
-.form-group { margin-bottom: 11px; position: relative; }
-.form-group label { display: block; font-size: 11px; font-weight: 700; margin-bottom: 5px; color: #43544d; }
-.form-group input, .form-group select, .form-group textarea {
-  width: 100%; padding: 9px 11px; border: 1px solid #dce4df; border-radius: 9px; background: #fdfdfd; font-size: 12px; outline: none;
-}
-.form-group input:focus, .form-group select:focus { border-color: #2c7a65; background: #fff; }
-.btn-submit {
-  width: 100%; background: var(--green); color: #fff; border: 0; padding: 10px; border-radius: 10px;
-  font-weight: 700; font-size: 12.5px; margin-top: 6px; display: flex; align-items: center; justify-content: center; gap: 6px;
-}
-.btn-pdf {
-  width: 100%; background: #c63939; color: #fff; border: 0; padding: 10px; border-radius: 10px;
-  font-weight: 700; font-size: 12.5px; margin-top: 8px; display: flex; align-items: center; justify-content: center; gap: 6px;
-}
-.btn-outline-sm { background: transparent; border: 1px solid var(--line); padding: 7px 11px; border-radius: 8px; font-size: 11px; font-weight: 600; }
-
-.act-btns { display: inline-flex; gap: 4px; margin-top: 3px; }
-.btn-act { border: 1px solid #dce4df; background: #f9fbfa; border-radius: 6px; padding: 2px 6px; font-size: 10.5px; line-height: 1.2; }
-.btn-act.del { border-color: #f3caca; background: #fff5f5; color: var(--red); }
-
-.modal-backdrop { position: fixed; inset: 0; background: rgba(15, 31, 25, 0.55); display: none; align-items: center; justify-content: center; padding: 16px; z-index: 999; }
-.modal-backdrop.open { display: flex; }
-.modal-card { background: #fff; border-radius: 16px; width: 100%; max-width: 420px; padding: 16px; box-shadow: 0 14px 35px rgba(0,0,0,0.22); }
-.modal-head { display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid var(--line); padding-bottom: 10px; margin-bottom: 12px; }
-.modal-head h3 { margin: 0; font-size: 14.5px; color: var(--green); }
-.modal-close { border: 0; background: none; font-size: 18px; color: var(--muted); padding: 0 4px; }
-
-.search-results-box {
-  position: absolute; top: 100%; left: 0; right: 0; background: #fff; border: 1px solid #cfdad3;
-  border-radius: 9px; box-shadow: 0 8px 18px rgba(0,0,0,0.08); max-height: 180px; overflow-y: auto; z-index: 99; display: none;
-}
-.search-item { padding: 8px 10px; border-bottom: 1px solid #f1f4f2; cursor: pointer; display: flex; justify-content: space-between; align-items: center; }
-.search-item:hover { background: var(--mint); }
-.selected-santri-badge { background: var(--mint); border: 1px solid #b7dbca; border-radius: 8px; padding: 7px 10px; margin-top: 6px; display: none; justify-content: space-between; align-items: center; font-size: 11.5px; }
-
-.rekap-summary-box { background: #fcfdfc; border: 1px dashed #cedbd2; border-radius: 10px; padding: 10px; margin-top: 12px; font-size: 11.5px; }
-.rekap-summary-row { display: flex; justify-content: space-between; padding: 3px 0; }
-
-.table-wrap { overflow-x: auto; margin-top: 8px; }
-table { width: 100%; border-collapse: collapse; font-size: 11.5px; }
-th, td { padding: 8px 7px; text-align: left; border-bottom: 1px solid var(--line); vertical-align: middle; }
-th { color: var(--muted); font-size: 10px; text-transform: uppercase; }
-.empty { text-align: center; color: var(--muted); padding: 18px 0; font-size: 11.5px; }
-.badge { display: inline-block; padding: 2px 7px; border-radius: 99px; font-size: 9.5px; font-weight: 700; }
-.badge-in { background: #e6f7ec; color: #1e7e34; }
-.badge-out { background: #fee2e2; color: #dc2626; }
-.badge-asrama { background: #eef2ff; color: #3730a3; font-size: 9px; padding: 1px 6px; border-radius: 4px; font-weight: 700; }
-
-.toast-msg {
-  position: fixed; top: 16px; left: 50%; transform: translateX(-50%); background: #143e33; color: #fff;
-  padding: 8px 16px; border-radius: 99px; font-size: 12px; font-weight: 600; box-shadow: 0 6px 20px rgba(0,0,0,0.18);
-  z-index: 9999; display: none; opacity: 0; transition: opacity 0.3s ease;
-}
-</style>
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap');
+    body {
+      font-family: 'Plus Jakarta Sans', sans-serif;
+      background-color: #f0fdf4;
+      -webkit-tap-highlight-color: transparent;
+    }
+    #qr-reader video {
+      border-radius: 0.75rem !important;
+      object-fit: cover !important;
+    }
+    #qr-reader__scan_region {
+      background: transparent !important;
+    }
+    @media print {
+      .no-print { display: none !important; }
+    }
+  </style>
 </head>
-<body>
+<body class="min-h-screen text-slate-800 flex flex-col justify-between">
 
-<div id="toast" class="toast-msg"></div>
-
-<!-- ==================== VIEW 0: HALAMAN LOGIN ADMIN ==================== -->
-<div id="loginScreen" class="login-wrapper">
-  <div class="login-card">
-    <div class="login-logo">🔐</div>
-    <h1 class="login-title">Bank Al Husna</h1>
-    <p class="login-sub">Pondok Pesantren Tahfidzul Qur'an Al Husna Lestari</p>
-
-    <div id="loginError" class="login-err">Username atau Password salah.</div>
-
-    <form onsubmit="handleAdminLogin(event)">
-      <div class="form-group">
-        <label for="loginUser">Username Akun</label>
-        <input type="text" id="loginUser" required placeholder="Contoh: putra / putri / yayasan" autocomplete="username">
-      </div>
-      <div class="form-group">
-        <label for="loginPass">Password</label>
-        <input type="password" id="loginPass" required placeholder="Masukkan password..." autocomplete="current-password">
-      </div>
-      <button type="submit" id="btnLoginAdmin" class="btn-submit" style="padding:11px;margin-top:10px;">
-        Masuk ke Buku Kas
-      </button>
-    </form>
-  </div>
-</div>
-
-<!-- ==================== VIEW UTAMA APLIKASI (SETELAH LOGIN) ==================== -->
-<div id="appWrapper" style="display:none;">
-
-  <!-- MODAL EDIT TRANSAKSI -->
-  <div id="editModal" class="modal-backdrop" onclick="if(event.target===this) closeEditModal()">
-    <div class="modal-card">
-      <div class="modal-head">
-        <h3>✏️ Edit Transaksi</h3>
-        <button type="button" class="modal-close" onclick="closeEditModal()">&times;</button>
-      </div>
-      <form id="editTrxForm" onsubmit="submitEditTrx(event)">
-        <input type="hidden" id="editTrxId">
-        <div class="form-group">
-          <label>Santri</label>
-          <select id="editTrxNis" required></select>
+  <!-- HEADER -->
+  <header class="bg-gradient-to-r from-emerald-800 via-emerald-700 to-teal-700 text-white shadow-md sticky top-0 z-30 no-print">
+    <div class="max-w-md mx-auto px-4 py-3.5 flex items-center justify-between">
+      <div class="flex items-center gap-3">
+        <div class="w-10 h-10 rounded-xl bg-white/15 backdrop-blur flex items-center justify-center border border-white/20 shadow-inner">
+          <i class="fa-solid fa-mosque text-amber-300 text-lg"></i>
         </div>
-        <div class="form-group">
-          <label>Kategori Transaksi</label>
-          <select id="editTrxKat" required>
-            <option value="Top-Up">Top-Up (Setoran Wali Masuk)</option>
-            <option value="Uang Saku">Uang Saku Santri</option>
-            <option value="Jajan Kantin">Jajan Kantin</option>
-            <option value="Laundry">Laundry</option>
-            <option value="Potong Rambut">Potong Rambut</option>
-            <option value="Kesehatan">Kesehatan / Obat</option>
-            <option value="Lainnya">Lainnya</option>
-          </select>
-        </div>
-        <div class="form-group">
-          <label>Nominal (Rp)</label>
-          <input type="number" id="editTrxNom" min="1" required>
-        </div>
-        <div class="form-group">
-          <label>Tanggal Transaksi</label>
-          <input type="date" id="editTrxTgl" required>
-        </div>
-        <div class="form-group">
-          <label>Keterangan / Catatan</label>
-          <input type="text" id="editTrxKet" placeholder="Keterangan transaksi...">
-        </div>
-        <div style="display:flex;gap:8px;margin-top:10px">
-          <button type="button" class="btn-outline-sm" style="flex:1;padding:10px" onclick="closeEditModal()">Batal</button>
-          <button type="submit" class="btn-submit" style="flex:2;margin-top:0">Simpan Perubahan</button>
-        </div>
-      </form>
-    </div>
-  </div>
-
-  <header class="header">
-    <div class="header-top">
-      <div class="brand">
-        <div class="brand-icon">📚</div>
         <div>
-          <h1>Buku Keuangan Santri</h1>
-          <p id="headerPetugas">Petugas Aktif</p>
+          <h1 class="font-bold text-base leading-tight tracking-tight">Al Husna Mobile</h1>
+          <p class="text-[11px] text-emerald-100 font-medium">Portal Wali Santri • PPTQ Al Husna Lestari</p>
         </div>
       </div>
-      <div class="header-status">
-        <span class="pill" id="connPill">● Terhubung</span>
-        <button class="btn-icon-sync" onclick="loadData(true)" title="Sinkronkan Data">
-          <svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
-            <polyline points="23 4 23 10 17 10"></polyline>
-            <polyline points="1 20 1 14 7 14"></polyline>
-            <path d="M3.51 9a9 9 0 0 1 14.85-3.36L23 10M1 14l4.64 4.36A9 9 0 0 0 20.49 15"></path>
-          </svg>
+      <div class="flex items-center gap-2">
+        <button id="btnInstallPWA" onclick="installPWA()" class="hidden bg-amber-400 hover:bg-amber-300 text-emerald-950 text-xs font-bold px-2.5 py-1.5 rounded-lg shadow transition flex items-center gap-1.5">
+          <i class="fa-solid fa-download"></i> Install
         </button>
-        <button class="btn-logout" onclick="logoutAdmin()">Keluar</button>
+        <button id="btnLogout" onclick="logoutWali()" class="hidden bg-white/15 hover:bg-white/25 text-white text-xs font-semibold px-3 py-1.5 rounded-lg border border-white/20 transition flex items-center gap-1.5">
+          <i class="fa-solid fa-right-from-bracket"></i> Keluar
+        </button>
       </div>
-    </div>
-
-    <div class="hero">
-      <div class="hero-tag" id="heroRoleTag">SISTEM KEUANGAN SANTRI</div>
-      <div class="hero-title">PPTQ AL HUSNA LESTARI</div>
-      <div class="hero-desc">Kelola uang saku dan transaksi santri dengan mudah, cepat, dan tertib.</div>
     </div>
   </header>
 
-  <main class="content">
-    <!-- 3 KARTU KAS ATAS -->
-    <section class="stats-grid">
-      <div class="stat-box">
-        <div class="stat-label">Total saldo santri</div>
-        <strong class="stat-val" id="statSaldo">Rp 0</strong>
+  <!-- MAIN CONTAINER -->
+  <main class="max-w-md w-full mx-auto px-4 py-5 flex-1">
+
+    <!-- ==================== VIEW 1: LOGIN & SCAN QR ==================== -->
+    <section id="loginSection" class="space-y-4">
+      <div class="bg-white rounded-2xl shadow-sm border border-emerald-100 p-5">
+        <div class="text-center mb-4">
+          <span class="inline-flex items-center gap-1.5 bg-emerald-50 text-emerald-700 text-xs font-bold px-3 py-1 rounded-full border border-emerald-200 mb-2">
+            <i class="fa-solid fa-shield-halved"></i> Portal Resmi Wali Santri
+          </span>
+          <h2 class="text-lg font-extrabold text-slate-800">Uang Saku & Presensi Jamaah</h2>
+          <p class="text-xs text-slate-500 mt-1">Scan QR Kartu Santri atau masukkan NIS dan PIN Wali untuk memantau keuangan dan ibadah sholat berjamaah putra/putri Anda.</p>
+        </div>
+
+        <!-- Area Scanner QR -->
+        <div class="mb-4">
+          <div id="scannerWrapper" class="hidden mb-3 bg-slate-900 rounded-xl p-2 relative overflow-hidden">
+            <div id="qr-reader" class="w-full overflow-hidden rounded-lg"></div>
+            <button type="button" onclick="stopScanner()" class="mt-2 w-full py-2 bg-rose-600 hover:bg-rose-700 text-white text-xs font-bold rounded-lg transition">
+              <i class="fa-solid fa-xmark mr-1"></i> Tutup Kamera Scanner
+            </button>
+          </div>
+
+          <button type="button" id="btnStartScan" onclick="startScanner()" class="w-full py-3 px-4 bg-emerald-50 hover:bg-emerald-100 text-emerald-800 border-2 border-dashed border-emerald-400 rounded-xl font-bold text-sm flex items-center justify-center gap-2 transition active:scale-[0.99]">
+            <i class="fa-solid fa-qrcode text-lg text-emerald-600"></i>
+            <span>Scan QR Kartu Santri</span>
+          </button>
+        </div>
+
+        <div class="relative flex py-2 items-center">
+          <div class="flex-grow border-t border-slate-200"></div>
+          <span class="flex-shrink mx-3 text-[11px] font-semibold uppercase tracking-wider text-slate-400">atau input manual</span>
+          <div class="flex-grow border-t border-slate-200"></div>
+        </div>
+
+        <!-- Form Login NIS + PIN -->
+        <form id="loginForm" onsubmit="handleLogin(event)" class="space-y-3.5 mt-2">
+          <div>
+            <label for="inputNis" class="block text-xs font-bold text-slate-700 mb-1">Nomor Induk Santri (NIS)</label>
+            <div class="relative">
+              <span class="absolute inset-y-0 left-0 pl-3.5 flex items-center text-slate-400">
+                <i class="fa-solid fa-id-card"></i>
+              </span>
+              <input type="text" id="inputNis" inputmode="numeric" required placeholder="Contoh: 111"
+                class="w-full pl-10 pr-4 py-2.5 bg-slate-50 border border-slate-200 rounded-xl text-sm font-semibold text-slate-800 focus:outline-none focus:ring-2 focus:ring-emerald-500 focus:bg-white transition" />
+            </div>
+          </div>
+
+          <div>
+            <label for="inputPin" class="block text-xs font-bold text-slate-700 mb-1">PIN Wali Santri (6 Digit)</label>
+            <div class="relative">
+              <span class="absolute inset-y-0 left-0 pl-3.5 flex items-center text-slate-400">
+                <i class="fa-solid fa-lock"></i>
+              </span>
+              <input type="password" id="inputPin" inputmode="numeric" maxlength="6" required placeholder="Masukkan 6 digit PIN"
+                class="w-full pl-10 pr-10 py-2.5 bg-slate-50 border border-slate-200 rounded-xl text-sm font-semibold text-slate-800 tracking-widest focus:outline-none focus:ring-2 focus:ring-emerald-500 focus:bg-white transition" />
+              <button type="button" onclick="togglePinVisibility()" class="absolute inset-y-0 right-0 pr-3.5 flex items-center text-slate-400 hover:text-slate-600">
+                <i id="eyeIcon" class="fa-solid fa-eye"></i>
+              </button>
+            </div>
+          </div>
+
+          <div class="flex items-center justify-between pt-1">
+            <label class="inline-flex items-center gap-2 cursor-pointer select-none">
+              <input type="checkbox" id="rememberMe" checked class="w-4 h-4 rounded text-emerald-600 focus:ring-emerald-500 border-slate-300" />
+              <span class="text-xs text-slate-600 font-medium">Ingat NIS & PIN di HP ini</span>
+            </label>
+          </div>
+
+          <div id="loginError" class="hidden bg-rose-50 border border-rose-200 text-rose-700 text-xs font-semibold px-3.5 py-2.5 rounded-xl flex items-center gap-2">
+            <i class="fa-solid fa-circle-exclamation text-rose-500"></i>
+            <span id="loginErrorText">NIS atau PIN salah.</span>
+          </div>
+
+          <button type="submit" id="btnSubmitLogin" class="w-full py-3 bg-emerald-700 hover:bg-emerald-800 text-white font-bold text-sm rounded-xl shadow-md shadow-emerald-700/20 transition flex items-center justify-center gap-2 active:scale-[0.99]">
+            <i class="fa-solid fa-right-to-bracket"></i>
+            <span>Masuk ke Portal Wali</span>
+          </button>
+        </form>
       </div>
-      <div class="stat-box">
-        <div class="stat-label">Total top-up wali</div>
-        <strong class="stat-val" id="statTopup">Rp 0</strong>
-      </div>
-      <div class="stat-box">
-        <div class="stat-label">Total pengeluaran</div>
-        <strong class="stat-val" id="statKeluar">Rp 0</strong>
+
+      <!-- Bantuan Lupa PIN -->
+      <div class="bg-amber-50/90 border border-amber-200 rounded-2xl p-4 flex items-start gap-3">
+        <div class="w-8 h-8 rounded-lg bg-amber-100 text-amber-700 flex items-center justify-center shrink-0 mt-0.5">
+          <i class="fa-solid fa-circle-info"></i>
+        </div>
+        <div class="text-xs text-amber-900 leading-relaxed">
+          <p class="font-bold">Belum tahu atau lupa PIN Wali?</p>
+          <p class="mt-0.5 text-amber-800">Silakan hubungi Admin Pondok untuk mendapatkan atau mengatur ulang PIN akses putra/putri Anda.</p>
+          <a href="https://wa.me/6285743538144?text=Assalamu'alaikum%20Ustadz,%20saya%20wali%20santri%20ingin%20menanyakan%20PIN%20untuk%20portal%20wali%20santri." target="_blank"
+            class="inline-flex items-center gap-1.5 mt-2 font-bold text-emerald-700 hover:text-emerald-800 underline">
+            <i class="fa-brands fa-whatsapp text-sm"></i> Hubungi Admin via WhatsApp
+          </a>
+        </div>
       </div>
     </section>
 
-    <!-- INFO HAK AKSES (TERKUNCI UNTUK PUTRA/PUTRI, FILTER UNTUK YAYASAN) -->
-    <div class="role-banner" id="roleLockBanner">
-      <span style="color:var(--muted);font-weight:600;">Wilayah Akses Data:</span>
-      <strong id="roleLockLabel" style="color:var(--green);">🔒 Pondok Putra</strong>
-    </div>
+    <!-- ==================== VIEW 2: DASHBOARD SANTRI ==================== -->
+    <section id="dashboardSection" class="hidden space-y-4">
 
-    <div class="asrama-bar" id="yayasanFilterBar" style="display:none;">
-      <button type="button" class="asrama-tab active" onclick="setAsramaFilter('ALL', this)">Semua Yayasan</button>
-      <button type="button" class="asrama-tab" onclick="setAsramaFilter('Putra', this)">🏢 Putra</button>
-      <button type="button" class="asrama-tab" onclick="setAsramaFilter('Putri', this)">🕌 Putri</button>
-    </div>
-
-    <!-- 1. PANEL RINGKASAN -->
-    <div class="panel active" id="p-dashboard">
-      <div class="section-head">
-        <div>
-          <h2>Saldo perlu perhatian</h2>
-          <p>Santri dengan saldo di bawah Rp 20.000.</p>
-        </div>
-        <span class="badge-count" id="critBadge">0 santri</span>
-      </div>
-      <div class="card" id="criticalList">
-        <div class="empty">Memuat data santri…</div>
-      </div>
-    </div>
-
-    <!-- 2. PANEL REKAP HARIAN KELAS -->
-    <div class="panel" id="p-batch">
-      <div class="section-head">
-        <div><h2>Rekap Harian Kelas</h2><p>Input penarikan uang saku serentak.</p></div>
-      </div>
-      <div class="card">
-        <div class="form-group">
-          <label>Tanggal & Kelas</label>
-          <div style="display:flex;gap:6px">
-            <input type="date" id="batchTgl">
-            <select id="batchKelas" onchange="renderBatch()"><option value="7">Kelas 7</option><option value="8">Kelas 8</option><option value="9">Kelas 9</option><option value="10">Kelas 10</option><option value="11">Kelas 11</option><option value="12">Kelas 12</option></select>
-          </div>
-        </div>
-        <div class="form-group">
-          <label>Isi nominal serentak (Rp)</label>
-          <div style="display:flex;gap:6px">
-            <input type="number" id="batchNominal" placeholder="Contoh: 10000">
-            <button class="btn-outline-sm" style="background:var(--green);color:#fff;border:0" onclick="applyBatch()">Terapkan</button>
-          </div>
-        </div>
-        <div id="batchRows" style="margin:12px 0"></div>
-        <div style="display:flex;justify-content:space-between;align-items:center;background:var(--mint);border:1px solid #c2ded0;border-radius:10px;padding:10px 12px;margin-bottom:8px;font-size:12px">
-          <span style="color:var(--green);font-weight:600">Total uang diambil (<span id="batchCountSantri">0</span> santri):</span>
-          <strong id="batchTotalUang" style="color:var(--green);font-size:14px">Rp 0</strong>
-        </div>
-        <button class="btn-submit" id="btnSaveBatch" onclick="saveBatch()">Simpan Rekap ke Spreadsheet</button>
-      </div>
-    </div>
-
-    <!-- 3. PANEL TRANSAKSI SATUAN -->
-    <div class="panel" id="p-transaksi">
-      <div class="section-head">
-        <div><h2>Catat Transaksi</h2><p>Top-up setoran wali / pengeluaran satuan.</p></div>
-      </div>
-      <div class="card">
-        <form id="trxForm" onsubmit="saveTrx(event)">
-          <div class="form-group">
-            <label>Cari Santri (Ketik Nama / NIS)</label>
-            <input type="text" id="trxSearchInput" placeholder="Ketik nama atau NIS santri..." autocomplete="off" oninput="handleTrxSearch(this.value)">
-            <input type="hidden" id="trxNis" required>
-            <div class="search-results-box" id="trxSearchResults"></div>
-            <div class="selected-santri-badge" id="trxSelectedBadge">
-              <div>
-                <strong id="trxSelectedNama">-</strong>
-                <div style="font-size:10px;color:var(--muted)" id="trxSelectedDetail">NIS: -</div>
-              </div>
-              <button type="button" style="border:0;background:none;color:var(--red);font-weight:bold" onclick="clearSelectedTrxSantri()">Ganti</button>
-            </div>
-          </div>
-
-          <div class="form-group">
-            <label>Kategori Transaksi</label>
-            <select id="trxKat">
-              <option value="Top-Up">Top-Up (Setoran Wali Masuk)</option>
-              <option value="Uang Saku">Uang Saku Santri</option>
-              <option value="Laundry">Laundry</option>
-              <option value="Potong Rambut">Potong Rambut</option>
-              <option value="Kesehatan">Kesehatan / Obat</option>
-              <option value="Lainnya">Lainnya</option>
-            </select>
-          </div>
-          <div class="form-group">
-            <label>Nominal (Rp)</label>
-            <input type="number" id="trxNom" placeholder="Contoh: 50000" min="1" required>
-          </div>
-          <div class="form-group">
-            <label>Tanggal Transaksi</label>
-            <input type="date" id="trxTgl" required>
-          </div>
-          <div class="form-group">
-            <label>Keterangan / Catatan</label>
-            <input type="text" id="trxKet" placeholder="Misal: Transfer BCA bunda / pangkas rapi">
-          </div>
-          <button class="btn-submit" id="btnSubmitTrx" type="submit">Simpan ke Spreadsheet</button>
-        </form>
-      </div>
-    </div>
-
-    <!-- 4. PANEL REKAP & LAPORAN -->
-    <div class="panel" id="p-laporan">
-      <!-- REKAP SETORAN PER UNIT KANTIN -->
-      <div class="section-head">
-        <div><h2>Rekap Setoran Kantin</h2><p>Pencairan tunai ke masing-masing unit kantin.</p></div>
-      </div>
-      <div class="card">
-        <div class="form-group">
-          <label>Periode Pencairan Kantin</label>
-          <div style="display:flex;gap:6px;align-items:center;">
-            <input type="date" id="kantinTglMulai" onchange="renderRekapKantin()">
-            <span style="color:var(--muted);font-size:11px;">s.d.</span>
-            <input type="date" id="kantinTglSelesai" onchange="renderRekapKantin()">
-            <button type="button" class="btn-outline-sm" style="white-space:nowrap;background:var(--mint);color:var(--green);border-color:#c2ded0;" onclick="resetKantinToday()">Hari Ini</button>
-          </div>
-        </div>
-
-        <div class="table-wrap">
-          <table>
-            <thead>
-              <tr>
-                <th>Unit Kantin</th>
-                <th style="text-align:center">Trx</th>
-                <th style="text-align:right">Total Setoran</th>
-                <th style="text-align:right">Slip</th>
-              </tr>
-            </thead>
-            <tbody id="rekapKantinBody">
-              <tr><td colspan="4" class="empty">Memuat data kantin...</td></tr>
-            </tbody>
-          </table>
-        </div>
-      </div>
-
-      <!-- LAPORAN PER SANTRI -->
-      <div class="section-head">
-        <div><h2>Laporan Rekap Santri</h2><p>Pilih santri & rentang waktu cetak PDF.</p></div>
-      </div>
-      <div class="card">
-        <div class="form-group">
-          <label>Cari Santri Untuk Laporan</label>
-          <input type="text" id="lapSearchInput" placeholder="Ketik nama santri untuk buat laporan..." autocomplete="off" oninput="handleLapSearch(this.value)">
-          <input type="hidden" id="lapSelectedNis">
-          <div class="search-results-box" id="lapSearchResults"></div>
-          <div class="selected-santri-badge" id="lapSelectedBadge">
-            <div>
-              <strong id="lapSelectedNama">-</strong>
-              <div style="font-size:10px;color:var(--muted)" id="lapSelectedDetail">Sisa Saldo: Rp 0</div>
-            </div>
-            <button type="button" style="border:0;background:none;color:var(--red);font-weight:bold" onclick="clearSelectedLapSantri()">Ganti</button>
-          </div>
-        </div>
-
-        <div class="form-group">
-          <label>Rentang Waktu</label>
-          <div style="display:flex;gap:6px">
-            <input type="date" id="lapTglMulai">
-            <input type="date" id="lapTglSelesai">
-          </div>
-        </div>
-
-        <button class="btn-outline-sm" style="width:100%;margin-top:2px;background:var(--mint);border:1px solid #c2ded0;color:var(--green);font-weight:700" onclick="filterRekapLaporan()">Tampilkan Rekap</button>
-
-        <div class="rekap-summary-box" id="rekapBox">
-          <div class="rekap-summary-row">
-            <span>Total Pemasukan (Top-up):</span>
-            <strong style="color:var(--green)" id="sumMasuk">Rp 0</strong>
-          </div>
-          <div class="rekap-summary-row">
-            <span>Total Pengeluaran:</span>
-            <strong style="color:var(--red)" id="sumKeluar">Rp 0</strong>
-          </div>
-          <div class="rekap-summary-row" style="border-top:1px dashed #d5e2d8;margin-top:4px;padding-top:4px">
-            <span>Sisa Saldo Terkini:</span>
-            <strong id="sumSaldoAkhir" style="color:var(--green)">Rp 0</strong>
-          </div>
-        </div>
-
-        <button class="btn-pdf" onclick="cetakLaporanPDF()">
-          📄 Cetak / Download PDF Laporan Wali
-        </button>
-
-        <div class="table-wrap">
-          <table>
-            <thead><tr><th>Tanggal</th><th>Pos</th><th>Keterangan</th><th style="text-align:right">Nominal / Aksi</th></tr></thead>
-            <tbody id="lapTableBody"><tr><td colspan="4" class="empty">Silakan pilih santri dan tampilkan.</td></tr></tbody>
-          </table>
-        </div>
-      </div>
-
-      <!-- RIWAYAT TRANSAKSI -->
-      <div class="card" style="margin-top: 14px;">
-        <div class="section-head" style="margin: 0 0 10px;">
+      <!-- Kartu Profil Santri -->
+      <div class="bg-gradient-to-br from-emerald-800 via-emerald-700 to-teal-700 rounded-2xl p-4 text-white shadow-md relative overflow-hidden">
+        <div class="flex items-center justify-between relative z-10">
           <div>
-            <h3 style="margin:0;font-size:13.5px;color:var(--green)">🕒 Riwayat Transaksi</h3>
-            <p style="margin:2px 0 0;font-size:10.5px;color:var(--muted)" id="recentSubtitle">Menampilkan transaksi hari ini</p>
+            <span class="text-[10px] uppercase tracking-wider font-bold bg-white/15 px-2.5 py-0.5 rounded-full text-emerald-100">
+              NIS: <span id="dispNis">-</span>
+            </span>
+            <h2 id="dispNama" class="text-lg font-extrabold mt-1 leading-snug">-</h2>
+            <p class="text-xs text-emerald-100 mt-0.5 flex items-center gap-2">
+              <span><i class="fa-solid fa-graduation-cap mr-1"></i>Kelas <strong id="dispKelas">-</strong></span>
+              <span>•</span>
+              <span><i class="fa-solid fa-bed mr-1"></i>Kamar <strong id="dispKamar">-</strong></span>
+            </p>
           </div>
-          <span class="badge-count" id="recentCountBadge">0 trx</span>
+          <button onclick="refreshData()" title="Perbarui Data" class="no-print w-9 h-9 rounded-xl bg-white/15 hover:bg-white/25 flex items-center justify-center text-white transition">
+            <i id="refreshIcon" class="fa-solid fa-arrows-rotate text-sm"></i>
+          </button>
         </div>
+      </div>
 
-        <div class="form-group" style="margin-bottom:8px;">
-          <div style="display:flex;gap:6px;align-items:center;">
-            <input type="date" id="recentTglMulai" onchange="renderRecentMutasi()">
-            <span style="color:var(--muted);font-size:11px;">s.d.</span>
-            <input type="date" id="recentTglSelesai" onchange="renderRecentMutasi()">
-            <button type="button" class="btn-outline-sm" style="white-space:nowrap;background:var(--mint);color:var(--green);border-color:#c2ded0;" onclick="resetRecentToday()">Hari Ini</button>
+      <!-- TAB SWITCHER: UANG SAKU vs SHOLAT JAMAAH -->
+      <div class="grid grid-cols-2 gap-1.5 bg-white p-1.5 rounded-2xl border border-emerald-100 shadow-xs no-print">
+        <button type="button" id="tabBtnKeuangan" onclick="switchPortalTab('keuangan')" class="py-2.5 px-3 rounded-xl text-xs font-extrabold bg-emerald-700 text-white shadow-xs transition flex items-center justify-center gap-1.5">
+          <i class="fa-solid fa-wallet"></i>
+          <span>Uang Saku</span>
+        </button>
+        <button type="button" id="tabBtnJamaah" onclick="switchPortalTab('jamaah')" class="py-2.5 px-3 rounded-xl text-xs font-bold text-slate-600 hover:bg-emerald-50 transition flex items-center justify-center gap-1.5">
+          <i class="fa-solid fa-mosque"></i>
+          <span>Sholat Jamaah</span>
+        </button>
+      </div>
+
+      <!-- ==================== TAB 1: UANG SAKU ==================== -->
+      <div id="tabContentKeuangan" class="space-y-4">
+        <div id="printableArea" class="space-y-4">
+          <!-- Kartu Saldo Utama -->
+          <div class="bg-white rounded-2xl p-5 shadow-sm border border-emerald-100">
+            <div class="flex items-center justify-between">
+              <span class="text-xs text-slate-500 font-semibold">Sisa Saldo Uang Saku</span>
+              <span id="saldoBadge" class="text-[10px] font-bold px-2.5 py-0.5 rounded-full bg-emerald-100 text-emerald-800">
+                Saldo Aman
+              </span>
+            </div>
+            <div id="dispSaldo" class="text-3xl font-extrabold tracking-tight mt-1 text-emerald-800">
+              Rp 0
+            </div>
+
+            <div class="grid grid-cols-2 gap-2.5 mt-4 pt-3.5 border-t border-slate-100">
+              <div class="bg-emerald-50/70 rounded-xl p-2.5 border border-emerald-100">
+                <p class="text-[10px] text-slate-500 flex items-center gap-1">
+                  <i class="fa-solid fa-plus text-emerald-600"></i> Total Titipan Masuk
+                </p>
+                <p id="dispTotalMasuk" class="text-xs font-extrabold text-emerald-800 mt-0.5">Rp 0</p>
+              </div>
+              <div class="bg-rose-50/60 rounded-xl p-2.5 border border-rose-100">
+                <p class="text-[10px] text-slate-500 flex items-center gap-1">
+                  <i class="fa-solid fa-minus text-rose-600"></i> Total Pemakaian
+                </p>
+                <p id="dispTotalKeluar" class="text-xs font-extrabold text-rose-700 mt-0.5">Rp 0</p>
+              </div>
+            </div>
+          </div>
+
+          <!-- KARTU PENGATURAN LIMIT HARIAN KANTIN -->
+          <div class="bg-white rounded-2xl shadow-sm border border-emerald-100 p-4">
+            <div class="flex items-center justify-between">
+              <div class="flex items-center gap-2.5">
+                <div class="w-9 h-9 rounded-xl bg-amber-100 text-amber-700 flex items-center justify-center shrink-0">
+                  <i class="fa-solid fa-store"></i>
+                </div>
+                <div>
+                  <h3 class="text-xs font-extrabold text-slate-800">Limit Jajan Kantin Harian</h3>
+                  <p id="dispLimitStatus" class="text-xs font-bold text-emerald-700 mt-0.5">Tanpa Batas Harian</p>
+                </div>
+              </div>
+              <button type="button" onclick="toggleLimitForm()" class="no-print text-xs font-bold bg-emerald-50 hover:bg-emerald-100 text-emerald-700 px-3 py-1.5 rounded-lg border border-emerald-200 transition">
+                <i class="fa-solid fa-sliders mr-1"></i> Atur
+              </button>
+            </div>
+
+            <div id="limitProgressWrapper" class="hidden mt-3 pt-3 border-t border-slate-100">
+              <div class="flex justify-between text-[11px] font-semibold mb-1">
+                <span class="text-slate-500">Terpakai hari ini: <strong id="dispTerpakaiHariIni" class="text-slate-800">Rp 0</strong></span>
+                <span id="dispSisaLimit" class="text-emerald-700">Sisa: Rp 0</span>
+              </div>
+              <div class="w-full h-2 bg-slate-100 rounded-full overflow-hidden">
+                <div id="limitProgressBar" class="h-full bg-emerald-600 rounded-full transition-all duration-300" style="width: 0%"></div>
+              </div>
+            </div>
+
+            <div id="limitEditForm" class="hidden no-print mt-3 pt-3 border-t border-slate-100 space-y-2.5">
+              <p class="text-[11px] text-slate-500">Pilih nominal batas maksimal jajan santri di kantin per hari:</p>
+              <div class="grid grid-cols-4 gap-1.5">
+                <button type="button" onclick="pilihPresetLimit(5000)" class="py-1.5 text-[11px] font-bold bg-slate-100 hover:bg-emerald-100 hover:text-emerald-800 rounded-lg transition">5 rb</button>
+                <button type="button" onclick="pilihPresetLimit(10000)" class="py-1.5 text-[11px] font-bold bg-slate-100 hover:bg-emerald-100 hover:text-emerald-800 rounded-lg transition">10 rb</button>
+                <button type="button" onclick="pilihPresetLimit(15000)" class="py-1.5 text-[11px] font-bold bg-slate-100 hover:bg-emerald-100 hover:text-emerald-800 rounded-lg transition">15 rb</button>
+                <button type="button" onclick="pilihPresetLimit(0)" class="py-1.5 text-[11px] font-bold bg-amber-50 hover:bg-amber-100 text-amber-800 rounded-lg transition">Bebas</button>
+              </div>
+              <div class="flex gap-2">
+                <div class="relative flex-1">
+                  <span class="absolute inset-y-0 left-0 pl-3 flex items-center text-xs font-bold text-slate-400">Rp</span>
+                  <input type="number" id="inputLimitBaru" min="0" step="500" placeholder="0 = Tanpa batas"
+                    class="w-full pl-9 pr-3 py-2 bg-slate-50 border border-slate-200 rounded-xl text-xs font-bold text-slate-800 focus:outline-none focus:ring-2 focus:ring-emerald-500" />
+                </div>
+                <button type="button" id="btnSimpanLimit" onclick="simpanLimitHarian()" class="px-4 py-2 bg-emerald-700 hover:bg-emerald-800 text-white text-xs font-bold rounded-xl shadow-sm transition">
+                  Simpan
+                </button>
+              </div>
+              <p id="limitFeedback" class="hidden text-[11px] font-semibold"></p>
+            </div>
+          </div>
+
+          <!-- Tombol Aksi Cepat Wali Santri -->
+          <div class="grid grid-cols-2 gap-2.5 no-print">
+            <button onclick="konfirmasiTopUpWA()" class="py-2.5 px-3 bg-emerald-600 hover:bg-emerald-700 text-white rounded-xl font-bold text-xs shadow-sm flex items-center justify-center gap-2 transition active:scale-[0.98]">
+              <i class="fa-brands fa-whatsapp text-base"></i>
+              <span>Konfirmasi Top-Up</span>
+            </button>
+            <button onclick="downloadPDF()" class="py-2.5 px-3 bg-white hover:bg-slate-50 text-slate-700 border border-slate-200 rounded-xl font-bold text-xs shadow-sm flex items-center justify-center gap-2 transition active:scale-[0.98]">
+              <i class="fa-solid fa-file-pdf text-rose-600 text-sm"></i>
+              <span>Unduh Mutasi PDF</span>
+            </button>
+          </div>
+
+          <!-- Filter & Riwayat Mutasi -->
+          <div class="bg-white rounded-2xl shadow-sm border border-emerald-100 p-4">
+            <div class="flex items-center justify-between gap-2 mb-3">
+              <div>
+                <h3 class="text-sm font-extrabold text-slate-800">Riwayat Mutasi</h3>
+                <p class="text-[11px] text-slate-400" id="mutasiCountLabel">Menampilkan semua transaksi</p>
+              </div>
+              <select id="filterBulan" onchange="renderMutasi()" class="no-print text-xs font-semibold bg-slate-50 border border-slate-200 text-slate-700 rounded-lg px-2.5 py-1.5 focus:outline-none focus:ring-2 focus:ring-emerald-500">
+                <option value="ALL">Semua Bulan</option>
+              </select>
+            </div>
+
+            <div id="monthlySummary" class="hidden grid grid-cols-2 gap-2 mb-3 p-2.5 bg-slate-50 rounded-xl border border-slate-100 text-xs">
+              <div>
+                <span class="text-[10px] text-slate-400 block">Masuk Bulan Ini</span>
+                <span id="filterMasuk" class="font-bold text-emerald-700">Rp 0</span>
+              </div>
+              <div>
+                <span class="text-[10px] text-slate-400 block">Keluar Bulan Ini</span>
+                <span id="filterKeluar" class="font-bold text-rose-600">Rp 0</span>
+              </div>
+            </div>
+
+            <div id="mutasiList" class="divide-y divide-slate-100"></div>
+          </div>
+        </div>
+      </div>
+
+      <!-- ==================== TAB 2: LAPORAN SHOLAT JAMAAH ==================== -->
+      <div id="tabContentJamaah" class="hidden space-y-4">
+        
+        <!-- Filter Bulan Presensi Jamaah -->
+        <div class="bg-white rounded-2xl shadow-sm border border-emerald-100 p-4 space-y-3">
+          <div class="flex items-center justify-between gap-2">
+            <div>
+              <h3 class="text-sm font-extrabold text-slate-800">Kedisiplinan Sholat Jamaah</h3>
+              <p class="text-[11px] text-slate-400" id="jamaahSyncStatus">Memuat data presensi...</p>
+            </div>
+            <input type="month" id="filterBulanJamaah" onchange="renderJamaahReport()" class="text-xs font-bold bg-slate-50 border border-slate-200 text-slate-700 rounded-lg px-2.5 py-1.5 focus:outline-none focus:ring-2 focus:ring-emerald-500" />
+          </div>
+
+          <!-- 4 Kartu Statistik Kehadiran Sholat -->
+          <div class="grid grid-cols-4 gap-1.5 text-center">
+            <div class="bg-emerald-50 border border-emerald-100 rounded-xl p-2">
+              <span class="text-[10px] text-slate-500 block">Hadir</span>
+              <strong id="statJamaahHadir" class="text-sm font-extrabold text-emerald-700">0</strong>
+            </div>
+            <div class="bg-amber-50 border border-amber-100 rounded-xl p-2">
+              <span class="text-[10px] text-slate-500 block">Masbuq</span>
+              <strong id="statJamaahMasbuq" class="text-sm font-extrabold text-amber-700">0</strong>
+            </div>
+            <div class="bg-blue-50 border border-blue-100 rounded-xl p-2">
+              <span class="text-[10px] text-slate-500 block">Izin/Sakit</span>
+              <strong id="statJamaahIzin" class="text-sm font-extrabold text-blue-700">0</strong>
+            </div>
+            <div class="bg-rose-50 border border-rose-100 rounded-xl p-2">
+              <span class="text-[10px] text-slate-500 block">Alfa</span>
+              <strong id="statJamaahAlfa" class="text-sm font-extrabold text-rose-600">0</strong>
+            </div>
+          </div>
+
+          <!-- Persentase Bar -->
+          <div>
+            <div class="flex justify-between text-[11px] font-bold mb-1">
+              <span class="text-slate-600">Persentase Kehadiran Jamaah</span>
+              <span id="statJamaahPersen" class="text-emerald-700">0%</span>
+            </div>
+            <div class="w-full h-2.5 bg-slate-100 rounded-full overflow-hidden">
+              <div id="jamaahProgressBar" class="h-full bg-emerald-600 rounded-full transition-all duration-300" style="width: 0%"></div>
+            </div>
+          </div>
+
+          <!-- Legenda Ikon -->
+          <div class="flex flex-wrap items-center justify-center gap-3 pt-2 border-t border-slate-100 text-[10px] font-semibold text-slate-500">
+            <span>✅ Tepat Waktu</span>
+            <span>⚠️ Masbuq</span>
+            <span>🏠 Pulang</span>
+            <span>💊 Sakit</span>
+            <span>❌ Alfa</span>
           </div>
         </div>
 
-        <div class="table-wrap">
-          <table>
-            <thead>
-              <tr>
-                <th>Santri</th>
-                <th>Pos</th>
-                <th>Keterangan</th>
-                <th style="text-align:right">Nominal / Aksi</th>
-              </tr>
-            </thead>
-            <tbody id="recentMutasiBody">
-              <tr><td colspan="4" class="empty">Memuat riwayat transaksi...</td></tr>
-            </tbody>
-          </table>
+        <!-- Tabel Harian 5 Waktu (Subuh | Dzuhur | Ashar | Maghrib | Isya) -->
+        <div class="bg-white rounded-2xl shadow-sm border border-emerald-100 overflow-hidden">
+          <div class="overflow-x-auto">
+            <table class="w-full text-xs text-left border-collapse">
+              <thead>
+                <tr class="bg-emerald-800 text-white text-[10px] uppercase tracking-wider">
+                  <th class="py-2.5 px-3">Tanggal</th>
+                  <th class="py-2.5 px-1.5 text-center">Subuh</th>
+                  <th class="py-2.5 px-1.5 text-center">Dzuhur</th>
+                  <th class="py-2.5 px-1.5 text-center">Ashar</th>
+                  <th class="py-2.5 px-1.5 text-center">Maghrib</th>
+                  <th class="py-2.5 px-1.5 text-center">Isya</th>
+                </tr>
+              </thead>
+              <tbody id="jamaahTableBody" class="divide-y divide-slate-100">
+                <tr>
+                  <td colspan="6" class="py-8 text-center text-slate-400 text-xs">Memuat data presensi sholat...</td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
         </div>
-      </div>
-    </div>
 
-    <!-- 5. PANEL MASTER SANTRI -->
-    <div class="panel" id="p-santri">
-      <div class="section-head">
-        <div><h2>Data Santri</h2><p>Daftar santri & cek saldo terkini.</p></div>
       </div>
 
-      <div class="card">
-        <input type="text" id="cariSantri" placeholder="Cari santri / NIS / Kamar..." oninput="renderMaster()" style="width:100%;padding:8px 10px;border:1px solid var(--line);border-radius:8px;margin-bottom:8px">
-        <div class="table-wrap">
-          <table>
-            <thead><tr><th>NIS</th><th>Nama</th><th>Kls</th><th style="text-align:right">Saldo</th></tr></thead>
-            <tbody id="masterBody"><tr><td colspan="4" class="empty">Memuat data...</td></tr></tbody>
-          </table>
-        </div>
-      </div>
-    </div>
+    </section>
+
   </main>
 
-  <!-- BOTTOM NAVIGATION -->
-  <nav class="bottom-nav">
-    <button class="nav-item active" onclick="switchNav('dashboard', this)">
-      <svg viewBox="0 0 24 24"><path d="M10 20v-6h4v6h5v-8h3L12 3 2 12h3v8z"/></svg>
-      <span>Ringkasan</span>
-    </button>
-    <button class="nav-item" onclick="switchNav('batch', this)">
-      <svg viewBox="0 0 24 24"><path d="M3 3v8h8V3H3zm2 2h4v4H5V5zm8-2v8h8V3h-8zm2 2h4v4h-4V5zM3 13v8h8v-8H3zm2 2h4v4H5v-4zm8-2v8h8v-8h-8zm2 2h4v4h-4v-4z"/></svg>
-      <span>Rekap</span>
-    </button>
-    <button class="nav-item" onclick="switchNav('transaksi', this)">
-      <svg viewBox="0 0 24 24"><path d="M19 13h-6v6h-2v-6H5v-2h6V5h2v6h6v2z"/></svg>
-      <span>Transaksi</span>
-    </button>
-    <button class="nav-item" onclick="switchNav('laporan', this)">
-      <svg viewBox="0 0 24 24"><path d="M14 2H6c-1.1 0-1.99.9-1.99 2L4 20c0 1.1.89 2 1.99 2H18c1.1 0 2-.9 2-2V8l-6-6zm2 16H8v-2h8v2zm0-4H8v-2h8v2zm-3-5V3.5L18.5 9H13z"/></svg>
-      <span>Laporan</span>
-    </button>
-    <button class="nav-item" onclick="switchNav('santri', this)">
-      <svg viewBox="0 0 24 24"><path d="M12 12c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm0 2c-2.67 0-8 1.34-8 4v2h16v-2c0-2.66-5.33-4-8-4z"/></svg>
-      <span>Santri</span>
-    </button>
-  </nav>
-</div>
+  <!-- FOOTER -->
+  <footer class="max-w-md w-full mx-auto px-4 py-4 text-center text-[11px] text-slate-400 no-print">
+    <p class="font-semibold text-slate-500">Pondok Pesantren Tahfidzul Qur'an Al Husna Lestari</p>
+    <p class="mt-0.5">Al Husna Mobile</p>
+  </footer>
 
-<script>
-const API_URL = "https://script.google.com/macros/s/AKfycbwiku-hOfT9_BUWZyTOCW2VlqGp4Rim9QQ8I2BEX_pTO0EXfvh1Y27a8eNYktHRIi15/exec";
-const LIMIT_KRITIS = 20000;
+  <script>
+    // API Uang Saku & Limit Kantin
+    const API_URL = "https://script.google.com/macros/s/AKfycbwiku-hOfT9_BUWZyTOCW2VlqGp4Rim9QQ8I2BEX_pTO0EXfvh1Y27a8eNYktHRIi15/exec";
+    // API Presensi Sholat Jamaah (Spreadsheet Terpisah)
+    const JAMAAH_API_URL = "https://script.google.com/macros/s/AKfycbyszfOTv1q99BRO8skYi5ueiN16wmogFbTZEYjop4nIMGOGi_AtXfngea_ojoNjwBTU/exec";
+    const ADMIN_WA = "6289678894782";
 
-let adminSession = null; // { username, password, nama, role }
-let santri = [];
-let mutasi = [];
-let lapCurrentRows = [];
-let yayasanSubFilter = 'ALL'; // Khusus akun Yayasan: 'ALL' | 'Putra' | 'Putri'
+    let currentSantri = null;
+    let currentPin = "";
+    let allMutasi = [];
+    let allJamaahLogs = [];
+    let jamaahLoaded = false;
+    let html5QrCode = null;
+    let deferredPrompt = null;
 
-const $ = id => document.getElementById(id);
-const rp = n => "Rp " + Number(n || 0).toLocaleString("id-ID");
-const today = () => {
-  const d = new Date();
-  return `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')}-${String(d.getDate()).padStart(2, '0')}`;
-};
-const firstDayOfMonth = () => today().slice(0, 8) + "01";
+    // Registrasi Service Worker dengan Auto-Update & Auto-Reload
+    if ('serviceWorker' in navigator) {
+      window.addEventListener('load', () => {
+        navigator.serviceWorker.register('./sw.js', { updateViaCache: 'none' }).then((reg) => {
+          reg.update();
+          document.addEventListener('visibilitychange', () => {
+            if (document.visibilityState === 'visible') reg.update();
+          });
 
-$("batchTgl").value = today();
-$("trxTgl").value = today();
-$("lapTglMulai").value = firstDayOfMonth();
-$("lapTglSelesai").value = today();
-$("recentTglMulai").value = today();
-$("recentTglSelesai").value = today();
-$("kantinTglMulai").value = today();
-$("kantinTglSelesai").value = today();
+          reg.addEventListener('updatefound', () => {
+            const newWorker = reg.installing;
+            newWorker.addEventListener('statechange', () => {
+              if (newWorker.state === 'installed' && navigator.serviceWorker.controller) {
+                window.location.reload();
+              }
+            });
+          });
+        }).catch(() => {});
+      });
+    }
 
-// =========================================================================
-// AUTENTIKASI LOGIN ADMIN (PUTRA / PUTRI / YAYASAN)
-// =========================================================================
-window.addEventListener("DOMContentLoaded", () => {
-  const saved = localStorage.getItem("kas_admin_auth");
-  if (saved) {
-    try {
-      adminSession = JSON.parse(saved);
-      if (adminSession && adminSession.username && adminSession.password) {
-        loadData(false, true);
+    window.addEventListener('beforeinstallprompt', (e) => {
+      e.preventDefault();
+      deferredPrompt = e;
+      document.getElementById('btnInstallPWA').classList.remove('hidden');
+    });
+
+    function installPWA() {
+      if (!deferredPrompt) return;
+      deferredPrompt.prompt();
+      deferredPrompt.userChoice.then(() => {
+        deferredPrompt = null;
+        document.getElementById('btnInstallPWA').classList.add('hidden');
+      });
+    }
+
+    window.addEventListener('DOMContentLoaded', () => {
+      // Set default bulan berjalan untuk filter jamaah
+      const now = new Date();
+      const ymNow = `${now.getFullYear()}-${String(now.getMonth() + 1).padStart(2, '0')}`;
+      document.getElementById('filterBulanJamaah').value = ymNow;
+
+      const params = new URLSearchParams(window.location.search);
+      const urlNis = params.get('nis') || params.get('id');
+
+      const savedNis = localStorage.getItem('wali_nis');
+      const savedPin = localStorage.getItem('wali_pin');
+
+      if (urlNis) {
+        document.getElementById('inputNis').value = urlNis;
+        if (savedNis === urlNis && savedPin) {
+          document.getElementById('inputPin').value = savedPin;
+          fetchSaldoWali(urlNis, savedPin, true);
+        } else {
+          document.getElementById('inputPin').focus();
+        }
+      } else if (savedNis && savedPin) {
+        document.getElementById('inputNis').value = savedNis;
+        document.getElementById('inputPin').value = savedPin;
+        fetchSaldoWali(savedNis, savedPin, true);
       }
-    } catch (_) {
-      localStorage.removeItem("kas_admin_auth");
-    }
-  }
-});
+    });
 
-async function handleAdminLogin(e) {
-  e.preventDefault();
-  const username = $("loginUser").value.trim();
-  const password = $("loginPass").value.trim();
-  const errBox = $("loginError");
-  const btn = $("btnLoginAdmin");
+    function switchPortalTab(tab) {
+      const btnKeu = document.getElementById('tabBtnKeuangan');
+      const btnJam = document.getElementById('tabBtnJamaah');
+      const conKeu = document.getElementById('tabContentKeuangan');
+      const conJam = document.getElementById('tabContentJamaah');
 
-  errBox.style.display = "none";
-  btn.disabled = true;
-  btn.textContent = "Memeriksa Akun…";
-
-  adminSession = { username, password, nama: username, role: "Yayasan" };
-  const ok = await loadData(false, true);
-
-  btn.disabled = false;
-  btn.textContent = "Masuk ke Buku Kas";
-
-  if (!ok) {
-    adminSession = null;
-    localStorage.removeItem("kas_admin_auth");
-    errBox.style.display = "block";
-  }
-}
-
-function logoutAdmin() {
-  localStorage.removeItem("kas_admin_auth");
-  adminSession = null;
-  santri = [];
-  mutasi = [];
-  $("loginPass").value = "";
-  $("appWrapper").style.display = "none";
-  $("loginScreen").style.display = "flex";
-}
-
-function applyRoleUI(account) {
-  $("loginScreen").style.display = "none";
-  $("appWrapper").style.display = "block";
-  $("headerPetugas").textContent = `${account.nama} (${account.role})`;
-
-  const roleLower = String(account.role || "").toLowerCase();
-  if (roleLower === "yayasan") {
-    $("heroRoleTag").textContent = "AKSES PUSAT • BENDAHARA YAYASAN";
-    $("roleLockBanner").style.display = "none";
-    $("yayasanFilterBar").style.display = "grid";
-  } else {
-    $("heroRoleTag").textContent = `AKSES TERKUNCI • PONDOK ${account.role.toUpperCase()}`;
-    $("roleLockBanner").style.display = "flex";
-    $("roleLockLabel").textContent = `🔒 Pondok ${account.role}`;
-    $("yayasanFilterBar").style.display = "none";
-    yayasanSubFilter = "ALL";
-  }
-}
-
-const getFilteredSantri = () => {
-  if (!adminSession || String(adminSession.role).toLowerCase() !== "yayasan" || yayasanSubFilter === "ALL") {
-    return santri;
-  }
-  return santri.filter(s => String(s.asrama || "Putra").toLowerCase() === yayasanSubFilter.toLowerCase());
-};
-
-const getFilteredMutasi = () => {
-  if (!adminSession || String(adminSession.role).toLowerCase() !== "yayasan" || yayasanSubFilter === "ALL") {
-    return mutasi;
-  }
-  return mutasi.filter(m => String(m.asrama || "Putra").toLowerCase() === yayasanSubFilter.toLowerCase());
-};
-
-function setAsramaFilter(asrama, btn) {
-  yayasanSubFilter = asrama;
-  document.querySelectorAll(".asrama-tab").forEach(b => b.classList.remove("active"));
-  if (btn) btn.classList.add("active");
-  clearSelectedTrxSantri();
-  clearSelectedLapSantri();
-  refreshAllViews();
-}
-
-function toast(msg, isError = false) {
-  const t = $("toast");
-  t.textContent = msg;
-  t.style.background = isError ? "#c63939" : "#143e33";
-  t.style.display = "block";
-  setTimeout(() => t.style.opacity = "1", 10);
-  setTimeout(() => {
-    t.style.opacity = "0";
-    setTimeout(() => t.style.display = "none", 300);
-  }, 2600);
-}
-
-if ('serviceWorker' in navigator && (location.protocol === 'https:' || location.hostname === 'localhost')) {
-  window.addEventListener('load', () => {
-    navigator.serviceWorker.register('./sw.js', { updateViaCache: 'none' }).then(reg => {
-      reg.update();
-    }).catch(() => {});
-  });
-}
-
-function switchNav(id, btn) {
-  document.querySelectorAll(".panel").forEach(p => p.classList.remove("active"));
-  document.querySelectorAll(".nav-item").forEach(b => b.classList.remove("active"));
-  $("p-" + id).classList.add("active");
-  if (btn) btn.classList.add("active");
-  window.scrollTo({ top: 0, behavior: "smooth" });
-}
-
-async function api(action, payload = {}) {
-  const url = API_URL + (API_URL.includes("?") ? "&" : "?") + "action=" + encodeURIComponent(action);
-  const res = await fetch(url, {
-    method: "POST",
-    headers: { "Content-Type": "text/plain;charset=utf-8" },
-    body: JSON.stringify({ action, ...payload })
-  });
-  if (!res.ok) throw new Error("HTTP " + res.status);
-  const json = await res.json();
-  if (json.success === false) throw new Error(json.message || json.error || "Gagal di server.");
-  return json;
-}
-
-async function loadData(showLoading = false, isLoginAttempt = false) {
-  if (!adminSession) return false;
-  const pill = $("connPill");
-  if (showLoading) {
-    pill.textContent = "● Memuat…";
-    pill.style.color = "#f3c969";
-  }
-
-  try {
-    const authUrl = `${API_URL}?username=${encodeURIComponent(adminSession.username)}&password=${encodeURIComponent(adminSession.password)}`;
-    const r1 = await fetch(authUrl);
-    const res = await r1.json();
-
-    if (!res || res.success === false) {
-      if (res && res.authError) {
-        $("loginError").textContent = res.error || "Username atau Password salah.";
-        return false;
+      if (tab === 'keuangan') {
+        btnKeu.className = "py-2.5 px-3 rounded-xl text-xs font-extrabold bg-emerald-700 text-white shadow-xs transition flex items-center justify-center gap-1.5";
+        btnJam.className = "py-2.5 px-3 rounded-xl text-xs font-bold text-slate-600 hover:bg-emerald-50 transition flex items-center justify-center gap-1.5";
+        conKeu.classList.remove('hidden');
+        conJam.classList.add('hidden');
+      } else {
+        btnJam.className = "py-2.5 px-3 rounded-xl text-xs font-extrabold bg-emerald-700 text-white shadow-xs transition flex items-center justify-center gap-1.5";
+        btnKeu.className = "py-2.5 px-3 rounded-xl text-xs font-bold text-slate-600 hover:bg-emerald-50 transition flex items-center justify-center gap-1.5";
+        conJam.classList.remove('hidden');
+        conKeu.classList.add('hidden');
+        if (!jamaahLoaded) {
+          fetchJamaahFromCloud();
+        }
       }
-      throw new Error(res?.error || "Format respons tidak sesuai");
     }
 
-    adminSession = {
-      username: adminSession.username,
-      password: adminSession.password,
-      nama: res.account.nama,
-      role: res.account.role
-    };
-    localStorage.setItem("kas_admin_auth", JSON.stringify(adminSession));
-
-    santri = res.santri || [];
-    mutasi = res.mutasi || [];
-
-    if (isLoginAttempt) applyRoleUI(adminSession);
-
-    pill.textContent = "● Terhubung";
-    pill.style.color = "#e5f1eb";
-
-    refreshAllViews();
-    return true;
-  } catch (err) {
-    console.error("Gagal terhubung:", err);
-    pill.textContent = "● Gagal tersambung";
-    pill.style.color = "#ff9e9e";
-    if (showLoading) toast("Gagal menyinkronkan data dengan spreadsheet", true);
-    return false;
-  }
-}
-
-function refreshAllViews() {
-  renderDashboard();
-  renderRekapKantin();
-  renderRecentMutasi();
-  renderBatch();
-  renderMaster();
-  if ($("lapSelectedNis").value) {
-    const s = santri.find(x => String(x.nis) === String($("lapSelectedNis").value));
-    if (s) $("lapSelectedDetail").textContent = `Kelas ${s.kelas} · Sisa Saldo: ${rp(s.saldo)}`;
-    filterRekapLaporan();
-  }
-}
-
-// =========================================================================
-// REKAP SETORAN PER UNIT KANTIN & CETAK SLIP SETORAN PDF
-// =========================================================================
-function resetKantinToday() {
-  $("kantinTglMulai").value = today();
-  $("kantinTglSelesai").value = today();
-  renderRekapKantin();
-}
-
-function getRekapKantinData() {
-  const mulai = $("kantinTglMulai").value;
-  const selesai = $("kantinTglSelesai").value;
-  const mutasiAktif = getFilteredMutasi();
-
-  const kantinTrx = mutasiAktif.filter(m => {
-    const isKantin = String(m.kategori || '').toLowerCase().includes('kantin');
-    if (!isKantin) return false;
-    const tgl = String(m.tanggal || '');
-    return (!mulai || tgl >= mulai) && (!selesai || tgl <= selesai);
-  });
-
-  const grouped = {};
-  kantinTrx.forEach(m => {
-    const ket = String(m.keterangan || '');
-    const match = ket.match(/^\[([^\]]+)\]/);
-    const unitName = match ? match[1].trim() : 'Kantin Umum';
-    if (!grouped[unitName]) {
-      grouped[unitName] = { nama: unitName, count: 0, total: 0, items: [] };
+    function togglePinVisibility() {
+      const pinInput = document.getElementById('inputPin');
+      const eyeIcon = document.getElementById('eyeIcon');
+      if (pinInput.type === 'password') {
+        pinInput.type = 'text';
+        eyeIcon.classList.replace('fa-eye', 'fa-eye-slash');
+      } else {
+        pinInput.type = 'password';
+        eyeIcon.classList.replace('fa-eye-slash', 'fa-eye');
+      }
     }
-    grouped[unitName].count += 1;
-    grouped[unitName].total += Number(m.nominal || 0);
-    grouped[unitName].items.push(m);
-  });
 
-  return Object.values(grouped);
-}
+    function startScanner() {
+      const wrapper = document.getElementById('scannerWrapper');
+      const btnStart = document.getElementById('btnStartScan');
+      wrapper.classList.remove('hidden');
+      btnStart.classList.add('hidden');
 
-function renderRekapKantin() {
-  const tbody = $("rekapKantinBody");
-  if (!tbody) return;
-  const list = getRekapKantinData();
+      html5QrCode = new Html5Qrcode("qr-reader");
+      html5QrCode.start(
+        { facingMode: "environment" },
+        { fps: 10, qrbox: { width: 220, height: 220 } },
+        (decodedText) => {
+          let extractedNis = decodedText.trim();
+          try {
+            if (extractedNis.startsWith('http')) {
+              const u = new URL(extractedNis);
+              extractedNis = u.searchParams.get('nis') || u.searchParams.get('id') || extractedNis;
+            }
+          } catch (_) {}
 
-  if (!list.length) {
-    tbody.innerHTML = `<tr><td colspan="4" class="empty">Belum ada transaksi kantin pada periode ini.</td></tr>`;
-    return;
-  }
-
-  tbody.innerHTML = list.map(u => `
-    <tr>
-      <td><strong>${escapeHTML(u.nama)}</strong></td>
-      <td style="text-align:center"><span class="badge badge-in">${u.count}</span></td>
-      <td style="text-align:right;font-weight:750;color:var(--green)">${rp(u.total)}</td>
-      <td style="text-align:right">
-        <button type="button" class="btn-act" onclick="cetakSlipKantinPDF('${escapeHTML(u.nama)}')">📄 PDF</button>
-      </td>
-    </tr>
-  `).join("");
-}
-
-function cetakSlipKantinPDF(unitName) {
-  const list = getRekapKantinData();
-  const unit = list.find(u => u.nama === unitName);
-  if (!unit) return alert("Data unit kantin tidak ditemukan.");
-
-  const mulai = $("kantinTglMulai").value || "-";
-  const selesai = $("kantinTglSelesai").value || "-";
-
-  const rowsHTML = unit.items.map((m, idx) => `
-    <tr>
-      <td style="text-align:center;">${idx + 1}</td>
-      <td>${escapeHTML(m.tanggal || "-")}</td>
-      <td>${escapeHTML(m.nama || m.nis)} (${escapeHTML(m.nis)})</td>
-      <td>${escapeHTML(m.keterangan || "-")}</td>
-      <td style="text-align:right;font-weight:bold;">${rp(m.nominal)}</td>
-    </tr>
-  `).join("");
-
-  const win = window.open("", "_blank");
-  win.document.write(`<!DOCTYPE html>
-<html lang="id">
-<head>
-  <meta charset="utf-8">
-  <title>Slip_Setoran_${escapeHTML(unit.nama)}</title>
-  <style>
-    @page { size: A4 portrait; margin: 15mm; }
-    body { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Arial, sans-serif; font-size: 12px; color: #1f2d27; padding: 20px; }
-    .kop { text-align: center; border-bottom: 2px solid #143e33; padding-bottom: 10px; margin-bottom: 16px; }
-    .kop h2 { margin: 0; font-size: 16px; color: #143e33; text-transform: uppercase; }
-    .kop p { margin: 3px 0 0; font-size: 11px; color: #555; }
-    .meta { display: flex; justify-content: space-between; background: #f8faf8; padding: 12px; border: 1px solid #dce4df; border-radius: 8px; margin-bottom: 16px; }
-    table { width: 100%; border-collapse: collapse; margin-bottom: 24px; }
-    th, td { border: 1px solid #dce4df; padding: 7px 9px; font-size: 11px; text-align: left; }
-    th { background: #eaf4ef; color: #143e33; }
-    .ttd-wrap { display: flex; justify-content: space-between; margin-top: 35px; padding: 0 20px; }
-    .ttd-col { text-align: center; width: 200px; }
-    @media print { .no-print { display: none; } body { padding: 0; } }
-  </style>
-</head>
-<body>
-  <div class="no-print" style="text-align:right;margin-bottom:14px;">
-    <button onclick="window.print()" style="background:#143e33;color:#fff;border:0;padding:8px 14px;border-radius:6px;font-weight:bold;cursor:pointer;">🖨️ Cetak Bukti Setoran</button>
-  </div>
-  <div class="kop">
-    <h2>Pondok Pesantren Tahfidzul Qur'an Al Husna Lestari</h2>
-    <p>Bukti Pencairan & Rekap Setoran Cashless Unit Kantin</p>
-  </div>
-  <div class="meta">
-    <div>
-      <div>Unit Kantin : <strong>${escapeHTML(unit.nama)}</strong></div>
-      <div>Jumlah Transaksi : <strong>${unit.count} transaksi</strong></div>
-    </div>
-    <div style="text-align:right;">
-      <div>Periode : <strong>${escapeHTML(mulai)} s.d. ${escapeHTML(selesai)}</strong></div>
-      <div>Total Dicairkan : <strong style="color:#143e33;font-size:14px;">${rp(unit.total)}</strong></div>
-    </div>
-  </div>
-  <table>
-    <thead>
-      <tr>
-        <th style="width:30px;text-align:center;">No</th>
-        <th style="width:85px;">Tanggal</th>
-        <th>Nama Santri</th>
-        <th>Keterangan</th>
-        <th style="width:100px;text-align:right;">Nominal</th>
-      </tr>
-    </thead>
-    <tbody>${rowsHTML}</tbody>
-    <tfoot>
-      <tr>
-        <th colspan="4" style="text-align:right;">TOTAL PENCAIRAN TUNAI</th>
-        <th style="text-align:right;font-size:12px;">${rp(unit.total)}</th>
-      </tr>
-    </tfoot>
-  </table>
-  <div class="ttd-wrap">
-    <div class="ttd-col">
-      <p style="margin:0 0 55px;">Penerima (Petugas Kantin),</p>
-      <p style="margin:0;font-weight:bold;">( ______________________ )</p>
-    </div>
-    <div class="ttd-col">
-      <p style="margin:0 0 55px;">Klaten, ${today()}<br><strong>Bendahara Pondok</strong></p>
-      <p style="margin:0;font-weight:bold;text-decoration:underline;">( Qoyyimah, S. Mat. )</p>
-    </div>
-  </div>
-  <script>window.addEventListener('load', () => setTimeout(() => window.print(), 300));<\/script>
-</body>
-</html>`);
-  win.document.close();
-}
-
-function resetRecentToday() {
-  $("recentTglMulai").value = today();
-  $("recentTglSelesai").value = today();
-  renderRecentMutasi();
-}
-
-function renderRecentMutasi() {
-  const tbody = $("recentMutasiBody");
-  if (!tbody) return;
-
-  const mulai = $("recentTglMulai").value;
-  const selesai = $("recentTglSelesai").value;
-  const isTodayOnly = (mulai === today() && selesai === today());
-
-  if ($("recentSubtitle")) {
-    $("recentSubtitle").textContent = isTodayOnly
-      ? `Menampilkan transaksi hari ini (${today()})`
-      : `Periode ${mulai || '-'} s.d. ${selesai || '-'}`;
-  }
-
-  const filtered = getFilteredMutasi().filter(m => {
-    const tgl = String(m.tanggal || "");
-    return (!mulai || tgl >= mulai) && (!selesai || tgl <= selesai);
-  });
-
-  if ($("recentCountBadge")) $("recentCountBadge").textContent = `${filtered.length} trx`;
-
-  if (!filtered.length) {
-    tbody.innerHTML = `<tr><td colspan="4" class="empty">Tidak ada transaksi pada rentang tanggal ini.</td></tr>`;
-    return;
-  }
-
-  tbody.innerHTML = filtered.map(m => {
-    const isMasuk = m.kategori === "Top-Up" || m.tipe === "MASUK";
-    const safeId = escapeHTML(m.id);
-    return `
-      <tr>
-        <td>
-          <strong>${escapeHTML(m.nama || m.nis)}</strong>
-          <div style="font-size:9.5px;color:var(--muted)">${escapeHTML(m.tanggal || "-")}</div>
-        </td>
-        <td><span class="badge ${isMasuk ? 'badge-in' : 'badge-out'}">${escapeHTML(m.kategori)}</span></td>
-        <td><small>${escapeHTML(m.keterangan || "-")}</small></td>
-        <td style="text-align:right">
-          <div style="font-weight:700;color:${isMasuk ? 'var(--green)' : 'var(--red)'}">
-            ${isMasuk ? '+' : '-'} ${rp(m.nominal)}
-          </div>
-          <div class="act-btns">
-            <button type="button" class="btn-act" title="Edit transaksi" onclick="openEditModal('${safeId}')">✏️</button>
-            <button type="button" class="btn-act del" title="Hapus transaksi" onclick="deleteTrx('${safeId}')">🗑️</button>
-          </div>
-        </td>
-      </tr>
-    `;
-  }).join("");
-}
-
-function renderDashboard() {
-  const sList = getFilteredSantri();
-  const mList = getFilteredMutasi();
-
-  const top = mList.filter(m => m.kategori === "Top-Up" || m.tipe === "MASUK").reduce((a, m) => a + Number(m.nominal || 0), 0);
-  const out = mList.filter(m => m.kategori !== "Top-Up" && m.tipe !== "MASUK").reduce((a, m) => a + Number(m.nominal || 0), 0);
-  const totalSaldo = sList.reduce((a, s) => a + Number(s.saldo || 0), 0);
-
-  $("statSaldo").textContent = rp(totalSaldo);
-  $("statTopup").textContent = rp(top);
-  $("statKeluar").textContent = rp(out);
-
-  const low = sList.filter(s => Number(s.saldo) < LIMIT_KRITIS);
-  $("critBadge").textContent = `${low.length} santri`;
-
-  if (!low.length) {
-    $("criticalList").innerHTML = `<div class="empty">Alhamdulillah, tidak ada saldo santri yang kritis.</div>`;
-    return;
-  }
-
-  $("criticalList").innerHTML = low.map(s => `
-    <div class="critical-row">
-      <div>
-        <div class="critical-name">${escapeHTML(s.nama)} <span class="badge-asrama">${escapeHTML(s.asrama || 'Putra')}</span></div>
-        <div class="critical-sub">Kelas ${escapeHTML(s.kelas)} · NIS ${escapeHTML(s.nis)}</div>
-      </div>
-      <div class="critical-val">${rp(s.saldo)}</div>
-    </div>
-  `).join("");
-}
-
-function escapeHTML(str) {
-  return String(str ?? '').replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
-}
-
-function handleTrxSearch(query) {
-  const box = $("trxSearchResults");
-  const q = query.trim().toLowerCase();
-  if (!q) {
-    box.style.display = "none";
-    box.innerHTML = "";
-    return;
-  }
-  const filtered = getFilteredSantri().filter(s => 
-    String(s.nama).toLowerCase().includes(q) || 
-    String(s.nis).toLowerCase().includes(q) ||
-    String(s.kamar || "").toLowerCase().includes(q)
-  ).slice(0, 10);
-
-  if (!filtered.length) {
-    box.innerHTML = `<div class="search-item"><small style="color:var(--muted)">Santri tidak ditemukan</small></div>`;
-    box.style.display = "block";
-    return;
-  }
-
-  box.innerHTML = filtered.map(s => `
-    <div class="search-item" onclick="selectTrxSantri('${escapeHTML(s.nis)}')">
-      <div>
-        <strong>${escapeHTML(s.nama)}</strong> <span class="badge-asrama">${escapeHTML(s.asrama || 'Putra')}</span>
-        <div><small>Kls ${escapeHTML(s.kelas)} · NIS ${escapeHTML(s.nis)}</small></div>
-      </div>
-      <small style="font-weight:700;color:${Number(s.saldo)<LIMIT_KRITIS?'var(--red)':'var(--green)'}">${rp(s.saldo)}</small>
-    </div>
-  `).join("");
-  box.style.display = "block";
-}
-
-function selectTrxSantri(nis) {
-  const s = santri.find(x => String(x.nis) === String(nis));
-  if (!s) return;
-  $("trxNis").value = s.nis;
-  $("trxSearchInput").style.display = "none";
-  $("trxSearchResults").style.display = "none";
-  $("trxSelectedNama").textContent = `${s.nama} (${s.asrama || 'Putra'})`;
-  $("trxSelectedDetail").textContent = `Kelas ${s.kelas} · NIS: ${s.nis} · Saldo: ${rp(s.saldo)}`;
-  $("trxSelectedBadge").style.display = "flex";
-}
-
-function clearSelectedTrxSantri() {
-  $("trxNis").value = "";
-  $("trxSearchInput").value = "";
-  $("trxSearchInput").style.display = "block";
-  $("trxSelectedBadge").style.display = "none";
-}
-
-async function saveTrx(e) {
-  e.preventDefault();
-  const nis = $("trxNis").value;
-  const kategori = $("trxKat").value;
-  const nominal = Number($("trxNom").value);
-  const tanggal = $("trxTgl").value;
-  const keterangan = $("trxKet").value.trim() || "-";
-
-  if (!nis) return alert("Silakan pilih santri terlebih dahulu lewat pencarian.");
-  if (!nominal || nominal <= 0) return alert("Nominal transaksi harus lebih dari 0.");
-
-  const targetSantri = santri.find(s => String(s.nis) === String(nis));
-  if (!targetSantri) return alert("Santri tidak ditemukan.");
-
-  const oldSaldo = targetSantri.saldo;
-  const isMasuk = (kategori === "Top-Up");
-
-  if (isMasuk) targetSantri.saldo = Number(targetSantri.saldo || 0) + nominal;
-  else targetSantri.saldo = Number(targetSantri.saldo || 0) - nominal;
-
-  const tempId = "TEMP-" + Date.now();
-  const tempTrx = {
-    id: tempId,
-    nis: nis,
-    nama: targetSantri.nama,
-    asrama: targetSantri.asrama || 'Putra',
-    tanggal: tanggal,
-    kategori: kategori,
-    nominal: nominal,
-    keterangan: keterangan,
-    tipe: isMasuk ? "MASUK" : "KELUAR"
-  };
-  mutasi.unshift(tempTrx);
-
-  refreshAllViews();
-  toast("✓ Transaksi dicatat (menyimpan ke cloud…)");
-
-  $("trxForm").reset();
-  clearSelectedTrxSantri();
-  $("trxTgl").value = today();
-  switchNav("dashboard");
-
-  try {
-    const res = await api("satuan", { nis, kategori, nominal, tanggal, keterangan });
-    if (res && res.id) {
-      tempTrx.id = res.id;
-      renderRecentMutasi();
-      if ($("lapSelectedNis").value) filterRekapLaporan();
+          document.getElementById('inputNis').value = extractedNis;
+          stopScanner();
+          document.getElementById('inputPin').focus();
+        },
+        () => {}
+      ).catch(() => {
+        alert("Kamera tidak dapat diakses. Pastikan izin kamera aktif atau gunakan input NIS manual.");
+        stopScanner();
+      });
     }
-    toast("✓ Tersimpan aman di spreadsheet!");
-  } catch (err) {
-    targetSantri.saldo = oldSaldo;
-    mutasi = mutasi.filter(m => m.id !== tempId);
-    refreshAllViews();
-    alert("⚠️ Gagal menyimpan ke Spreadsheet: " + err.message);
-  }
-}
 
-function openEditModal(id) {
-  if (String(id).startsWith("TEMP-")) return toast("Tunggu sebentar hingga transaksi selesai tersimpan…", true);
-  const trx = mutasi.find(m => String(m.id) === String(id));
-  if (!trx) return alert("Data transaksi tidak ditemukan.");
+    function stopScanner() {
+      const wrapper = document.getElementById('scannerWrapper');
+      const btnStart = document.getElementById('btnStartScan');
+      if (html5QrCode) {
+        html5QrCode.stop().then(() => {
+          html5QrCode.clear();
+          html5QrCode = null;
+        }).catch(() => {});
+      }
+      wrapper.classList.add('hidden');
+      btnStart.classList.remove('hidden');
+    }
 
-  $("editTrxNis").innerHTML = getFilteredSantri().map(s =>
-    `<option value="${escapeHTML(s.nis)}" ${String(s.nis) === String(trx.nis) ? 'selected' : ''}>${escapeHTML(s.nama)} (${escapeHTML(s.asrama || 'Putra')} · Kls ${escapeHTML(s.kelas)})</option>`
-  ).join("");
+    function handleLogin(e) {
+      e.preventDefault();
+      const nis = document.getElementById('inputNis').value.trim();
+      const pin = document.getElementById('inputPin').value.trim();
+      if (!nis || !pin) return;
+      fetchSaldoWali(nis, pin, false);
+    }
 
-  $("editTrxId").value = trx.id;
-  $("editTrxKat").value = trx.kategori || "Uang Saku";
-  $("editTrxNom").value = Number(trx.nominal || 0);
-  $("editTrxTgl").value = trx.tanggal || today();
-  $("editTrxKet").value = trx.keterangan === "-" ? "" : (trx.keterangan || "");
+    async function fetchSaldoWali(nis, pin, isAutoLogin) {
+      const btn = document.getElementById('btnSubmitLogin');
+      const errBox = document.getElementById('loginError');
+      const errText = document.getElementById('loginErrorText');
 
-  $("editModal").classList.add("open");
-}
+      errBox.classList.add('hidden');
+      btn.disabled = true;
+      btn.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i> <span>Memeriksa Data...</span>';
 
-function closeEditModal() { $("editModal").classList.remove("open"); }
+      try {
+        const url = `${API_URL}?action=cekSaldoWali&nis=${encodeURIComponent(nis)}&pin=${encodeURIComponent(pin)}`;
+        const response = await fetch(url);
+        const data = await response.json();
 
-async function submitEditTrx(e) {
-  e.preventDefault();
-  const id = $("editTrxId").value;
-  const newNis = $("editTrxNis").value;
-  const newKat = $("editTrxKat").value;
-  const newNom = Number($("editTrxNom").value);
-  const newTgl = $("editTrxTgl").value;
-  const newKet = $("editTrxKet").value.trim() || "-";
+        if (!data.success) {
+          throw new Error(data.error || 'NIS tidak ditemukan atau PIN salah.');
+        }
 
-  const trx = mutasi.find(m => String(m.id) === String(id));
-  if (!trx) return closeEditModal();
+        currentPin = pin;
+        if (document.getElementById('rememberMe').checked) {
+          localStorage.setItem('wali_nis', nis);
+          localStorage.setItem('wali_pin', pin);
+        } else {
+          localStorage.removeItem('wali_nis');
+          localStorage.removeItem('wali_pin');
+        }
 
-  const oldSantri = santri.find(s => String(s.nis) === String(trx.nis));
-  const newSantri = santri.find(s => String(s.nis) === String(newNis));
-  if (!newSantri) return alert("Santri tidak ditemukan.");
+        currentSantri = data.santri;
+        allMutasi = data.mutasi || [];
 
-  const backupTrx = { ...trx };
-  const backupOldSaldo = oldSantri ? oldSantri.saldo : 0;
-  const backupNewSaldo = newSantri.saldo;
+        renderDashboard();
+        // Muat data presensi jamaah di latar belakang agar langsung siap saat tab diklik
+        fetchJamaahFromCloud();
+      } catch (err) {
+        if (isAutoLogin) {
+          localStorage.removeItem('wali_pin');
+        }
+        errText.textContent = err.message || 'Gagal terhubung ke server.';
+        errBox.classList.remove('hidden');
+      } finally {
+        btn.disabled = false;
+        btn.innerHTML = '<i class="fa-solid fa-right-to-bracket"></i> <span>Masuk ke Portal Wali</span>';
+      }
+    }
 
-  if (oldSantri) {
-    const oldIsMasuk = (trx.kategori === "Top-Up" || trx.tipe === "MASUK");
-    oldSantri.saldo = Number(oldSantri.saldo || 0) + (oldIsMasuk ? -Number(trx.nominal) : Number(trx.nominal));
-  }
-  const newIsMasuk = (newKat === "Top-Up");
-  newSantri.saldo = Number(newSantri.saldo || 0) + (newIsMasuk ? newNom : -newNom);
+    async function refreshData() {
+      const nis = currentSantri?.nis || localStorage.getItem('wali_nis');
+      const pin = currentPin || localStorage.getItem('wali_pin');
+      if (!nis || !pin) return;
 
-  trx.nis = newNis;
-  trx.nama = newSantri.nama;
-  trx.asrama = newSantri.asrama || 'Putra';
-  trx.kategori = newKat;
-  trx.nominal = newNom;
-  trx.tanggal = newTgl;
-  trx.keterangan = newKet;
-  trx.tipe = newIsMasuk ? "MASUK" : "KELUAR";
+      const icon = document.getElementById('refreshIcon');
+      icon.classList.add('fa-spin');
+      await fetchSaldoWali(nis, pin, false);
+      setTimeout(() => icon.classList.remove('fa-spin'), 500);
+    }
 
-  closeEditModal();
-  refreshAllViews();
-  toast("✓ Perubahan dicatat…");
+    function logoutWali() {
+      localStorage.removeItem('wali_nis');
+      localStorage.removeItem('wali_pin');
+      currentSantri = null;
+      currentPin = "";
+      allMutasi = [];
+      allJamaahLogs = [];
+      jamaahLoaded = false;
+      document.getElementById('inputPin').value = '';
+      document.getElementById('dashboardSection').classList.add('hidden');
+      document.getElementById('btnLogout').classList.add('hidden');
+      document.getElementById('loginSection').classList.remove('hidden');
+    }
 
-  try {
-    await api("edit_transaksi", { id, nis: newNis, kategori: newKat, nominal: newNom, tanggal: newTgl, keterangan: newKet });
-    toast("✓ Transaksi berhasil diperbarui!");
-  } catch (err) {
-    Object.assign(trx, backupTrx);
-    if (oldSantri) oldSantri.saldo = backupOldSaldo;
-    newSantri.saldo = backupNewSaldo;
-    refreshAllViews();
-    alert("⚠️ Gagal memperbarui transaksi: " + err.message);
-  }
-}
+    // =========================================================================
+    // SINKRONISASI PRESENSI SHOLAT JAMAAH DARI SPREADSHEET JAMAAH (JSONP)
+    // =========================================================================
+    function fetchJamaahFromCloud() {
+      if (!currentSantri) return;
+      document.getElementById('jamaahSyncStatus').textContent = "Menyinkronkan jadwal jamaah...";
 
-async function deleteTrx(id) {
-  if (String(id).startsWith("TEMP-")) return toast("Tunggu sebentar…", true);
-  const idx = mutasi.findIndex(m => String(m.id) === String(id));
-  if (idx === -1) return alert("Data transaksi tidak ditemukan.");
-
-  const trx = mutasi[idx];
-  const isMasuk = (trx.kategori === "Top-Up" || trx.tipe === "MASUK");
-  if (!confirm(`Hapus transaksi ${trx.kategori} (${rp(trx.nominal)}) milik ${trx.nama || trx.nis} tanggal ${trx.tanggal}?`)) return;
-
-  const targetSantri = santri.find(s => String(s.nis) === String(trx.nis));
-  const backupOldSaldo = targetSantri ? targetSantri.saldo : 0;
-
-  if (targetSantri) {
-    targetSantri.saldo = Number(targetSantri.saldo || 0) + (isMasuk ? -Number(trx.nominal) : Number(trx.nominal));
-  }
-  mutasi.splice(idx, 1);
-
-  refreshAllViews();
-  toast("✓ Transaksi dihapus…");
-
-  try {
-    await api("hapus_transaksi", { id });
-    toast("✓ Berhasil dihapus dari spreadsheet!");
-  } catch (err) {
-    mutasi.splice(idx, 0, trx);
-    if (targetSantri) targetSantri.saldo = backupOldSaldo;
-    refreshAllViews();
-    alert("⚠️ Gagal menghapus transaksi: " + err.message);
-  }
-}
-
-function updateBatchTotal() {
-  let total = 0, count = 0;
-  document.querySelectorAll(".batch-inp").forEach(i => {
-    const val = Number(i.value || 0);
-    if (val > 0) { total += val; count++; }
-  });
-  if ($("batchTotalUang")) $("batchTotalUang").textContent = rp(total);
-  if ($("batchCountSantri")) $("batchCountSantri").textContent = count;
-}
-
-function renderBatch() {
-  const kls = $("batchKelas").value;
-  const list = getFilteredSantri().filter(s => String(s.kelas) === String(kls));
-  $("batchRows").innerHTML = list.length ? list.map(s => `
-    <div style="display:flex;justify-content:space-between;align-items:center;padding:7px 0;border-bottom:1px solid #f0f4f1">
-      <div>
-        <strong style="font-size:12px">${escapeHTML(s.nama)}</strong> <span class="badge-asrama">${escapeHTML(s.asrama || 'Putra')}</span>
-        <div style="font-size:10px;color:var(--muted)">NIS ${escapeHTML(s.nis)} · Saldo: ${rp(s.saldo)}</div>
-      </div>
-      <input type="number" class="batch-inp" data-nis="${escapeHTML(s.nis)}" placeholder="0" oninput="updateBatchTotal()" style="width:90px;text-align:right;padding:6px;border:1px solid var(--line);border-radius:6px">
-    </div>
-  `).join("") : `<div class="empty">Tidak ada santri di kelas/asrama ini.</div>`;
-  updateBatchTotal();
-}
-
-function applyBatch() {
-  const v = $("batchNominal").value;
-  document.querySelectorAll(".batch-inp").forEach(i => i.value = v);
-  updateBatchTotal();
-}
-
-async function saveBatch() {
-  const tanggal = $("batchTgl").value;
-  const kelas = $("batchKelas").value;
-  const items = [...document.querySelectorAll(".batch-inp")]
-    .map(i => ({ nis: i.dataset.nis, nominal: Number(i.value) }))
-    .filter(i => i.nominal > 0);
-
-  if (!items.length) return alert("Isi nominal minimal satu santri.");
-  if (!confirm(`Simpan ${items.length} transaksi uang saku untuk Kelas ${kelas}?`)) return;
-
-  const backupSaldomap = {};
-  const tempEntries = {};
-  items.forEach(it => {
-    const s = santri.find(x => String(x.nis) === String(it.nis));
-    if (s) {
-      backupSaldomap[s.nis] = s.saldo;
-      s.saldo = Number(s.saldo || 0) - Number(it.nominal);
-      const entry = {
-        id: "TEMP-" + Math.random(),
-        nis: s.nis,
-        nama: s.nama,
-        asrama: s.asrama || 'Putra',
-        tanggal: tanggal,
-        kategori: "Uang Saku",
-        nominal: Number(it.nominal),
-        keterangan: "Uang saku harian",
-        tipe: "KELUAR"
+      window.handleWaliJamaahSync = function(res) {
+        if (res && res.status === 'success' && Array.isArray(res.logs)) {
+          const targetNis = String(currentSantri.nis).trim().toLowerCase();
+          allJamaahLogs = res.logs.filter(l => String(l.jamaahId || '').trim().toLowerCase() === targetNis);
+          jamaahLoaded = true;
+          document.getElementById('jamaahSyncStatus').textContent = `Tersinkron (${allJamaahLogs.length} catatan sholat)`;
+          renderJamaahReport();
+        } else {
+          document.getElementById('jamaahSyncStatus').textContent = "Data presensi belum tersedia.";
+        }
       };
-      tempEntries[s.nis] = entry;
-      mutasi.unshift(entry);
+
+      const oldScript = document.getElementById('jsonp-jamaah-wali');
+      if (oldScript) oldScript.remove();
+      const script = document.createElement('script');
+      script.id = 'jsonp-jamaah-wali';
+      script.src = `${JAMAAH_API_URL}?callback=handleWaliJamaahSync&_t=${Date.now()}`;
+      document.body.appendChild(script);
     }
-  });
 
-  refreshAllViews();
-  toast(`✓ ${items.length} transaksi rekap dicatat…`);
-  $("batchNominal").value = "";
-  document.querySelectorAll(".batch-inp").forEach(i => i.value = "");
-  updateBatchTotal();
-  switchNav("dashboard");
-
-  try {
-    const res = await api("batch_uang_saku", { tanggal, kelas, items, keterangan: "Uang saku harian" });
-    if (res && Array.isArray(res.items)) {
-      res.items.forEach(saved => { if (tempEntries[saved.nis]) tempEntries[saved.nis].id = saved.id; });
-      renderRecentMutasi();
+    function parseDateNormalized(rawDate) {
+      if (!rawDate) return '';
+      const str = String(rawDate).trim();
+      const matchIso = str.match(/^(\d{4})[/-](\d{1,2})[/-](\d{1,2})/);
+      if (matchIso) {
+        return `${matchIso[1]}-${String(matchIso[2]).padStart(2, '0')}-${String(matchIso[3]).padStart(2, '0')}`;
+      }
+      const months = {
+        Jan:'01', Feb:'02', Mar:'03', Apr:'04', May:'05', Jun:'06',
+        Jul:'07', Aug:'08', Sep:'09', Oct:'10', Nov:'11', Dec:'12'
+      };
+      const matchGmt = str.match(/([A-Za-z]{3})\s+(\d{1,2})\s+(\d{4})/);
+      if (matchGmt && months[matchGmt[1]]) {
+        return `${matchGmt[3]}-${months[matchGmt[1]]}-${String(matchGmt[2]).padStart(2, '0')}`;
+      }
+      return str;
     }
-    toast("✓ Rekap sukses tersimpan di spreadsheet!");
-  } catch (err) {
-    items.forEach(it => {
-      const s = santri.find(x => String(x.nis) === String(it.nis));
-      if (s && backupSaldomap[s.nis] !== undefined) s.saldo = backupSaldomap[s.nis];
-    });
-    mutasi = mutasi.filter(m => !String(m.id).startsWith("TEMP-"));
-    refreshAllViews();
-    alert("⚠️ Gagal menyimpan rekap batch: " + err.message);
-  }
-}
 
-function handleLapSearch(query) {
-  const box = $("lapSearchResults");
-  const q = query.trim().toLowerCase();
-  if (!q) {
-    box.style.display = "none";
-    box.innerHTML = "";
-    return;
-  }
-  const filtered = getFilteredSantri().filter(s => 
-    String(s.nama).toLowerCase().includes(q) || 
-    String(s.nis).toLowerCase().includes(q)
-  ).slice(0, 10);
+    function getStatusIconHtml(status) {
+      if (status === 'Tepat Waktu') return '<span title="Tepat Waktu" class="text-sm">✅</span>';
+      if (status === 'Masbuq') return '<span title="Masbuq" class="text-sm">⚠️</span>';
+      if (status === 'Izin Pulang') return '<span title="Izin Pulang" class="text-sm">🏠</span>';
+      if (status === 'Sakit') return '<span title="Sakit" class="text-sm">💊</span>';
+      return '<span title="Alfa / Tidak Hadir" class="text-xs opacity-80">❌</span>';
+    }
 
-  if (!filtered.length) {
-    box.innerHTML = `<div class="search-item"><small style="color:var(--muted)">Santri tidak ditemukan</small></div>`;
-    box.style.display = "block";
-    return;
-  }
+    function renderJamaahReport() {
+      const ym = document.getElementById('filterBulanJamaah').value; // YYYY-MM
+      const tbody = document.getElementById('jamaahTableBody');
+      const prayers = ['Subuh', 'Dzuhur', 'Ashar', 'Maghrib', 'Isya'];
 
-  box.innerHTML = filtered.map(s => `
-    <div class="search-item" onclick="selectLapSantri('${escapeHTML(s.nis)}')">
-      <div>
-        <strong>${escapeHTML(s.nama)}</strong> <span class="badge-asrama">${escapeHTML(s.asrama || 'Putra')}</span>
-        <div><small>Kelas ${escapeHTML(s.kelas)} · NIS ${escapeHTML(s.nis)}</small></div>
-      </div>
-      <small style="color:var(--green)">${rp(s.saldo)}</small>
-    </div>
-  `).join("");
-  box.style.display = "block";
-}
+      const filteredLogs = ym
+        ? allJamaahLogs.filter(l => parseDateNormalized(l.date).startsWith(ym))
+        : allJamaahLogs;
 
-function selectLapSantri(nis) {
-  const s = santri.find(x => String(x.nis) === String(nis));
-  if (!s) return;
-  $("lapSelectedNis").value = s.nis;
-  $("lapSearchInput").style.display = "none";
-  $("lapSearchResults").style.display = "none";
-  $("lapSelectedNama").textContent = `${s.nama} (${s.asrama || 'Putra'})`;
-  $("lapSelectedDetail").textContent = `Kelas ${s.kelas} · Sisa Saldo: ${rp(s.saldo)}`;
-  $("lapSelectedBadge").style.display = "flex";
-  filterRekapLaporan();
-}
+      // Kumpulkan daftar tanggal unik pada bulan tersebut (urut terbaru di atas)
+      const datesSet = new Set();
+      filteredLogs.forEach(l => {
+        const d = parseDateNormalized(l.date);
+        if (d) datesSet.add(d);
+      });
 
-function clearSelectedLapSantri() {
-  $("lapSelectedNis").value = "";
-  $("lapSearchInput").value = "";
-  $("lapSearchInput").style.display = "block";
-  $("lapSelectedBadge").style.display = "none";
-  $("lapTableBody").innerHTML = `<tr><td colspan="4" class="empty">Silakan pilih santri dan tampilkan.</td></tr>`;
-  $("sumMasuk").textContent = "Rp 0";
-  $("sumKeluar").textContent = "Rp 0";
-  $("sumSaldoAkhir").textContent = "Rp 0";
-}
+      const sortedDates = Array.from(datesSet).sort().reverse();
 
-function filterRekapLaporan() {
-  const targetNis = $("lapSelectedNis").value;
-  if (!targetNis) return alert("Pilih santri terlebih dahulu.");
+      if (sortedDates.length === 0) {
+        document.getElementById('statJamaahHadir').textContent = '0';
+        document.getElementById('statJamaahMasbuq').textContent = '0';
+        document.getElementById('statJamaahIzin').textContent = '0';
+        document.getElementById('statJamaahAlfa').textContent = '0';
+        document.getElementById('statJamaahPersen').textContent = '0%';
+        document.getElementById('jamaahProgressBar').style.width = '0%';
+        tbody.innerHTML = `<tr><td colspan="6" class="py-8 text-center text-slate-400 text-xs">Belum ada catatan sholat berjamaah pada bulan ini.</td></tr>`;
+        return;
+      }
 
-  const mulai = $("lapTglMulai").value;
-  const selesai = $("lapTglSelesai").value;
-  const s = santri.find(x => String(x.nis) === String(targetNis));
+      let hadir = 0, masbuq = 0, izinSakit = 0, alfa = 0;
+      const totalSesi = sortedDates.length * 5;
 
-  lapCurrentRows = mutasi.filter(m => {
-    const cocokSantri = String(m.nis) === String(targetNis);
-    const tgl = String(m.tanggal || "");
-    return cocokSantri && (!mulai || tgl >= mulai) && (!selesai || tgl <= selesai);
-  });
+      const rowsHtml = sortedDates.map(tgl => {
+        const dayLogs = filteredLogs.filter(l => parseDateNormalized(l.date) === tgl);
+        const cells = prayers.map(p => {
+          const found = dayLogs.find(l => l.prayer === p);
+          const st = found ? found.status : 'Alfa';
 
-  let totMasuk = 0, totKeluar = 0;
-  lapCurrentRows.forEach(m => {
-    const isMasuk = m.kategori === "Top-Up" || m.tipe === "MASUK";
-    if (isMasuk) totMasuk += Number(m.nominal || 0);
-    else totKeluar += Number(m.nominal || 0);
-  });
+          if (st === 'Tepat Waktu') hadir++;
+          else if (st === 'Masbuq') { hadir++; masbuq++; }
+          else if (st === 'Izin Pulang' || st === 'Sakit') izinSakit++;
+          else alfa++;
 
-  $("sumMasuk").textContent = rp(totMasuk);
-  $("sumKeluar").textContent = rp(totKeluar);
-  $("sumSaldoAkhir").textContent = rp(s ? s.saldo : 0);
+          return `<td class="py-2.5 px-1.5 text-center">${getStatusIconHtml(st)}</td>`;
+        }).join('');
 
-  const tbody = $("lapTableBody");
-  if (!lapCurrentRows.length) {
-    tbody.innerHTML = `<tr><td colspan="4" class="empty">Tidak ada riwayat mutasi pada periode ini.</td></tr>`;
-    return;
-  }
+        return `
+          <tr class="hover:bg-slate-50">
+            <td class="py-2.5 px-3 font-semibold text-slate-700 whitespace-nowrap">${formatTanggalIndo(tgl)}</td>
+            ${cells}
+          </tr>
+        `;
+      }).join('');
 
-  tbody.innerHTML = lapCurrentRows.map(m => {
-    const isMasuk = m.kategori === "Top-Up" || m.tipe === "MASUK";
-    const safeId = escapeHTML(m.id);
-    return `
-      <tr>
-        <td><small>${escapeHTML(m.tanggal || "-")}</small></td>
-        <td><span class="badge ${isMasuk ? 'badge-in' : 'badge-out'}">${escapeHTML(m.kategori)}</span></td>
-        <td><small>${escapeHTML(m.keterangan || "-")}</small></td>
-        <td style="text-align:right">
-          <div style="font-weight:700;color:${isMasuk ? 'var(--green)' : 'var(--red)'}">
-            ${isMasuk ? '+' : '-'} ${rp(m.nominal)}
+      const persen = totalSesi > 0 ? Math.round((hadir / totalSesi) * 100) : 0;
+
+      document.getElementById('statJamaahHadir').textContent = hadir;
+      document.getElementById('statJamaahMasbuq').textContent = masbuq;
+      document.getElementById('statJamaahIzin').textContent = izinSakit;
+      document.getElementById('statJamaahAlfa').textContent = alfa;
+      document.getElementById('statJamaahPersen').textContent = `${persen}%`;
+      document.getElementById('jamaahProgressBar').style.width = `${persen}%`;
+
+      tbody.innerHTML = rowsHtml;
+    }
+
+    // =========================================================================
+    // PENGATURAN LIMIT HARIAN KANTIN
+    // =========================================================================
+    function toggleLimitForm() {
+      const form = document.getElementById('limitEditForm');
+      const feedback = document.getElementById('limitFeedback');
+      feedback.classList.add('hidden');
+      form.classList.toggle('hidden');
+      if (!form.classList.contains('hidden')) {
+        document.getElementById('inputLimitBaru').value = currentSantri.limit_harian || 0;
+      }
+    }
+
+    function pilihPresetLimit(nominal) {
+      document.getElementById('inputLimitBaru').value = nominal;
+    }
+
+    async function simpanLimitHarian() {
+      if (!currentSantri || !currentPin) return;
+      const inputVal = Number(document.getElementById('inputLimitBaru').value);
+      const btn = document.getElementById('btnSimpanLimit');
+      const feedback = document.getElementById('limitFeedback');
+
+      if (isNaN(inputVal) || inputVal < 0) {
+        feedback.textContent = "Nominal limit tidak valid.";
+        feedback.className = "text-[11px] font-semibold text-rose-600";
+        feedback.classList.remove('hidden');
+        return;
+      }
+
+      btn.disabled = true;
+      btn.textContent = "Menyimpan...";
+      feedback.classList.add('hidden');
+
+      try {
+        const res = await fetch(API_URL, {
+          method: 'POST',
+          body: JSON.stringify({
+            action: 'setLimitWali',
+            nis: currentSantri.nis,
+            pin: currentPin,
+            limit: Math.round(inputVal)
+          })
+        });
+        const result = await res.json();
+        if (!result.success) throw new Error(result.error || "Gagal menyimpan limit.");
+
+        currentSantri.limit_harian = result.limit_harian;
+        renderLimitSection();
+
+        feedback.textContent = "Limit harian berhasil diperbarui!";
+        feedback.className = "text-[11px] font-semibold text-emerald-700";
+        feedback.classList.remove('hidden');
+
+        setTimeout(() => {
+          document.getElementById('limitEditForm').classList.add('hidden');
+        }, 1200);
+      } catch (err) {
+        feedback.textContent = err.message;
+        feedback.className = "text-[11px] font-semibold text-rose-600";
+        feedback.classList.remove('hidden');
+      } finally {
+        btn.disabled = false;
+        btn.textContent = "Simpan";
+      }
+    }
+
+    function renderLimitSection() {
+      const limit = Number(currentSantri.limit_harian) || 0;
+      const terpakai = Number(currentSantri.terpakai_hari_ini) || 0;
+      const statusEl = document.getElementById('dispLimitStatus');
+      const progWrapper = document.getElementById('limitProgressWrapper');
+
+      if (limit <= 0) {
+        statusEl.textContent = "Tanpa Batas (Bebas)";
+        statusEl.className = "text-xs font-bold text-slate-600 mt-0.5";
+        progWrapper.classList.add('hidden');
+      } else {
+        statusEl.textContent = `Maks. ${formatRupiah(limit)} / hari`;
+        statusEl.className = "text-xs font-bold text-emerald-700 mt-0.5";
+        progWrapper.classList.remove('hidden');
+
+        const sisa = Math.max(0, limit - terpakai);
+        const persen = Math.min(100, Math.round((terpakai / limit) * 100));
+
+        document.getElementById('dispTerpakaiHariIni').textContent = formatRupiah(terpakai);
+        document.getElementById('dispSisaLimit').textContent = `Sisa: ${formatRupiah(sisa)}`;
+
+        const bar = document.getElementById('limitProgressBar');
+        bar.style.width = `${persen}%`;
+        bar.className = persen >= 90
+          ? "h-full bg-rose-500 rounded-full transition-all duration-300"
+          : persen >= 70
+            ? "h-full bg-amber-500 rounded-full transition-all duration-300"
+            : "h-full bg-emerald-600 rounded-full transition-all duration-300";
+      }
+    }
+
+    // =========================================================================
+    // RENDER DASHBOARD & MUTASI KEUANGAN
+    // =========================================================================
+    function formatRupiah(num) {
+      const val = Number(num) || 0;
+      const prefix = val < 0 ? '-Rp ' : 'Rp ';
+      return prefix + Math.abs(val).toLocaleString('id-ID');
+    }
+
+    function formatTanggalIndo(tglStr) {
+      if (!tglStr) return '-';
+      const parts = tglStr.split('-');
+      if (parts.length !== 3) return tglStr;
+      const bulan = ['Jan', 'Feb', 'Mar', 'Apr', 'Mei', 'Jun', 'Jul', 'Agu', 'Sep', 'Okt', 'Nov', 'Des'];
+      const bIdx = parseInt(parts[1], 10) - 1;
+      return `${parts[2]} ${bulan[bIdx] || parts[1]} ${parts[0]}`;
+    }
+
+    function renderDashboard() {
+      document.getElementById('loginSection').classList.add('hidden');
+      document.getElementById('dashboardSection').classList.remove('hidden');
+      document.getElementById('btnLogout').classList.remove('hidden');
+
+      document.getElementById('dispNis').textContent = currentSantri.nis;
+      document.getElementById('dispNama').textContent = currentSantri.nama;
+      document.getElementById('dispKelas').textContent = currentSantri.kelas || '-';
+      document.getElementById('dispKamar').textContent = currentSantri.kamar || '-';
+
+      const saldo = Number(currentSantri.saldo) || 0;
+      const dispSaldo = document.getElementById('dispSaldo');
+      const badge = document.getElementById('saldoBadge');
+
+      dispSaldo.textContent = formatRupiah(saldo);
+      if (saldo < 0) {
+        dispSaldo.className = "text-3xl font-extrabold tracking-tight mt-1 text-rose-600";
+        badge.className = "text-[10px] font-bold px-2.5 py-0.5 rounded-full bg-rose-100 text-rose-800";
+        badge.textContent = "Saldo Minus";
+      } else if (saldo <= 25000) {
+        dispSaldo.className = "text-3xl font-extrabold tracking-tight mt-1 text-amber-600";
+        badge.className = "text-[10px] font-bold px-2.5 py-0.5 rounded-full bg-amber-100 text-amber-800";
+        badge.textContent = "Saldo Menipis";
+      } else {
+        dispSaldo.className = "text-3xl font-extrabold tracking-tight mt-1 text-emerald-800";
+        badge.className = "text-[10px] font-bold px-2.5 py-0.5 rounded-full bg-emerald-100 text-emerald-800";
+        badge.textContent = "Saldo Aman";
+      }
+
+      document.getElementById('dispTotalMasuk').textContent = formatRupiah(currentSantri.total_masuk);
+      document.getElementById('dispTotalKeluar').textContent = formatRupiah(currentSantri.total_keluar);
+
+      renderLimitSection();
+      populateMonthFilter();
+      renderMutasi();
+    }
+
+    function populateMonthFilter() {
+      const select = document.getElementById('filterBulan');
+      const namaBulan = ['Januari', 'Februari', 'Maret', 'April', 'Mei', 'Juni', 'Juli', 'Agustus', 'September', 'Oktober', 'November', 'Desember'];
+      const monthsSet = new Set();
+
+      allMutasi.forEach(m => {
+        if (m.tanggal && m.tanggal.length >= 7) {
+          monthsSet.add(m.tanggal.slice(0, 7));
+        }
+      });
+
+      const sortedMonths = Array.from(monthsSet).sort().reverse();
+      select.innerHTML = '<option value="ALL">Semua Bulan</option>';
+      sortedMonths.forEach(ym => {
+        const [y, m] = ym.split('-');
+        const label = `${namaBulan[parseInt(m, 10) - 1] || m} ${y}`;
+        const opt = document.createElement('option');
+        opt.value = ym;
+        opt.textContent = label;
+        select.appendChild(opt);
+      });
+    }
+
+    function renderMutasi() {
+      const selectedMonth = document.getElementById('filterBulan').value;
+      const listContainer = document.getElementById('mutasiList');
+      const monthlySummary = document.getElementById('monthlySummary');
+      const countLabel = document.getElementById('mutasiCountLabel');
+
+      const filtered = selectedMonth === 'ALL'
+        ? allMutasi
+        : allMutasi.filter(m => m.tanggal && m.tanggal.startsWith(selectedMonth));
+
+      countLabel.textContent = `${filtered.length} transaksi tercatat`;
+
+      if (selectedMonth !== 'ALL') {
+        let mMasuk = 0;
+        let mKeluar = 0;
+        filtered.forEach(m => {
+          if (m.tipe === 'MASUK') mMasuk += Number(m.nominal) || 0;
+          else mKeluar += Number(m.nominal) || 0;
+        });
+        document.getElementById('filterMasuk').textContent = formatRupiah(mMasuk);
+        document.getElementById('filterKeluar').textContent = formatRupiah(mKeluar);
+        monthlySummary.classList.remove('hidden');
+      } else {
+        monthlySummary.classList.add('hidden');
+      }
+
+      if (filtered.length === 0) {
+        listContainer.innerHTML = `
+          <div class="py-8 text-center text-slate-400">
+            <i class="fa-solid fa-receipt text-2xl mb-2 opacity-50"></i>
+            <p class="text-xs font-medium">Belum ada riwayat transaksi pada periode ini.</p>
           </div>
-          <div class="act-btns">
-            <button type="button" class="btn-act" title="Edit transaksi" onclick="openEditModal('${safeId}')">✏️</button>
-            <button type="button" class="btn-act del" title="Hapus transaksi" onclick="deleteTrx('${safeId}')">🗑️</button>
+        `;
+        return;
+      }
+
+      listContainer.innerHTML = filtered.map(item => {
+        const isMasuk = item.tipe === 'MASUK';
+        const iconClass = isMasuk
+          ? 'bg-emerald-100 text-emerald-700'
+          : 'bg-rose-100 text-rose-600';
+        const amountClass = isMasuk ? 'text-emerald-700' : 'text-rose-600';
+        const sign = isMasuk ? '+' : '-';
+
+        return `
+          <div class="py-3 flex items-center justify-between gap-3">
+            <div class="flex items-start gap-3 min-w-0">
+              <div class="w-9 h-9 rounded-xl ${iconClass} flex items-center justify-center shrink-0 mt-0.5">
+                <i class="fa-solid ${isMasuk ? 'fa-plus' : 'fa-minus'} text-xs"></i>
+              </div>
+              <div class="min-w-0">
+                <p class="text-xs font-bold text-slate-800 truncate">${item.kategori}</p>
+                <p class="text-[11px] text-slate-500 truncate">${item.keterangan || '-'}</p>
+                <p class="text-[10px] text-slate-400 mt-0.5">${formatTanggalIndo(item.tanggal)}</p>
+              </div>
+            </div>
+            <div class="text-right shrink-0">
+              <p class="text-xs font-extrabold ${amountClass}">${sign} ${formatRupiah(item.nominal)}</p>
+              <span class="inline-block text-[9px] font-bold uppercase px-1.5 py-0.5 rounded ${isMasuk ? 'bg-emerald-50 text-emerald-700' : 'bg-slate-100 text-slate-500'}">
+                ${isMasuk ? 'Masuk' : 'Keluar'}
+              </span>
+            </div>
           </div>
-        </td>
-      </tr>
-    `;
-  }).join("");
-}
+        `;
+      }).join('');
+    }
 
-function cetakLaporanPDF() {
-  const targetNis = $("lapSelectedNis").value;
-  if (!targetNis) return alert("Silakan pilih nama santri terlebih dahulu.");
-  const s = santri.find(x => String(x.nis) === String(targetNis));
-  if (!s) return alert("Data santri tidak ditemukan.");
+    function konfirmasiTopUpWA() {
+      if (!currentSantri) return;
+      const pesan = `Assalamu'alaikum Admin PPTQ Al Husna Lestari,%0A%0ASaya wali santri dari:%0A• Nama: *${encodeURIComponent(currentSantri.nama)}*%0A• NIS: *${encodeURIComponent(currentSantri.nis)}*%0A• Kelas: *${encodeURIComponent(currentSantri.kelas)}*%0A%0AIngin melakukan konfirmasi transfer top-up uang saku sebesar: *Rp ...*%0A(Berikut saya lampirkan bukti transfernya)`;
+      window.open(`https://wa.me/${ADMIN_WA}?text=${pesan}`, '_blank');
+    }
 
-  const mulai = $("lapTglMulai").value || "-";
-  const selesai = $("lapTglSelesai").value || "-";
-
-  let totMasuk = 0, totKeluar = 0;
-  let barisTabelHTML = "";
-
-  if (lapCurrentRows.length) {
-    lapCurrentRows.forEach((m, idx) => {
-      const isMasuk = m.kategori === "Top-Up" || m.tipe === "MASUK";
-      if (isMasuk) totMasuk += Number(m.nominal || 0);
-      else totKeluar += Number(m.nominal || 0);
-      barisTabelHTML += `
-        <tr>
-          <td style="text-align:center;">${idx + 1}</td>
-          <td>${escapeHTML(m.tanggal || "-")}</td>
-          <td><strong>${escapeHTML(m.kategori)}</strong></td>
-          <td>${escapeHTML(m.keterangan || "-")}</td>
-          <td style="text-align:right; font-weight:bold; color:${isMasuk ? '#1b6652' : '#c74444'};">
-            ${isMasuk ? '+' : '-'} ${rp(m.nominal)}
-          </td>
-        </tr>
-      `;
-    });
-  } else {
-    barisTabelHTML = `<tr><td colspan="5" style="text-align:center; padding:15px; color:#888;">Tidak ada riwayat mutasi transaksi pada rentang periode ini.</td></tr>`;
-  }
-
-  const win = window.open("", "_blank");
-  win.document.write(`<!DOCTYPE html>
-<html lang="id">
-<head>
-  <meta charset="utf-8">
-  <title>Laporan_Kas_${escapeHTML(s.nama)}_${s.nis}</title>
-  <style>
-    @page { size: A4 portrait; margin: 15mm; }
-    body { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif; font-size: 12px; color: #1f2d27; margin: 0; padding: 20px; }
-    .header-kop { text-align: center; border-bottom: 2px solid #143e33; padding-bottom: 12px; margin-bottom: 16px; }
-    .header-kop h2 { margin: 0; font-size: 17px; color: #143e33; text-transform: uppercase; letter-spacing: 0.5px; }
-    .header-kop p { margin: 3px 0 0; font-size: 11px; color: #555; }
-    .meta-box { display: flex; justify-content: space-between; margin-bottom: 16px; background: #f8faf8; padding: 12px 14px; border-radius: 8px; border: 1px solid #e0eae3; }
-    .meta-col { line-height: 1.6; }
-    .meta-col strong { color: #143e33; }
-    .summary-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; margin-bottom: 18px; }
-    .sum-card { border: 1px solid #e0eae3; border-radius: 8px; padding: 10px; text-align: center; background: #fff; }
-    .sum-card small { display: block; font-size: 10px; color: #666; margin-bottom: 3px; }
-    .sum-card strong { font-size: 14px; }
-    table { width: 100%; border-collapse: collapse; margin-bottom: 25px; }
-    th, td { border: 1px solid #dce4df; padding: 7px 10px; font-size: 11px; text-align: left; }
-    th { background: #eaf4ef; color: #143e33; text-transform: uppercase; font-size: 10px; }
-    .ttd-box { display: flex; justify-content: flex-end; margin-top: 30px; }
-    .ttd-col { text-align: center; width: 200px; }
-    .no-print { margin-bottom: 18px; text-align: right; }
-    .btn-print { background: #143e33; color: #fff; border: 0; padding: 8px 16px; border-radius: 6px; font-weight: bold; cursor: pointer; }
-    @media print { .no-print { display: none !important; } body { padding: 0; } }
-  </style>
-</head>
-<body>
-  <div class="no-print">
-    <button class="btn-print" onclick="window.print()">🖨️ Cetak / Simpan PDF Sekarang</button>
-  </div>
-  <div class="header-kop">
-    <h2>Pondok Pesantren Tahfidzul Qur'an Al Husna Lestari</h2>
-    <p>Laporan Resmi Rekapitulasi Mutasi Uang Saku Santri (${escapeHTML(s.asrama || 'Putra')})</p>
-  </div>
-  <div class="meta-box">
-    <div class="meta-col">
-      <div>Nama Santri : <strong>${escapeHTML(s.nama)}</strong></div>
-      <div>NIS : <strong>${escapeHTML(s.nis)}</strong></div>
-      <div>Kelas / Kamar : ${escapeHTML(s.kelas)} / ${escapeHTML(s.kamar || '-')}</div>
-    </div>
-    <div class="meta-col" style="text-align: right;">
-      <div>Periode Laporan : <strong>${escapeHTML(mulai)} s.d. ${escapeHTML(selesai)}</strong></div>
-      <div>Tanggal Cetak : ${today()}</div>
-      <div>No. Kontak Wali : ${escapeHTML(s.wa || '-')}</div>
-    </div>
-  </div>
-  <div class="summary-grid">
-    <div class="sum-card"><small>Total Setoran (Top-Up)</small><strong style="color: #1b6652;">${rp(totMasuk)}</strong></div>
-    <div class="sum-card"><small>Total Pengeluaran</small><strong style="color: #c74444;">${rp(totKeluar)}</strong></div>
-    <div class="sum-card" style="background: #eaf4ef; border-color: #b9dec9;"><small style="color: #143e33; font-weight: bold;">Sisa Saldo Terkini</small><strong style="color: #143e33; font-size: 15px;">${rp(s.saldo)}</strong></div>
-  </div>
-  <h4 style="margin: 0 0 8px; color: #143e33;">Rincian Mutasi Transaksi</h4>
-  <table>
-    <thead>
-      <tr>
-        <th style="width: 30px; text-align: center;">No</th>
-        <th style="width: 85px;">Tanggal</th>
-        <th style="width: 100px;">Kategori</th>
-        <th>Keterangan Transaksi</th>
-        <th style="width: 110px; text-align: right;">Nominal</th>
-      </tr>
-    </thead>
-    <tbody>${barisTabelHTML}</tbody>
-  </table>
-  <div class="ttd-box">
-    <div class="ttd-col">
-      <p style="margin: 0 0 50px;">Klaten, ${today()}<br><strong>Bendahara</strong></p>
-      <p style="margin: 0; font-weight: bold; text-decoration: underline;">( Qoyyimah, S. Mat. )</p>
-    </div>
-  </div>
-  <script>window.addEventListener('load', () => setTimeout(() => window.print(), 300));<\/script>
-</body>
-</html>`);
-  win.document.close();
-}
-
-function renderMaster() {
-  const q = ($("cariSantri").value || "").toLowerCase();
-  const list = getFilteredSantri().filter(s => (`${s.nama} ${s.nis} ${s.kamar || ''}`).toLowerCase().includes(q));
-  $("masterBody").innerHTML = list.length ? list.map(s => `
-    <tr>
-      <td><code>${escapeHTML(s.nis)}</code></td>
-      <td><strong>${escapeHTML(s.nama)}</strong> <span class="badge-asrama">${escapeHTML(s.asrama || 'Putra')}</span></td>
-      <td>${escapeHTML(s.kelas)}</td>
-      <td style="text-align:right;font-weight:700;color:${Number(s.saldo)<LIMIT_KRITIS?'var(--red)':'var(--green)'}">${rp(s.saldo)}</td>
-    </tr>
-  `).join("") : `<tr><td colspan="4" class="empty">Santri tidak ditemukan.</td></tr>`;
-}
-
-document.addEventListener("click", e => {
-  if (!e.target.closest("#trxSearchInput") && !e.target.closest("#trxSearchResults")) $("trxSearchResults").style.display = "none";
-  if (!e.target.closest("#lapSearchInput") && !e.target.closest("#lapSearchResults")) $("lapSearchResults").style.display = "none";
-});
-</script>
+    function downloadPDF() {
+      if (!currentSantri) return;
+      const element = document.getElementById('printableArea');
+      const opt = {
+        margin: 0.4,
+        filename: `Mutasi_Uang_Saku_${currentSantri.nis}_${currentSantri.nama.replace(/\s+/g, '_')}.pdf`,
+        image: { type: 'jpeg', quality: 0.98 },
+        html2canvas: { scale: 2, useCORS: true },
+        jsPDF: { unit: 'in', format: 'a4', orientation: 'portrait' }
+      };
+      html2pdf().set(opt).from(element).save();
+    }
+  </script>
 </body>
 </html>
