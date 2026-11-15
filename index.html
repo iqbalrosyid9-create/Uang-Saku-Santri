@@ -401,9 +401,7 @@
   </footer>
 
   <script>
-    // API Uang Saku & Limit Kantin
     const API_URL = "https://script.google.com/macros/s/AKfycbwiku-hOfT9_BUWZyTOCW2VlqGp4Rim9QQ8I2BEX_pTO0EXfvh1Y27a8eNYktHRIi15/exec";
-    // API Presensi Sholat Jamaah (Spreadsheet Terpisah)
     const JAMAAH_API_URL = "https://script.google.com/macros/s/AKfycbyszfOTv1q99BRO8skYi5ueiN16wmogFbTZEYjop4nIMGOGi_AtXfngea_ojoNjwBTU/exec";
     const ADMIN_WA = "6289678894782";
 
@@ -452,7 +450,6 @@
     }
 
     window.addEventListener('DOMContentLoaded', () => {
-      // Set default bulan berjalan untuk filter jamaah
       const now = new Date();
       const ymNow = `${now.getFullYear()}-${String(now.getMonth() + 1).padStart(2, '0')}`;
       document.getElementById('filterBulanJamaah').value = ymNow;
@@ -594,7 +591,6 @@
         allMutasi = data.mutasi || [];
 
         renderDashboard();
-        // Muat data presensi jamaah di latar belakang agar langsung siap saat tab diklik
         fetchJamaahFromCloud();
       } catch (err) {
         if (isAutoLogin) {
@@ -633,9 +629,6 @@
       document.getElementById('loginSection').classList.remove('hidden');
     }
 
-    // =========================================================================
-    // SINKRONISASI PRESENSI SHOLAT JAMAAH DARI SPREADSHEET JAMAAH (JSONP)
-    // =========================================================================
     function fetchJamaahFromCloud() {
       if (!currentSantri) return;
       document.getElementById('jamaahSyncStatus').textContent = "Menyinkronkan jadwal jamaah...";
@@ -687,7 +680,7 @@
     }
 
     function renderJamaahReport() {
-      const ym = document.getElementById('filterBulanJamaah').value; // YYYY-MM
+      const ym = document.getElementById('filterBulanJamaah').value;
       const tbody = document.getElementById('jamaahTableBody');
       const prayers = ['Subuh', 'Dzuhur', 'Ashar', 'Maghrib', 'Isya'];
 
@@ -695,7 +688,6 @@
         ? allJamaahLogs.filter(l => parseDateNormalized(l.date).startsWith(ym))
         : allJamaahLogs;
 
-      // Kumpulkan daftar tanggal unik pada bulan tersebut (urut terbaru di atas)
       const datesSet = new Set();
       filteredLogs.forEach(l => {
         const d = parseDateNormalized(l.date);
@@ -752,9 +744,6 @@
       tbody.innerHTML = rowsHtml;
     }
 
-    // =========================================================================
-    // PENGATURAN LIMIT HARIAN KANTIN
-    // =========================================================================
     function toggleLimitForm() {
       const form = document.getElementById('limitEditForm');
       const feedback = document.getElementById('limitFeedback');
@@ -850,9 +839,6 @@
       }
     }
 
-    // =========================================================================
-    // RENDER DASHBOARD & MUTASI KEUANGAN
-    // =========================================================================
     function formatRupiah(num) {
       const val = Number(num) || 0;
       const prefix = val < 0 ? '-Rp ' : 'Rp ';
